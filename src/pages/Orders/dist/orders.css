@@ -1,0 +1,34 @@
+.orders_page {
+  display: flex;
+  height: 100vh;
+  background: #f3f3f3;
+}
+.add_order {
+  cursor: pointer;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 12vw;
+  height: 5vh;
+  border-radius: 1vh;
+  background: #fff;
+}
+.filter_order {
+  cursor: pointer;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 10.5vw;
+  height: 5vh;
+  border-radius: 1vh;
+  background: #fff;
+}
+.table_order_section {
+  margin-top: 2vh;
+  user-select: none;
+  width: 55vw;
+  height: 6.2vh;
+  display: grid;
+  grid-template-columns: 3vw 5.6vw 6vw 5vw 6vw 4.8vw 4.8vw 4.8vw 4.8vw 4.8vw 10.8vw 8vh;
+  grid-column-gap: 0.1vw;
+}

@@ -1,0 +1,18 @@
+.catalog_card {
+  cursor: pointer;
+  min-width: 21vw;
+  min-height: 37vh;
+  border-radius: 1vh;
+  background: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+.card_name {
+  font-family: Jura;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 28.39px;
+  text-align: center;
+}

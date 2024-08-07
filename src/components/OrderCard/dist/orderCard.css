@@ -1,0 +1,43 @@
+.order_card {
+  display: grid;
+  grid-template-columns: 3vw 5.6vw 6vw 5vw 6vw 4.8vw 4.8vw 4.8vw 4.8vw 4.8vw 10.8vw 8vh 5vw;
+  grid-column-gap: 0.1vw;
+}
+.card_control_order {
+  overflow: hidden;
+  width: 0;
+  user-select: none;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  height: 9vh;
+  background: #fff;
+  border-radius: 0 1vh 1vh 0;
+  transition: 0.3s ease;
+}
+.card_control_order img {
+  cursor: pointer;
+}
+.order_card:hover .card_control_order {
+  width: 100%;
+}
+.table_info_o {
+  height: 9vh;
+  background: rgba(187,237,210,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-family: Inter;
+  font-size: 1.7vh;
+  font-weight: 400;
+}
+#id {
+  background: rgba(133,212,169,0.5);
+}
+.order_card:nth-child(even) .table_info_o {
+  background: rgba(168,214,189,0.5);
+}
+.order_card:nth-child(even) #id {
+  background: rgba(119,190,151,0.5);
+}

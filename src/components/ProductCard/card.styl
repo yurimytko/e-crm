@@ -1,0 +1,84 @@
+.p_card
+    width 60vw
+    display: grid
+    grid-template-columns: 3vw 8.1vw 8.2vw 15.6vw 9vw 10.4vw 10.4vw 5vw;
+    grid-column-gap: 0.1vw;
+.table_info
+    height: 9vh
+    background: rgba(187, 237, 210, 0.5)
+    display: flex
+    align-items: center
+    justify-content: center
+    text-align: center
+    font-family: Inter;
+    font-size: 1.7vh;
+    font-weight: 400;
+.sep_line
+    height: 40%
+    width 0.01vw
+    background: rgba(156, 156, 156, 1)
+.card_control
+    overflow: hidden
+    width: 0
+    user-select: none
+    display: flex
+    justify-content: space-around
+    align-items: center
+    height: 9vh
+    background: rgba(255, 255, 255, 1)
+    border-radius: 0 1vh 1vh 0 
+    transition: 0.3s ease
+.card_control img
+    cursor pointer
+.p_card:hover .card_control
+    width 100%
+.delete_modal
+    position: absolute
+    top 0
+    left 0
+    width 100vw
+    height: 100vh
+    opacity 0
+    background: rgba(0, 0, 0, 0.308)
+    backdrop-filter: blur(2px);
+    transition: 0.4s ease
+    display: none
+    justify-content: center
+    align-items: center
+.modal_con
+    padding 0 3vw
+    box-sizing: border-box
+    border-radius: 1vh
+    width: 18vw;
+    height: 24vh;
+    background: rgba(255, 255, 255, 1)
+    display: flex
+    flex-direction: column
+    justify-content: space-around
+    align-items: center
+.delete_text
+    text-align: center
+    font-family: Jura;
+    font-size: 2.4vh;
+    font-weight: 700;
+.delte_btn_group
+    display: flex
+    width 100%
+    justify-content: space-between
+.delte_btn_group p
+    cursor pointer
+    margin 0
+    font-family: Jura;
+    font-size: 36px;
+    font-weight: 700;
+.cancel
+    color: rgba(212, 133, 133, 1)
+.del_line
+    height: 6vh
+    width 0.01vw
+    background: rgba(206, 206, 206, 1)
+
+
+
+    
+

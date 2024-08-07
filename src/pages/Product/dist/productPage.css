@@ -1,0 +1,85 @@
+.product_page {
+  display: flex;
+  height: 100vh;
+  background: #f3f3f3;
+}
+.table_part {
+  padding: 7vh 0 0 2vw;
+  box-sizing: border-box;
+}
+.page_title {
+  user-select: none;
+  font-family: Inter;
+  font-size: 32px;
+  font-weight: 400;
+  line-height: 38.73px;
+  text-align: left;
+}
+.control_panel {
+  user-select: none;
+  margin-top: 6vh;
+  display: flex;
+  gap: 0.4vw;
+}
+.add_product {
+  cursor: pointer;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 10.5vw;
+  height: 5vh;
+  border-radius: 1vh;
+  background: #fff;
+}
+.search_con {
+  position: relative;
+}
+.btn_text {
+  margin: 0;
+  font-family: Inter;
+  font-size: 1.6vh;
+  font-weight: 500;
+}
+.search_i {
+  width: 23.8vw;
+  height: 5vh;
+  background: #fff;
+  border-radius: 1vh;
+  box-sizing: border-box;
+  outline: none;
+  border: none;
+}
+.search_img {
+  position: absolute;
+  top: 1vh;
+  left: 0.4vw;
+  width: 3.2vh;
+}
+.table_section {
+  margin-top: 2vh;
+  user-select: none;
+  width: 55vw;
+  height: 6.2vh;
+  display: grid;
+  grid-template-columns: 3vw 8.1vw 8.2vw 15.6vw 9vw 10.4vw 10.4vw;
+  grid-column-gap: 0.1vw;
+}
+.table_titles {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #85d4a9;
+  height: 6.2vh;
+  font-family: Inter;
+  font-size: 1.7vh;
+  font-weight: 400;
+  text-align: center;
+}
+.products_section {
+  overflow-y: scroll;
+  height: 69vh;
+  width: 72vw;
+}
+.products_section::-webkit-scrollbar {
+  display: none;
+}
