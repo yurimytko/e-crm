@@ -1,71 +1,145 @@
 import "./dist/addProduct.css";
-import { useEffect, useState, useRef } from "react";
-import { useGetSectionsQuery, useAddProductMutation } from "../../store";
-import { Loader } from "../Loader/loader"
+import { useState } from "react";
+import { useAddProductMutation } from "../../store";
+import { Loader } from "../Loader/loader";
 
 export function AddProductMenu() {
-    
-    const [productName, setProductName] = useState('')
+    const [formData, setFormData] = useState({
+        name: '',
+        photo: 'abs',
+        article: '1234',
+        price: '',
+        quantity: '',
+        category: '',
+        subCategory: '',
+        description: '',
+        display: true,
+        sectionId: '66b11a068951d1ffd3345012'
+    });
 
+    const [addProduct, { isLoading, isError, isSuccess }] = useAddProductMutation();
 
-    const closeAddMenu =() => {
-        document.getElementById("add_menu").style.opacity = "0"
-        
+    const handleChange = (e) => {
+        const { name, value, type, checked } = e.target;
+        setFormData(prevState => ({
+            ...prevState,
+            [name]: type === 'radio' ? checked : value
+        }));
+    };
 
-        setProductName('')
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+        console.log("Display state on submit:", formData.display);
 
+        try {
+            await addProduct(formData).unwrap();
+            closeAddMenu();
+            window.location.reload();
+        } catch (error) {
+            console.error("Failed to add the product:", error);
+        }
+    };
 
-      
+    const closeAddMenu = () => {
+        const menuElement = document.getElementById("add_menu");
+        menuElement.style.opacity = "0";
         setTimeout(() => {
-        
-            document.getElementById("add_menu").style.display = "none"
-
-
-            
+            menuElement.style.display = "none";
         }, 100);
-    }
-
-    
-
+    };
 
     return (
-        <div id="add_menu" className="add_product_asd" >
+        <div id="add_menu" className="add_product_asd">
             <div className="modal_add_product">
-                <img onClick={closeAddMenu} className="close_img" src="./img/close_menu.svg" alt="" />
+                <img 
+                    onClick={closeAddMenu} 
+                    className="close_img" 
+                    src="./img/close_menu.svg" 
+                    alt="Close menu" 
+                />
                 <div className="left_modal">
                     <p className="settign_up">Добавити Зображення</p>
-                    <div className="input_field"></div>
-                    <input className="input" type="text" placeholder="Назва товару..." value={productName} onChange={(e) => {setProductName(e.target.value)}}/>
-                    <input className="input" type="text" placeholder="Ціна..."/>
-                    <input className="input" type="text" placeholder="Кількість на складі..."/>
+                    <input 
+                        className="input" 
+                        type="text" 
+                        placeholder="Назва товару..." 
+                        name="name"
+                        value={formData.name} 
+                        onChange={handleChange} 
+                    />
+                    <input 
+                        className="input" 
+                        type="text" 
+                        placeholder="Ціна..." 
+                        name="price"
+                        value={formData.price} 
+                        onChange={handleChange} 
+                    />
+                    <input 
+                        className="input" 
+                        type="text" 
+                        placeholder="Кількість на складі..." 
+                        name="quantity"
+                        value={formData.quantity} 
+                        onChange={handleChange} 
+                    />
                     <p className="settign_up">Категорія</p>
-                    <input className="input" type="text" placeholder="Кількість на складі..."/>
+                    <input 
+                        className="input" 
+                        type="text" 
+                        placeholder="Категорія..." 
+                        name="category"
+                        value={formData.category} 
+                        onChange={handleChange} 
+                    />
                     <p className="settign_up">Під категорія</p>
-                    <input className="input" type="text" placeholder="Кількість на складі..."/>
+                    <input 
+                        className="input" 
+                        type="text" 
+                        placeholder="Під категорія..." 
+                        name="subCategory"
+                        value={formData.subCategory} 
+                        onChange={handleChange} 
+                    />
                     <p className="settign_up">Показувати товар</p>
-
-
-                    <div class="radio-buttons">
-                        <label class="radio-button">
-                            <input type="radio" name="option" value="option1"/>
-                            <div class="radio-circle"></div>
-                            <span class="radio-label">Так</span>
+                    <div className="radio-buttons">
+                        <label className="radio-button">
+                            <input 
+                                type="radio" 
+                                name="display" 
+                                value={true} 
+                                checked={formData.display === true} 
+                                onChange={handleChange} 
+                            />
+                            <div className="radio-circle"></div>
+                            <span className="radio-label">Так</span>
                         </label>
-                        <label class="radio-button">
-                            <input type="radio" name="option" value="option2"/>
-                            <div class="radio-circle"></div>
-                            <span class="radio-label">Ні</span>
+                        <label className="radio-button">
+                            <input 
+                                type="radio" 
+                                name="display" 
+                                value={false} 
+                                checked={formData.display === false} 
+                                onChange={handleChange} 
+                            />
+                            <div className="radio-circle"></div>
+                            <span className="radio-label">Ні</span>
                         </label>
                     </div>
                 </div>
                 <div className="modal_sep"></div>
                 <div className="right_modal">
-                    <p className="settign_up">Характеристика</p>
                     <p className="settign_up">Опис</p>
-                    <textarea name="" className="text_area" id="" placeholder="Опис товару..."></textarea>
-
-
-
+                    <textarea
+                        className="text_area"
+                        placeholder="Опис товару..."
+                        name="description"
+                        value={formData.description}
+                        onChange={handleChange}
+                    ></textarea>
+                    <div className="submit_button" onClick={handleSubmit}>
+                        {isLoading ? <Loader /> : "Додати"}
+                    </div>
                 </div>
             </div>
         </div>

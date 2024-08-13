@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react";
 import "./dist/card.css";
 
+import { useDeleteProductMutation } from "../../store";
+import { NavLink } from "react-router-dom";
+
 export function ProductCard({ product, index }) {
 
 
     const [availability, setAvailability] = useState("На складі")
-
-
+    const [eye, setEye] = useState('./img/Eye.svg')
+    const [deleteProduct, { isLoading }] = useDeleteProductMutation();
 
     
 
@@ -23,20 +26,6 @@ export function ProductCard({ product, index }) {
 
 
 
-    //функція на відкривання модального вікна на підтвердження видалення
-    const openDeleteModal =() => {
-        document.getElementById("delete").style.display = "flex"
-        
-
-        setTimeout(() => {
-        
-            document.getElementById("delete").style.opacity = "1"
-
-
-            
-        }, 100);
-    }
-    //функція на закритя модального вікна на підтвердження видалення
 
     const closeDeleteMenu = () => {
         document.getElementById("delete").style.opacity = "0"
@@ -52,6 +41,19 @@ export function ProductCard({ product, index }) {
     }
 
 
+    const handleDelete = async () => {
+        try {
+            await deleteProduct(product._id);
+            closeDeleteMenu();
+
+        } catch (error) {
+            console.error('Failed to delete the product: ', error);
+        } finally{
+            window.location.reload()
+        }
+
+    };
+
 
     const date = new Date(product.createdAt);
 
@@ -63,24 +65,36 @@ export function ProductCard({ product, index }) {
  
 
     useEffect(() => {
-        if(product.stockQuantity===0){
+        if(product.quantity===0){
             setAvailability("Відсутнє")
         }
     },[product])
 
+
+    useEffect(()=>{
+        if(product.display === true){
+            setEye('./img/Eye.svg')
+        }
+        else{
+            setEye('./img/Invisible.svg')
+        }
+    },[])
+
     return (
         <div className="p_card">
-            <div className="table_info" style={ntStyle}>{product.id.toString().padStart(4, '0')}</div>
+            <div className="table_info" style={ntStyle}>001</div>
             <div className="table_info" style={tiStyle}>{product.article}</div>
             <div className="table_info" style={tiStyle}>{formattedDate}</div>
             <div className="table_info" style={tiStyle}>{product.name}</div>
             <div className="table_info" style={tiStyle}>{product.price} грн.</div>
-            <div className="table_info" style={tiStyle}>{product.stockQuantity}</div>
+            <div className="table_info" style={tiStyle}>{product.quantity}</div>
             <div className="table_info" style={tiStyle}>{availability}</div>
             <div className="card_control">
-                <img src="./img/Edit.svg" alt="" />
+                <img src={eye} alt="" />
                 <div className="sep_line"></div>
-                <img src="./img/Delete.svg" alt="" onClick={openDeleteModal}/>
+                <NavLink to={`/${product._id}`}><img src="./img/Edit.svg" alt="" /></NavLink>
+                <div className="sep_line"></div>
+                <img src="./img/Delete.svg" alt="" onClick={handleDelete}/>
 
             </div>
 
@@ -88,7 +102,7 @@ export function ProductCard({ product, index }) {
             <div className="modal_con">
                 <div className="delete_text">Ви дійсно бажаєте видалити ?</div>
                 <div className="delte_btn_group">
-                    <p>ТАК</p>
+                    <p onClick={handleDelete}>ТАК</p>
                     <div className="del_line"></div>
                     <p className="cancel" onClick={closeDeleteMenu}>НІ</p>
                 </div>
