@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import "./dist/card.css";
 
-import { useDeleteProductMutation } from "../../store";
+import { useDeleteProductMutation,usePutProductMutation } from "../../store";
 import { NavLink } from "react-router-dom";
 
 export function ProductCard({ product, index }) {
@@ -9,13 +9,22 @@ export function ProductCard({ product, index }) {
 
     const [availability, setAvailability] = useState("На складі")
     const [eye, setEye] = useState('./img/Eye.svg')
+    const [display, setDisplay] = useState(product.display)
+
+
     const [deleteProduct, { isLoading }] = useDeleteProductMutation();
 
-    
+    const [putProduct, { isLoading: isUpdating, isSuccess }] = usePutProductMutation();
 
+
+    
+    const id = product._id
 
 
 //Переробити з js на styl
+
+
+
 
     const ntStyle = {
         backgroundColor: index % 2 === 0 ? 'rgba(133, 212, 169, 0.5)' : 'rgba(182, 217, 198, 1)'
@@ -72,13 +81,35 @@ export function ProductCard({ product, index }) {
 
 
     useEffect(()=>{
-        if(product.display === true){
+        console.log(display)
+
+
+        if(display === true){
             setEye('./img/Eye.svg')
         }
         else{
             setEye('./img/Invisible.svg')
         }
-    },[])
+    },[display])
+
+
+
+
+    async function displayUpdate(){
+        try {
+            const updatedProduct = {
+                id,
+                display: !display 
+            };
+            setDisplay(!display)
+
+            await putProduct(updatedProduct);
+        } catch (err) {
+            console.error("Failed to update product: ", err);
+        }
+        console.log(display)
+
+    }
 
     return (
         <div className="p_card">
@@ -90,7 +121,7 @@ export function ProductCard({ product, index }) {
             <div className="table_info" style={tiStyle}>{product.quantity}</div>
             <div className="table_info" style={tiStyle}>{availability}</div>
             <div className="card_control">
-                <img src={eye} alt="" />
+                <img onClick={displayUpdate} src={eye} alt="" />
                 <div className="sep_line"></div>
                 <NavLink to={`/${product._id}`}><img src="./img/Edit.svg" alt="" /></NavLink>
                 <div className="sep_line"></div>

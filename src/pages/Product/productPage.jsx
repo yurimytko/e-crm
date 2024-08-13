@@ -2,11 +2,8 @@ import "./dist/productPage.css";
 import { NavBar } from "../../components/NavBar/nav";
 import { ProductCard } from "../../components/ProductCard/card";
 import { AddProductMenu } from "../../components/AddProduct/addProduct";
-import Cookies from 'js-cookie';
-
 import { useGetProductsQuery } from "../../store";
 import { Loader } from "../../components/Loader/loader";
-import { useState } from "react";
 export function ProductPage() {
 
     const {data =[], isLoading} = useGetProductsQuery();
