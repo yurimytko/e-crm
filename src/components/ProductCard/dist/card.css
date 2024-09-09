@@ -1,7 +1,7 @@
 .p_card {
   width: 60vw;
   display: grid;
-  grid-template-columns: 3vw 8.1vw 8.2vw 15.6vw 9vw 10.4vw 10.4vw 6vw;
+  grid-template-columns: 3vw 3vw 8.1vw 8.2vw 15vw 5vw 5vw 6vw 6vw 6vw 5vw;
   grid-column-gap: 0.1vw;
 }
 .table_info {
@@ -31,6 +31,21 @@
   background: #fff;
   border-radius: 0 1vh 1vh 0;
   transition: 0.3s ease;
+}
+.dlete_check {
+  display: flex;
+  background: #fff;
+  height: 9vh;
+  border-radius: 1vh 0vh 0vh 1vh;
+  justify-content: center;
+  align-items: center;
+}
+.delete_check {
+  background: #fff;
+  border-radius: 1vh 0 0vh 1vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .card_control img {
   cursor: pointer;

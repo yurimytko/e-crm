@@ -1,23 +1,39 @@
 import "./dist/addProduct.css";
 import { useState } from "react";
-import { useAddProductMutation } from "../../store";
+import { useAddProductMutation, useGetSectionsQuery } from "../../store";
 import { Loader } from "../Loader/loader";
+
+
+const generateRandomArticle = () => {
+    return Math.floor(1000 + Math.random() * 9000).toString();
+};
+
 
 export function AddProductMenu() {
     const [formData, setFormData] = useState({
-        name: '',
         photo: 'abs',
-        article: '1234',
+        name: '',
         price: '',
-        quantity: '',
-        category: '',
-        subCategory: '',
+        article: generateRandomArticle(),
         description: '',
+        sectionId: '',
+        quantity: '',
         display: true,
-        sectionId: '66b11a068951d1ffd3345012'
-    });
+      });
+
+    const [isOpen, setIsOpen] = useState(false);
+    const [selectedCategory, setSelectedCategory] = useState("Категорія...");
+    const toggleDropdown = () => {
+      setIsOpen(!isOpen);
+    };
 
     const [addProduct, { isLoading, isError, isSuccess }] = useAddProductMutation();
+    const {data =[], isloading} = useGetSectionsQuery();
+
+
+    const [dragging, setDragging] = useState(false);
+    const [labelText, setLabelText] = useState('Завантажте фото або перетягніть файл');
+
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -27,26 +43,67 @@ export function AddProductMenu() {
         }));
     };
 
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-        console.log("Display state on submit:", formData.display);
 
-        try {
-            await addProduct(formData).unwrap();
-            closeAddMenu();
-            window.location.reload();
-        } catch (error) {
-            console.error("Failed to add the product:", error);
-        }
-    };
 
     const closeAddMenu = () => {
         const menuElement = document.getElementById("add_menu");
         menuElement.style.opacity = "0";
         setTimeout(() => {
             menuElement.style.display = "none";
-        }, 100);
+        }, 300);
     };
+
+
+    const handleSectionSelect = (id, name) => {
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          sectionId: id,
+        }));
+        setSelectedCategory(name); // Оновлюємо вибрану категорію
+        setIsOpen(false); // Закриваємо випадаючий список після вибору
+        console.log(id)
+      };
+    
+
+      const handleSubmit = async (event) => {
+        event.preventDefault();
+        console.log("Display state on submit:", formData.display);
+
+        try {
+            await addProduct(formData).unwrap();
+            closeAddMenu();
+        } catch (error) {
+            console.error("Failed to add the product:", error);
+        }
+    };
+
+
+    const handleDragEnter = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setDragging(true);
+        setLabelText('Відпустіть файл');
+      };
+    
+      const handleDragLeave = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setDragging(false);
+        setLabelText('Завантажте фото або перетягніть файл');
+      };
+    
+      const handleDrop = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setDragging(false);
+        setLabelText('Завантажте фото або перетягніть файл');
+    
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+          // Handle file upload logic here
+          console.log(files[0]);
+        }
+      };
 
     return (
         <div id="add_menu" className="add_product_asd">
@@ -59,6 +116,27 @@ export function AddProductMenu() {
                 />
                 <div className="left_modal">
                     <p className="settign_up">Добавити Зображення</p>
+                    <div className="img_field">
+                    <div
+                        className="border"
+                        onDragEnter={handleDragEnter}
+                        onDragOver={(e) => e.preventDefault()} // Required to allow dropping
+                        onDragLeave={handleDragLeave}
+                        onDrop={handleDrop}
+                        >
+                        <label htmlFor="file-upload" className="file-upload-label">
+                            {labelText}
+                        </label>
+                        <p>Jpg, Png / Макс 8 мб / Мін 214px х 214px</p>
+                        <input
+                            id="file-upload"
+                            type="file"
+                            className="file-upload-input"
+                            accept="image/*"
+                        />
+                        </div>
+                    </div>
+
                     <input 
                         className="input" 
                         type="text" 
@@ -84,23 +162,28 @@ export function AddProductMenu() {
                         onChange={handleChange} 
                     />
                     <p className="settign_up">Категорія</p>
-                    <input 
-                        className="input" 
-                        type="text" 
-                        placeholder="Категорія..." 
-                        name="category"
-                        value={formData.category} 
-                        onChange={handleChange} 
-                    />
+                    <div className="drop_down" onClick={toggleDropdown}>
+                        {selectedCategory}
+                        <img src="./img/Group 22.svg" alt="" />
+                        <div className={`drop ${isOpen ? "open" : ""}`}>
+                            <span>...</span>
+                            {!isLoading && data.sections && data.sections.length > 0 ? (
+                                data.sections.map((sections) => (
+                                    <span onClick={(e) => {
+                                        e.stopPropagation(); // Щоб уникнути закриття випадаючого списку при кліку
+                                        handleSectionSelect(sections._id, sections.name);
+                                      }} key={sections._id}>{sections.name}</span>
+                                ))
+                            ) : (
+                                !isLoading && <div className="no_products">Немає доступних продуктів</div>
+                            )}
+                        </div>
+                    </div>
                     <p className="settign_up">Під категорія</p>
-                    <input 
-                        className="input" 
-                        type="text" 
-                        placeholder="Під категорія..." 
-                        name="subCategory"
-                        value={formData.subCategory} 
-                        onChange={handleChange} 
-                    />
+                    <div className="drop_down">
+                        Під категорія...
+                        <img src="./img/Group 22.svg" alt="" />
+                    </div>
                     <p className="settign_up">Показувати товар</p>
                     <div className="radio-buttons">
                         <label className="radio-button">

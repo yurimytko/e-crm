@@ -54,13 +54,15 @@
 .table_section
     margin-top 2vh
     user-select: none
-    width 55vw
+    width 60vw
     height: 6.2vh
     display: grid
-    grid-template-columns: 3vw 8.1vw 8.2vw 15.6vw 9vw 10.4vw 10.4vw;
+    grid-template-columns: 3vw 3vw 8.1vw 8.2vw 15vw 5vw 5vw 6vw 6vw 6vw 5vw;
     grid-column-gap: 0.1vw;
 
 .table_titles
+    cursor pointer
+    position relative
     display: flex
     justify-content: center
     align-items: center
@@ -70,6 +72,15 @@
     font-size: 1.7vh;
     font-weight: 400;
     text-align: center
+.filter_block
+    cursor auto
+    position: absolute
+    top: 6vh 
+    left: 0
+    width 100%
+    height: 10vh
+    background: white
+    border-radius: 0vh 0vh 1vh 1vh
 .products_section
     overflow-y: scroll
     height: 69vh
@@ -78,4 +89,40 @@
     display: none
 
 
+.select_btn
+    cursor pointer
+    height: 5vh
+    width 9vw
+    border-radius: 1vh
+    background: rgba(216, 240, 227, 1)
+    border none
+    display: flex
+    justify-content: space-around
+    align-items: center
+    font-family: Inter;
+    font-size: 1.5vh;
+    font-weight: 400;
+.delete
+    cursor pointer
+    height 5vh
+    width 9vw
+    background: white
+    border-radius: 1vh
+    display: flex
+    justify-content: space-around
+    align-items: center
+    font-family: Inter;
+    font-size: 1.5vh;
+    font-weight: 400;
+    border: none
+
+.table_titles.active {
+    background-color: #373737;
+    color: white/* Змінений фон при активності */
+}
+
+
+.filter
+    cursor: pointer
+    color: black
 

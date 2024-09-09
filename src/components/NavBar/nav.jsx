@@ -10,9 +10,10 @@ export function NavBar(){
             <img className="logo" src="./img/a_logo.svg" alt="" />
             <NavLink className="links" activeClassName ="active" to="/">Список замовлень</NavLink>
             <NavLink className="links" activeClassName ="active" to="/products">Список товарів</NavLink>
+            <NavLink to={'/blog'} activeClassName ="active" className="links">Сторінка блогу</NavLink>
+
             <NavLink className="links" activeClassName ="active" to='/catalog'>Каталог</NavLink>
-            <div className="links">Список клієнтів</div>
-            <div className="links">Сторінка блогу</div>
+            <NavLink className="links" activeClassName ="active" to ='/clients'>Список клієнтів</NavLink>
         </div>
     )
 }

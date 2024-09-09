@@ -141,3 +141,93 @@
   justify-content: center;
   align-items: center;
 }
+.drop_down {
+  user-select: none;
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-top: 1.4vh;
+  border: none;
+  outline: none;
+  box-shadow: inset 0px 0px 0.6vh 0px rgba(0,0,0,0.308);
+  width: 24vw;
+  height: 4.4vh;
+  border-radius: 1vh;
+  padding: 0 0 0 1vw;
+  box-sizing: border-box;
+  font-family: Jura;
+  font-size: 2.4vh;
+  font-weight: 500;
+  background: #fff;
+}
+.drop_down img {
+  position: absolute;
+  right: 1vw;
+}
+.drop {
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  left: 0;
+  top: 4.5vh;
+  width: 100%;
+  height: 0vh;
+  background: #fff;
+  box-shadow: 0 2px 7px rgba(0,0,0,0.25);
+  overflow: hidden;
+  transition: height 0.3s ease;
+}
+.drop.open {
+  height: 20vh;
+  overflow-y: auto;
+}
+.drop.open::-webkit-scrollbar {
+  display: none;
+}
+.drop span {
+  padding: 0 0 0 1vw;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  height: 5vh;
+  cursor: pointer;
+  width: 100%;
+  border-bottom: 1px solid #000;
+  flex-shrink: 0; /* Зберігає висоту 5vh для кожного елемента */
+}
+.img_field {
+  user-select: none;
+  width: 24vw;
+  height: 22vh;
+  background: #fff;
+  border-radius: 1vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1vh 1vh;
+  box-sizing: border-box;
+}
+.border {
+  width: 100%;
+  height: 100%;
+  border-radius: 1vh;
+  border: 0.1vh dashed #696969;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px; /* Додаємо відступи для кращого вигляду */
+  box-sizing: border-box; /* Щоб padding не виходив за межі контейнера */
+}
+.file-upload-label {
+  color: #85d4a9;
+  cursor: pointer;
+  font-family: Jura, sans-serif;
+  font-weight: 700;
+  margin: 0;
+  text-align: center;
+}
+.file-upload-input {
+  display: none; /* Сховати стандартний інпут */
+}

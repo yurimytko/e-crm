@@ -1,0 +1,64 @@
+.clients_page {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  background: #f3f3f3;
+}
+.clients {
+  padding: 6vh 0 0 3vw;
+  box-sizing: border-box;
+}
+.page_heading {
+  margin: 0;
+  font-family: Inter;
+  font-size: 3.2vh;
+  font-weight: 400;
+}
+.clients_control {
+  margin-top: 5vh;
+  display: flex;
+  gap: 0.5vw;
+}
+.input-container {
+  position: relative;
+}
+.client_search {
+  width: 14.7vw;
+  height: 5vh;
+  background: #fff;
+  border-radius: 1vh;
+  border: none;
+  font-family: Inter;
+  font-size: 1.6vh;
+  font-weight: 400;
+  padding: 0 0 0 1.5vw;
+  box-sizing: border-box;
+}
+.search {
+  position: absolute;
+  top: 0.6vh;
+  left: 0.3vw;
+}
+.client_filter {
+  cursor: pointer;
+  height: 5vh;
+  width: 10vw;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  border: none;
+  background: #fff;
+  border-radius: 1vh;
+  font-family: Inter;
+  font-size: 1.5vh;
+  font-weight: 400;
+}
+.table_section_c {
+  margin-top: 2vh;
+  user-select: none;
+  width: 60vw;
+  height: 6.2vh;
+  display: grid;
+  grid-template-columns: 3vw 8vw 8.1vw 12vw 15vw 5vw;
+  grid-column-gap: 0.1vw;
+}

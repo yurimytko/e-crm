@@ -7,15 +7,19 @@ export const productApi = createApi({
 
     reducerPath: 'productApi',
     baseQuery: fetchBaseQuery({
-        baseUrl: 'http://46.149.190.25:5000/',
+        baseUrl: 'https://superogshmal.pp.ua/',
         prepareHeaders: (headers) => {
-            const authToken = "accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NmFmMzExNmJkNTBmNjBhMGU5Nzg3ZjQiLCJ1c2VybmFtZSI6IkFkYXNkIiwiX192IjowLCJjYWxscyI6W3siY3JlYXRlZEF0IjoiMjAyNC0wOC0wN1QxMDoxODo1OS41NzBaIn0seyJjcmVhdGVkQXQiOiIyMDI0LTA4LTA3VDEwOjE5OjA3LjY0OFoifSx7ImNyZWF0ZWRBdCI6IjIwMjQtMDgtMDdUMTA6MTk6NDQuODkwWiJ9XSwiaWF0IjoxNzIzNTU4ODg0LCJleHAiOjE3MjM2NDUyODR9.ZkJX1Nj5Em_ELsRGQEXuT_BFUJH_aX8QWmeC7lmu1L0; Path=/; HttpOnly; Secure"
-            headers.set('Authorization', `${authToken}`);
-            headers.set('Content-Type', 'application/json');
-
-            return headers;
+          const authToken = localStorage.getItem('token');
+          
+          if (authToken) {
+            headers.set('Authorization', `accessToken=${authToken}`);
+          }
+      
+          headers.set('Content-Type', 'application/json');
+          
+          return headers;
         }
-    }),
+      }),
     endpoints: (build) => ({
         getProducts: build.query({
             query: () => 'products',
@@ -46,7 +50,19 @@ export const productApi = createApi({
                 body,
             }),
         }),
+        deleteProducts: build.mutation({
+            query: (ids) => ({
+                url: `products?id=${ids}`,
+                method: "DELETE",        
+            }),
+        }),
+        getProductByFilter: build.query({
+            query: (url) => ({
+                url: `products/?${url}`,
+                method: "GET",
+            }),
+        }),
     }),
 });
 
-export const { useGetProductsQuery, useAddProductMutation,useDeleteProductMutation,useGetProductQuery,usePutProductMutation } = productApi;
+export const { useGetProductsQuery, useAddProductMutation,useDeleteProductMutation,useGetProductQuery,usePutProductMutation, useDeleteProductsMutation, useGetProductByFilterQuery } = productApi;
