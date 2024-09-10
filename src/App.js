@@ -7,6 +7,8 @@ import { Update } from './pages/UpdateProduct/update';
 import { SignIn } from './pages/Sign-in/signIn';
 import { Clients } from './pages/Clients/clients';
 import { Blog } from './pages/Blog/blog';
+import { BlogPage } from './pages/BlogPage/blogPage';
+import { SubSection } from './pages/SubSection/subSection';
 
 function App() {
   return (
@@ -20,6 +22,8 @@ function App() {
           <Route path='/sign-in' element={<SignIn/>}/>
           <Route path='/clients' element ={<Clients/>}/>
           <Route path='/blog' element={<Blog/>}/>
+          <Route path='/blog/:blogId' element={<BlogPage/>}/>
+          <Route path='/catalog/:catalogId' element={<SubSection/>}/>
         </Routes>
       </Router>
     </div>

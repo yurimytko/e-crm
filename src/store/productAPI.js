@@ -22,7 +22,7 @@ export const productApi = createApi({
       }),
     endpoints: (build) => ({
         getProducts: build.query({
-            query: () => 'products',
+            query: (url) => `products${url}`,
         }),
         getProduct: build.query({
             query: (id) => ({
@@ -56,13 +56,7 @@ export const productApi = createApi({
                 method: "DELETE",        
             }),
         }),
-        getProductByFilter: build.query({
-            query: (url) => ({
-                url: `products/?${url}`,
-                method: "GET",
-            }),
-        }),
     }),
 });
 
-export const { useGetProductsQuery, useAddProductMutation,useDeleteProductMutation,useGetProductQuery,usePutProductMutation, useDeleteProductsMutation, useGetProductByFilterQuery } = productApi;
+export const { useGetProductsQuery, useAddProductMutation,useDeleteProductMutation,useGetProductQuery,usePutProductMutation, useDeleteProductsMutation } = productApi;

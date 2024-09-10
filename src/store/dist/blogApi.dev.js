@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.useCreatePostMutation = exports.useGetPostsQuery = exports.blogApi = void 0;
+exports.useDeletePostMutation = exports.useUpdatePostMutation = exports.useGetPostsByIdQuery = exports.useCreatePostMutation = exports.useGetPostsQuery = exports.blogApi = void 0;
 
 var _react = require("@reduxjs/toolkit/query/react");
 
@@ -37,12 +37,40 @@ var blogApi = (0, _react.createApi)({
             body: body
           };
         }
+      }),
+      getPostsById: build.query({
+        query: function query(id) {
+          return "posts?id=".concat(id);
+        }
+      }),
+      updatePost: build.mutation({
+        query: function query(body) {
+          return {
+            url: "posts?id=".concat(body._id),
+            method: 'PUT',
+            body: body
+          };
+        }
+      }),
+      deletePost: build.mutation({
+        query: function query(id) {
+          return {
+            url: "posts?id=".concat(id),
+            method: 'DELETE'
+          };
+        }
       })
     };
   }
 });
 exports.blogApi = blogApi;
 var useGetPostsQuery = blogApi.useGetPostsQuery,
-    useCreatePostMutation = blogApi.useCreatePostMutation;
+    useCreatePostMutation = blogApi.useCreatePostMutation,
+    useGetPostsByIdQuery = blogApi.useGetPostsByIdQuery,
+    useUpdatePostMutation = blogApi.useUpdatePostMutation,
+    useDeletePostMutation = blogApi.useDeletePostMutation;
+exports.useDeletePostMutation = useDeletePostMutation;
+exports.useUpdatePostMutation = useUpdatePostMutation;
+exports.useGetPostsByIdQuery = useGetPostsByIdQuery;
 exports.useCreatePostMutation = useCreatePostMutation;
 exports.useGetPostsQuery = useGetPostsQuery;

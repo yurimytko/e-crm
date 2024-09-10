@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.usePostSectionMutation = exports.useGetSectionsQuery = exports.sectionApi = void 0;
+exports.usePostSubSectionMutation = exports.usePostSectionMutation = exports.useGetSectionsQuery = exports.sectionApi = void 0;
 
 var _react = require("@reduxjs/toolkit/query/react");
 
@@ -38,12 +38,23 @@ var sectionApi = (0, _react.createApi)({
             body: body
           };
         }
+      }),
+      postSubSection: build.mutation({
+        query: function query(body) {
+          return {
+            url: "catalog/subsection?id=".concat(body._id),
+            method: 'POST',
+            body: body
+          };
+        }
       })
     };
   }
 });
 exports.sectionApi = sectionApi;
 var useGetSectionsQuery = sectionApi.useGetSectionsQuery,
-    usePostSectionMutation = sectionApi.usePostSectionMutation;
+    usePostSectionMutation = sectionApi.usePostSectionMutation,
+    usePostSubSectionMutation = sectionApi.usePostSubSectionMutation;
+exports.usePostSubSectionMutation = usePostSubSectionMutation;
 exports.usePostSectionMutation = usePostSectionMutation;
 exports.useGetSectionsQuery = useGetSectionsQuery;

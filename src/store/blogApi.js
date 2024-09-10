@@ -29,9 +29,25 @@ export const blogApi = createApi({
                 method: 'POST',
                 body
             })
-        })
+        }),
+        getPostsById: build.query({
+            query: (id) => `posts?id=${id}`
+        }),
+        updatePost: build.mutation({
+            query: (body)=> ({
+                url: `posts?id=${body._id}`,
+                method: 'PUT',
+                body
+            })
+        }),
+        deletePost: build.mutation({
+            query: (id)=> ({
+                url: `posts?id=${id}`,
+                method: 'DELETE',
+            })
+        }),
     })
 
 })
 
-export const {useGetPostsQuery, useCreatePostMutation} = blogApi 
+export const {useGetPostsQuery, useCreatePostMutation, useGetPostsByIdQuery, useUpdatePostMutation, useDeletePostMutation} = blogApi 

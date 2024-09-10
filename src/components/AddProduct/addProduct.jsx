@@ -19,16 +19,16 @@ export function AddProductMenu() {
         sectionId: '',
         quantity: '',
         display: true,
-      });
+    });
 
     const [isOpen, setIsOpen] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState("Категорія...");
     const toggleDropdown = () => {
-      setIsOpen(!isOpen);
+        setIsOpen(!isOpen);
     };
 
     const [addProduct, { isLoading, isError, isSuccess }] = useAddProductMutation();
-    const {data =[], isloading} = useGetSectionsQuery();
+    const { data = [], isloading } = useGetSectionsQuery();
 
 
     const [dragging, setDragging] = useState(false);
@@ -56,22 +56,23 @@ export function AddProductMenu() {
 
     const handleSectionSelect = (id, name) => {
         setFormData((prevFormData) => ({
-          ...prevFormData,
-          sectionId: id,
+            ...prevFormData,
+            sectionId: id,
         }));
         setSelectedCategory(name); // Оновлюємо вибрану категорію
         setIsOpen(false); // Закриваємо випадаючий список після вибору
         console.log(id)
-      };
-    
+    };
 
-      const handleSubmit = async (event) => {
+
+    const handleSubmit = async (event) => {
         event.preventDefault();
         console.log("Display state on submit:", formData.display);
 
         try {
             await addProduct(formData).unwrap();
             closeAddMenu();
+            window.location.reload()
         } catch (error) {
             console.error("Failed to add the product:", error);
         }
@@ -83,83 +84,83 @@ export function AddProductMenu() {
         e.stopPropagation();
         setDragging(true);
         setLabelText('Відпустіть файл');
-      };
-    
-      const handleDragLeave = (e) => {
+    };
+
+    const handleDragLeave = (e) => {
         e.preventDefault();
         e.stopPropagation();
         setDragging(false);
         setLabelText('Завантажте фото або перетягніть файл');
-      };
-    
-      const handleDrop = (e) => {
+    };
+
+    const handleDrop = (e) => {
         e.preventDefault();
         e.stopPropagation();
         setDragging(false);
         setLabelText('Завантажте фото або перетягніть файл');
-    
+
         const files = e.dataTransfer.files;
         if (files.length > 0) {
-          // Handle file upload logic here
-          console.log(files[0]);
+            // Handle file upload logic here
+            console.log(files[0]);
         }
-      };
+    };
 
     return (
         <div id="add_menu" className="add_product_asd">
             <div className="modal_add_product">
-                <img 
-                    onClick={closeAddMenu} 
-                    className="close_img" 
-                    src="./img/close_menu.svg" 
-                    alt="Close menu" 
+                <img
+                    onClick={closeAddMenu}
+                    className="close_img"
+                    src="./img/close_menu.svg"
+                    alt="Close menu"
                 />
                 <div className="left_modal">
                     <p className="settign_up">Добавити Зображення</p>
                     <div className="img_field">
-                    <div
-                        className="border"
-                        onDragEnter={handleDragEnter}
-                        onDragOver={(e) => e.preventDefault()} // Required to allow dropping
-                        onDragLeave={handleDragLeave}
-                        onDrop={handleDrop}
+                        <div
+                            className="border"
+                            onDragEnter={handleDragEnter}
+                            onDragOver={(e) => e.preventDefault()} // Required to allow dropping
+                            onDragLeave={handleDragLeave}
+                            onDrop={handleDrop}
                         >
-                        <label htmlFor="file-upload" className="file-upload-label">
-                            {labelText}
-                        </label>
-                        <p>Jpg, Png / Макс 8 мб / Мін 214px х 214px</p>
-                        <input
-                            id="file-upload"
-                            type="file"
-                            className="file-upload-input"
-                            accept="image/*"
-                        />
+                            <label htmlFor="file-upload" className="file-upload-label">
+                                {labelText}
+                            </label>
+                            <p>Jpg, Png / Макс 8 мб / Мін 214px х 214px</p>
+                            <input
+                                id="file-upload"
+                                type="file"
+                                className="file-upload-input"
+                                accept="image/*"
+                            />
                         </div>
                     </div>
 
-                    <input 
-                        className="input" 
-                        type="text" 
-                        placeholder="Назва товару..." 
+                    <input
+                        className="input"
+                        type="text"
+                        placeholder="Назва товару..."
                         name="name"
-                        value={formData.name} 
-                        onChange={handleChange} 
+                        value={formData.name}
+                        onChange={handleChange}
                     />
-                    <input 
-                        className="input" 
-                        type="text" 
-                        placeholder="Ціна..." 
+                    <input
+                        className="input"
+                        type="text"
+                        placeholder="Ціна..."
                         name="price"
-                        value={formData.price} 
-                        onChange={handleChange} 
+                        value={formData.price}
+                        onChange={handleChange}
                     />
-                    <input 
-                        className="input" 
-                        type="text" 
-                        placeholder="Кількість на складі..." 
+                    <input
+                        className="input"
+                        type="text"
+                        placeholder="Кількість на складі..."
                         name="quantity"
-                        value={formData.quantity} 
-                        onChange={handleChange} 
+                        value={formData.quantity}
+                        onChange={handleChange}
                     />
                     <p className="settign_up">Категорія</p>
                     <div className="drop_down" onClick={toggleDropdown}>
@@ -172,7 +173,7 @@ export function AddProductMenu() {
                                     <span onClick={(e) => {
                                         e.stopPropagation(); // Щоб уникнути закриття випадаючого списку при кліку
                                         handleSectionSelect(sections._id, sections.name);
-                                      }} key={sections._id}>{sections.name}</span>
+                                    }} key={sections._id}>{sections.name}</span>
                                 ))
                             ) : (
                                 !isLoading && <div className="no_products">Немає доступних продуктів</div>
@@ -187,23 +188,23 @@ export function AddProductMenu() {
                     <p className="settign_up">Показувати товар</p>
                     <div className="radio-buttons">
                         <label className="radio-button">
-                            <input 
-                                type="radio" 
-                                name="display" 
-                                value={true} 
-                                checked={formData.display === true} 
-                                onChange={handleChange} 
+                            <input
+                                type="radio"
+                                name="display"
+                                value={true}
+                                checked={formData.display === true}
+                                onChange={handleChange}
                             />
                             <div className="radio-circle"></div>
                             <span className="radio-label">Так</span>
                         </label>
                         <label className="radio-button">
-                            <input 
-                                type="radio" 
-                                name="display" 
-                                value={false} 
-                                checked={formData.display === false} 
-                                onChange={handleChange} 
+                            <input
+                                type="radio"
+                                name="display"
+                                value={false}
+                                checked={formData.display === false}
+                                onChange={handleChange}
                             />
                             <div className="radio-circle"></div>
                             <span className="radio-label">Ні</span>

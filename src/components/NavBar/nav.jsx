@@ -7,7 +7,7 @@ import "./dist/nav.css"
 export function NavBar(){
     return(
         <div className="nav_bar">
-            <img className="logo" src="./img/a_logo.svg" alt="" />
+            <img className="logo" src="/img/a_logo.svg" alt="" />
             <NavLink className="links" activeClassName ="active" to="/">Список замовлень</NavLink>
             <NavLink className="links" activeClassName ="active" to="/products">Список товарів</NavLink>
             <NavLink to={'/blog'} activeClassName ="active" className="links">Сторінка блогу</NavLink>

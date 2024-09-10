@@ -15,9 +15,33 @@
 .blog_modal {
   position: relative;
   height: 80vh;
-  padding: 0 2vw;
+  padding: 3vh 2vw;
   box-sizing: border-box;
   width: 24vw;
+  background: #f3f3f3;
+  border-radius: 1vh;
+}
+.border_blog {
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  border-radius: 1vh;
+  border: 0.1vh dashed #696969;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px; /* Додаємо відступи для кращого вигляду */
+  box-sizing: border-box;
+}
+.image_preview {
+  width: 100%;
+}
+.img_field_blog {
+  padding: 1vh 1vh;
+  box-sizing: border-box;
+  width: 100%;
+  height: 20vh;
   background: #fff;
   border-radius: 1vh;
 }
@@ -74,4 +98,8 @@
   position: absolute;
   top: 0;
   right: 0;
+}
+.blog_add_control {
+  display: flex;
+  justify-content: space-between;
 }
