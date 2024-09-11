@@ -1,15 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { NavBar } from '../../components/NavBar/nav';
-import { useGetProductQuery, usePutProductMutation } from '../../store';
+import { useGetProductQuery, usePutProductMutation, useGetSectionsQuery } from '../../store';
 import './dist/update.css';
 
 export function Update() {
     const { id } = useParams();
     const { data, error, isLoading, refetch } = useGetProductQuery(id, { skip: false });
+    const { data: sections, isLoading: sectionsLoading, error: sectionsError } = useGetSectionsQuery();
+
+    console.log(sections)
 
     const [name, setName] = useState('');
     const [price, setPrice] = useState('')
+    const [quantity, setQuantity] = useState('')
+
     const [description, setDescr] = useState('')
 
     const [activeIndex, setActiveIndex] = useState(0);
@@ -28,6 +33,8 @@ export function Update() {
             setName(data.product.name);
             setPrice(data.product.price);
             setDescr(data.product.description);
+            setQuantity(data.product.quantity);
+
 
         }
     }, [data]);
@@ -50,7 +57,6 @@ export function Update() {
         'Опис',
         'Характеристика',
         'Застосування',
-        'Відгуки/запитання'
     ];
 
 
@@ -67,6 +73,22 @@ export function Update() {
             // Можна додати повідомлення про успіх або інші дії після успішного оновлення
         } catch (err) {
             console.error("Failed to update product: ", err);
+        }
+    };
+
+
+    const handleChangeQuantity = (e) => {
+        setQuantity(e.target.value);
+    };
+    const handleKeyPressQuantity = (e) => {
+        if (e.key === 'Enter') {
+            try {
+                const result = eval(quantity); 
+                
+                setQuantity(result.toString()); 
+            } catch (error) {
+                console.error('Невірний вираз', error);
+            }
         }
     };
 
@@ -93,7 +115,7 @@ export function Update() {
                             <span>Коментарі</span>
                         </div>
                     </div>
-                    <input 
+                    <input
                         className="up_input"
                         type="text"
                         placeholder="Назва товару..."
@@ -101,13 +123,22 @@ export function Update() {
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                     />
-                                        <input 
+                    <input
                         className="up_input"
                         type="text"
                         placeholder="Ціна"
                         name="name"
                         value={price}
                         onChange={(e) => setPrice(e.target.value)}
+                    />
+                    <input
+                        className="up_input"
+                        type="text"
+                        placeholder="Кількість"
+                        name="name"
+                        value={quantity}
+                        onChange={handleChangeQuantity}
+                        onKeyDown={handleKeyPressQuantity}
                     />
                     <div className="point_choose">
                         {points.map((point, index) => (
@@ -135,7 +166,7 @@ export function Update() {
                     </div>
                 </div>
 
-                
+
             </div>
         </div>
     );

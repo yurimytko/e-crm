@@ -20,7 +20,7 @@ export function BlogPage() {
     useEffect(() => {
         if (data && data.post) {
             setTitle(data.post.title || '');
-            setUrl(data.post.url || ''); // Assuming you have a url field, adjust if needed
+            setUrl(data.post.video || ''); // Assuming you have a url field, adjust if needed
             setText(data.post.text || '');
         }
     }, [data]);

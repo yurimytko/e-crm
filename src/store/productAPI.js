@@ -20,9 +20,11 @@ export const productApi = createApi({
           return headers;
         }
       }),
+    tagTypes: ['Product'],
     endpoints: (build) => ({
         getProducts: build.query({
-            query: (url) => `products${url}`,
+            query: (url) => `admin/products${url}`,
+            providesTags: ['Product'],
         }),
         getProduct: build.query({
             query: (id) => ({
@@ -32,27 +34,28 @@ export const productApi = createApi({
         }),
         addProduct: build.mutation({
             query: (body) => ({
-                url: "products/",
+                url: "admin/products/",
                 method: "POST",
                 body,
             }),
+            invalidatesTags: ['Product'],
         }),
         deleteProduct: build.mutation({
             query: (id) => ({
-                url: `products?id=${id}`,
+                url: `admin/products?id=${id}`,
                 method: "DELETE",        
             }),
         }),
         putProduct: build.mutation({
             query: (body) => ({
-                url: `products/?id=${body.id}`,
+                url: `admin/products/?id=${body.id}`,
                 method: "PUT",
                 body,
             }),
         }),
         deleteProducts: build.mutation({
             query: (ids) => ({
-                url: `products?id=${ids}`,
+                url: `admin/products?id=${ids}`,
                 method: "DELETE",        
             }),
         }),

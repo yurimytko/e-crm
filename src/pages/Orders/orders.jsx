@@ -40,8 +40,6 @@ export function OrdersPage(){
 
                 </div>
                 <div className="table">
-                    <OrderCard/>
-                    <OrderCard/>
 
                 </div>
             </div>

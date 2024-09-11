@@ -1,9 +1,19 @@
+import { useParams } from "react-router-dom";
 import { AddSub } from "../../components/AddSubSection/adSub";
 import { NavBar } from "../../components/NavBar/nav"
 import "./dist/subSection.css"
 
+import { useGetSubSectionQuery } from "../../store";
+
+
 export function SubSection(){
 
+    const {catalogId} = useParams()
+
+    const {data, isLoading, error} = useGetSubSectionQuery()
+
+
+    console.log(data)
 
 
     const openAddMenu =() => {

@@ -26,13 +26,13 @@ var blogApi = (0, _react.createApi)({
     return {
       getPosts: build.query({
         query: function query() {
-          return 'posts';
+          return 'admin/posts';
         }
       }),
       createPost: build.mutation({
         query: function query(body) {
           return {
-            url: 'posts',
+            url: 'admin/posts',
             method: 'POST',
             body: body
           };
@@ -46,7 +46,7 @@ var blogApi = (0, _react.createApi)({
       updatePost: build.mutation({
         query: function query(body) {
           return {
-            url: "posts?id=".concat(body._id),
+            url: "admin/posts?id=".concat(body._id),
             method: 'PUT',
             body: body
           };

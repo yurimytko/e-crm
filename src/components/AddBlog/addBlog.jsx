@@ -6,6 +6,8 @@ export function AddBlog() {
   const [createPost, { data, isLoading, error }] = useCreatePostMutation();
   const [blogTitle, setTitle] = useState("");
   const [blogText, setText] = useState("");
+  const [blogVideo, setVideo] = useState("");
+
   const [formData, setFormData] = useState({
     display: true, // Стан для радіо-кнопок
   });
@@ -18,7 +20,8 @@ export function AddBlog() {
         title: blogTitle,
         text: blogText,
         display: formData.display, // Додаємо значення радіо-кнопки до посту
-        image: imageFile, // Додаємо файл зображення до посту
+        image: imageFile,
+        video: blogVideo // Додаємо файл зображення до посту
       };
       
       await createPost(post);
@@ -143,6 +146,10 @@ export function AddBlog() {
 
         <input
           className="input_blog"
+          value={blogVideo}
+          onChange={(e) => {
+            setVideo(e.target.value);
+          }}
           type="text"
           placeholder="Посилання на відео"
           name="name"

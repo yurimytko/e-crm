@@ -21,11 +21,11 @@ export const blogApi = createApi({
 
     endpoints: (build) => ({
         getPosts: build.query({
-            query: () => 'posts'
+            query: () => 'admin/posts'
         }),
         createPost: build.mutation({
             query: (body)=> ({
-                url: 'posts',
+                url: 'admin/posts',
                 method: 'POST',
                 body
             })
@@ -35,7 +35,7 @@ export const blogApi = createApi({
         }),
         updatePost: build.mutation({
             query: (body)=> ({
-                url: `posts?id=${body._id}`,
+                url: `admin/posts?id=${body._id}`,
                 method: 'PUT',
                 body
             })

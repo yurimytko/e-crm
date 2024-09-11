@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.usePostSubSectionMutation = exports.usePostSectionMutation = exports.useGetSectionsQuery = exports.sectionApi = void 0;
+exports.useGetSubSectionQuery = exports.useDeleteSectionMutation = exports.usePostSubSectionMutation = exports.usePostSectionMutation = exports.useGetSectionsQuery = exports.sectionApi = void 0;
 
 var _react = require("@reduxjs/toolkit/query/react");
 
@@ -23,30 +23,52 @@ var sectionApi = (0, _react.createApi)({
     }
   }),
   // Ensure the protocol is included
+  tagTypes: ['Section'],
+  // Define a tag type
   endpoints: function endpoints(build) {
     return {
       getSections: build.query({
         query: function query() {
-          return 'catalog';
-        }
+          return '/catalog';
+        },
+        providesTags: ['Section'] // Provide this tag for automatic refetching
+
       }),
       postSection: build.mutation({
         query: function query(body) {
           return {
-            url: 'catalog',
+            url: 'admin/sections',
             method: 'POST',
             body: body
           };
+        },
+        invalidatesTags: ['Section'] // Invalidate the 'Section' tag to refetch sections
+
+      }),
+      deleteSection: build.mutation({
+        query: function query(body) {
+          return {
+            url: "admin/sections?".concat(body.id),
+            method: 'DELETE',
+            body: body
+          };
+        }
+      }),
+      getSubSection: build.query({
+        query: function query() {
+          return 'catalog/subsections';
         }
       }),
       postSubSection: build.mutation({
         query: function query(body) {
           return {
-            url: "catalog/subsection?id=".concat(body._id),
+            url: "admin/catalog/subsection?id=".concat(body._id),
             method: 'POST',
             body: body
           };
-        }
+        },
+        invalidatesTags: ['Section'] // Invalidate the 'Section' tag to refetch sections
+
       })
     };
   }
@@ -54,7 +76,11 @@ var sectionApi = (0, _react.createApi)({
 exports.sectionApi = sectionApi;
 var useGetSectionsQuery = sectionApi.useGetSectionsQuery,
     usePostSectionMutation = sectionApi.usePostSectionMutation,
-    usePostSubSectionMutation = sectionApi.usePostSubSectionMutation;
+    usePostSubSectionMutation = sectionApi.usePostSubSectionMutation,
+    useDeleteSectionMutation = sectionApi.useDeleteSectionMutation,
+    useGetSubSectionQuery = sectionApi.useGetSubSectionQuery;
+exports.useGetSubSectionQuery = useGetSubSectionQuery;
+exports.useDeleteSectionMutation = useDeleteSectionMutation;
 exports.usePostSubSectionMutation = usePostSubSectionMutation;
 exports.usePostSectionMutation = usePostSectionMutation;
 exports.useGetSectionsQuery = useGetSectionsQuery;

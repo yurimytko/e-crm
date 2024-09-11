@@ -12,6 +12,7 @@
 }
 .blog_section {
   display: flex;
+  flex-wrap: wrap;
   gap: 1vw;
 }
 .add_blog {

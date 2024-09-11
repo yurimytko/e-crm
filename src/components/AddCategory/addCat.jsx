@@ -31,7 +31,8 @@ export default function AddCategory(){
             }
 
             await createCategory(category)
-            window.location.reload()
+            // window.location.reload()
+            closeAddCat()
         }catch(e){
             console.log(e)
         }

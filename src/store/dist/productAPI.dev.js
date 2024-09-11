@@ -22,12 +22,14 @@ var productApi = (0, _react.createApi)({
       return headers;
     }
   }),
+  tagTypes: ['Product'],
   endpoints: function endpoints(build) {
     return {
       getProducts: build.query({
         query: function query(url) {
-          return "products".concat(url);
-        }
+          return "admin/products".concat(url);
+        },
+        providesTags: ['Product']
       }),
       getProduct: build.query({
         query: function query(id) {
@@ -40,16 +42,17 @@ var productApi = (0, _react.createApi)({
       addProduct: build.mutation({
         query: function query(body) {
           return {
-            url: "products/",
+            url: "admin/products/",
             method: "POST",
             body: body
           };
-        }
+        },
+        invalidatesTags: ['Product']
       }),
       deleteProduct: build.mutation({
         query: function query(id) {
           return {
-            url: "products?id=".concat(id),
+            url: "admin/products?id=".concat(id),
             method: "DELETE"
           };
         }
@@ -57,7 +60,7 @@ var productApi = (0, _react.createApi)({
       putProduct: build.mutation({
         query: function query(body) {
           return {
-            url: "products/?id=".concat(body.id),
+            url: "admin/products/?id=".concat(body.id),
             method: "PUT",
             body: body
           };
@@ -66,7 +69,7 @@ var productApi = (0, _react.createApi)({
       deleteProducts: build.mutation({
         query: function query(ids) {
           return {
-            url: "products?id=".concat(ids),
+            url: "admin/products?id=".concat(ids),
             method: "DELETE"
           };
         }

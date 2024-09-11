@@ -1,13 +1,124 @@
 import "./dist/client.css"
+import { useState } from "react";
+
+export function ClientCard({ user }) {
+
+    const [isEditingName, setIsEditingName] = useState(false);
+    const [isEditingPhone, setIsEditingPhone] = useState(false);
+    const [isEditingEmail, setIsEditingEmail] = useState(false);
+    const [isEditingCity, setIsEditingCity] = useState(false);
 
 
-export function ClientCard({user}){
-    return(
+    const [name, setName] = useState(user.fullname);
+    const [phone, setPhone] = useState(user.phone);
+    const [email, setEmail] = useState(user.email);
+    const [city, setCity] = useState('');
+
+
+    const handleDoubleClickName = () => {
+        setIsEditingName(true);
+    };
+
+    const handleDoubleClickPhone = () => {
+        setIsEditingPhone(true);
+    };
+    const handleDoubleClickEmail = () => {
+        setIsEditingEmail(true);
+    };
+    const handleDoubleClickCity = () => {
+        setIsEditingCity(true);
+    };
+
+
+    const handleChangeName = (e) => {
+        setName(e.target.value); // Оновлює артикул при зміні тексту
+    };
+
+    const handleChangePhone = (e) => {
+        setPhone(e.target.value); // Оновлює назву продукту при зміні тексту
+    };
+    const handleChangeEmail = (e) => {
+        setEmail(e.target.value); // Оновлює назву продукту при зміні тексту
+    };
+    const handleChangeCity = (e) => {
+        setCity(e.target.value); // Directly store the input value as a string
+    };
+
+
+    const handleBlurName = () => {
+        setIsEditingName(false); // Вимикає режим редагування артикулу при втраті фокусу
+    };
+
+    const handleBlurPhone = () => {
+        setIsEditingPhone(false); // Вимикає режим редагування назви при втраті фокусу
+    };
+
+    const handleBlurEmail = () => {
+        setIsEditingEmail(false); // Вимикає режим редагування назви при втраті фокусу
+    };
+    const handleBlurCity = () => {
+        setIsEditingCity(false); // Вимикає режим редагування назви при втраті фокусу
+    };
+
+
+    const handleKeyPress = (e) => {
+        if (e.key === 'Enter') {
+            setIsEditingName(false);
+            setIsEditingPhone(false);
+            setIsEditingEmail(false);
+            setIsEditingCity(false);
+
+
+
+        }
+    };
+
+
+    return (
         <div className="card">
             <div className="table_info_c">001</div>
-            <div className="table_info_c">{user.fullname}</div>
-            <div className="table_info_c">{user.phone}</div>
-            <div className="table_info_c">{user.email}</div>
+            {isEditingName ? (
+                <input
+                    type="text"
+                    value={name}
+                    onChange={handleChangeName}
+                    onBlur={handleBlurName}
+                    autoFocus
+                    onKeyDown={handleKeyPress}
+                />
+            ) : (
+                <div className="table_info_c"  onDoubleClick={handleDoubleClickName}>
+                    {name}
+                </div>
+            )}
+            {isEditingPhone ? (
+                <input
+                    type="text"
+                    value={phone}
+                    onChange={handleChangePhone}
+                    onBlur={handleBlurPhone}
+                    autoFocus
+                    onKeyDown={handleKeyPress}
+                />
+            ) : (
+                <div className="table_info_c"  onDoubleClick={handleDoubleClickPhone}>
+                    {phone}
+                </div>
+            )}
+            {isEditingEmail ? (
+                <input
+                    type="text"
+                    value={email}
+                    onChange={handleChangeEmail}
+                    onBlur={handleBlurEmail}
+                    autoFocus
+                    onKeyDown={handleKeyPress}
+                />
+            ) : (
+                <div className="table_info_c"  onDoubleClick={handleDoubleClickEmail}>
+                    {email}
+                </div>
+            )}
             <div className="table_info_c">001</div>
             <div className="table_info_c">001</div>
 

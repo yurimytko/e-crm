@@ -4,3 +4,7 @@
   width: 100%;
   background: #f3f3f3;
 }
+.sub_section_con {
+  padding: 7vh 0 0 2vw;
+  box-sizing: border-box;
+}

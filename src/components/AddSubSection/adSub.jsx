@@ -30,7 +30,6 @@ export function AddSub() {
                 name: name
             }
 
-            window.location.reload()
             await subr(sub)
         }catch(e){
             console.error(e)

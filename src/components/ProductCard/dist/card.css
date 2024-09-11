@@ -5,6 +5,8 @@
   grid-column-gap: 0.1vw;
 }
 .table_info {
+  user-select: none;
+  position: relative;
   height: 9vh;
   background: rgba(187,237,210,0.5);
   display: flex;
@@ -14,6 +16,22 @@
   font-family: Inter;
   font-size: 1.7vh;
   font-weight: 400;
+}
+.drop_availability {
+  overflow: hidden;
+  position: absolute;
+  height: 0vh;
+  background: #fff;
+  top: 9vh;
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  flex-direction: column;
+  border-radius: 0 0 1vh 1vh;
+}
+.drop_availability span {
+  cursor: pointer;
 }
 .sep_line {
   height: 40%;

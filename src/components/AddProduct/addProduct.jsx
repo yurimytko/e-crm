@@ -2,7 +2,7 @@ import "./dist/addProduct.css";
 import { useState } from "react";
 import { useAddProductMutation, useGetSectionsQuery } from "../../store";
 import { Loader } from "../Loader/loader";
-
+import AddCategory from "../AddCategory/addCat";
 
 const generateRandomArticle = () => {
     return Math.floor(1000 + Math.random() * 9000).toString();
@@ -14,6 +14,7 @@ export function AddProductMenu() {
         photo: 'abs',
         name: '',
         price: '',
+        url: '',
         article: generateRandomArticle(),
         description: '',
         sectionId: '',
@@ -33,6 +34,7 @@ export function AddProductMenu() {
 
     const [dragging, setDragging] = useState(false);
     const [labelText, setLabelText] = useState('Завантажте фото або перетягніть файл');
+    const [activeIndex, setActiveIndex] = useState(0);
 
 
     const handleChange = (e) => {
@@ -72,7 +74,6 @@ export function AddProductMenu() {
         try {
             await addProduct(formData).unwrap();
             closeAddMenu();
-            window.location.reload()
         } catch (error) {
             console.error("Failed to add the product:", error);
         }
@@ -106,6 +107,63 @@ export function AddProductMenu() {
         }
     };
 
+
+    const handleChangeC = (e) => {
+        const { name, value } = e.target;
+
+        // Перевірка на допустимі символи (числа, +, -, *, /)
+        if (/^[\d+\-*/.]*$/.test(value)) {
+            setFormData({
+                ...formData,
+                [name]: value,
+            });
+        }
+    };
+
+    const handleKeyPress = (e) => {
+        if (e.key === 'Enter') {
+            try {
+                // Обчислення результату
+                const result = eval(formData.quantity);
+
+                // Запис результату в поле quantity
+                setFormData({
+                    ...formData,
+                    quantity: result.toString(), // зберігаємо результат як текст
+                });
+            } catch (error) {
+                console.error('Невірний вираз');
+            }
+        }
+    };
+
+
+    const openAddMenu = () => {
+        document.getElementById("add_category").style.display = "flex"
+
+
+        setTimeout(() => {
+
+            document.getElementById("add_category").style.opacity = "1"
+
+
+
+        }, 100);
+    }
+
+    const points = [
+        'Опис',
+        'Характеристика',
+        'Застосування',
+    ];
+
+    const handleClick = (index) => {
+        setActiveIndex(index);
+    };
+
+
+
+
     return (
         <div id="add_menu" className="add_product_asd">
             <div className="modal_add_product">
@@ -116,7 +174,7 @@ export function AddProductMenu() {
                     alt="Close menu"
                 />
                 <div className="left_modal">
-                    <p className="settign_up">Добавити Зображення</p>
+                    <p className="setting_up">Добавити Зображення</p>
                     <div className="img_field">
                         <div
                             className="border"
@@ -160,14 +218,18 @@ export function AddProductMenu() {
                         placeholder="Кількість на складі..."
                         name="quantity"
                         value={formData.quantity}
-                        onChange={handleChange}
+                        onChange={handleChangeC}
+                        onKeyPress={handleKeyPress}
                     />
-                    <p className="settign_up">Категорія</p>
+
+                    {formData.result && <p>Результат: {formData.result}</p>}
+                    <p className="setting_up">Категорія</p>
                     <div className="drop_down" onClick={toggleDropdown}>
                         {selectedCategory}
                         <img src="./img/Group 22.svg" alt="" />
                         <div className={`drop ${isOpen ? "open" : ""}`}>
                             <span>...</span>
+
                             {!isLoading && data.sections && data.sections.length > 0 ? (
                                 data.sections.map((sections) => (
                                     <span onClick={(e) => {
@@ -178,14 +240,16 @@ export function AddProductMenu() {
                             ) : (
                                 !isLoading && <div className="no_products">Немає доступних продуктів</div>
                             )}
+                            <span className="add_category_input" onClick={openAddMenu}>Додати категорію</span>
+
                         </div>
                     </div>
-                    <p className="settign_up">Під категорія</p>
+                    <p className="setting_up">Під категорія</p>
                     <div className="drop_down">
                         Під категорія...
                         <img src="./img/Group 22.svg" alt="" />
                     </div>
-                    <p className="settign_up">Показувати товар</p>
+                    <p className="setting_up">Показувати товар</p>
                     <div className="radio-buttons">
                         <label className="radio-button">
                             <input
@@ -213,19 +277,70 @@ export function AddProductMenu() {
                 </div>
                 <div className="modal_sep"></div>
                 <div className="right_modal">
-                    <p className="settign_up">Опис</p>
-                    <textarea
-                        className="text_area"
-                        placeholder="Опис товару..."
-                        name="description"
-                        value={formData.description}
-                        onChange={handleChange}
-                    ></textarea>
+                    <div className="point_choose">
+                        {points.map((point, index) => (
+                            <span
+                                key={index}
+                                className={`point ${activeIndex === index ? 'active' : ''}`}
+                                onClick={() => handleClick(index)}
+                            >
+                                {point}
+                            </span>
+                        ))}
+                    </div>
+                    {activeIndex === 0 && (
+                        <div className="edit_block">
+                            <p className="setting_up">Опис</p>
+                            <textarea
+                                className="text_area"
+                                placeholder="Опис товару..."
+                                name="description"
+                                value={formData.description}
+                                onChange={handleChange}
+                            ></textarea>
+                        </div>
+                    )}
+
+                    {activeIndex === 1 && (
+                        <div className="edit_block">
+                            {/* Content for another block when activeIndex is 1 */}
+                            <p className="setting_up">Характеристики</p>
+                            <div className="char_block">
+                                <div className="char_con">
+                                    <div className="char_name"><input type="text" placeholder="Пункт" /></div>
+                                    <div className="char_descr"><input type="text" placeholder="Опис" /><img src="/img/Delete.svg" alt="" /></div>
+                                </div>
+                                <div className="char_con">
+                                    <div className="char_name"><input type="text" placeholder="Пункт" /></div>
+                                    <div className="char_descr"><input type="text" placeholder="Опис" /><img src="/img/Delete.svg" alt="" /></div>
+                                </div>
+                                <div className="char_con">
+                                    <div className="char_name"><input type="text" placeholder="Пункт" /></div>
+                                    <div className="char_descr"><input type="text" placeholder="Опис" /><img src="/img/Delete.svg" alt="" /></div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                    {activeIndex === 2 && (
+                        <div className="edit_block">
+                            {/* Content for another block when activeIndex is 1 */}
+                            <p className="setting_up">Застосування</p>
+                            <input
+                                className="input"
+                                type="text"
+                                placeholder="Посилання на відео..."
+                                name="name"
+                                value={formData.url}
+                                onChange={handleChange}
+                            />
+                        </div>
+                    )}
                     <div className="submit_button" onClick={handleSubmit}>
-                        {isLoading ? <Loader /> : "Додати"}
+                        {isLoading ? "Товар додається" : "Додати"}
                     </div>
                 </div>
             </div>
+            <AddCategory />
         </div>
     );
 }

@@ -4,10 +4,12 @@ import { ProductCard } from "../../components/ProductCard/card";
 import { AddProductMenu } from "../../components/AddProduct/addProduct";
 import { useGetProductsQuery } from "../../store";
 import { Loader } from "../../components/Loader/loader";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useDeleteProductsMutation } from "../../store";
 
 export function ProductPage() {
+    const [allProducts, setAllProducts] = useState([]); // локальное состояние для всех продуктов
+    const [page, setPage] = useState(1); // состояние текущей страницы
     const [selectedIds, setSelectedIds] = useState([]);
     const [isSelected, setIsSelected] = useState(false);
     const [deleteProduct] = useDeleteProductsMutation();
@@ -30,6 +32,10 @@ export function ProductPage() {
         availability: false,
     });
 
+    const productsSectionRef = useRef(null);
+
+
+
     const generateQueryString = () => {
         const sortBy = Object.keys(selectedFilter)
             .filter(key => selectedFilter[key] !== null)
@@ -37,10 +43,23 @@ export function ProductPage() {
         const orderBy = Object.values(selectedFilter)
             .filter(value => value !== null)
             .join(',');
-        return `?sortBy=${sortBy}&orderBy=${orderBy}`;
+        return `?sortBy=${sortBy}&orderBy=${orderBy}&page=${page}`;
     };
 
-    const { data = [], isLoading } = useGetProductsQuery(generateQueryString());
+    const { data: products = [], isLoading, isFetching } = useGetProductsQuery(generateQueryString());
+
+
+    useEffect(() => {
+        if (products.products) {
+            setAllProducts((prevProducts) => [...prevProducts, ...products.products]);
+        }
+    }, [products]);
+
+    const loadMore = () => {
+        if (page < products.totalPages) {
+            setPage((prevPage) => prevPage + 1);
+          }
+    };
 
     const toggleFilter = (column) => {
         if (activeColumns[column]) {
@@ -71,13 +90,13 @@ export function ProductPage() {
 
     const handleFilterClick = (column, filterValue) => {
         const value = filterValue === 'Від меншого' ? 1 :      // Ascending
-                      filterValue === 'Від більшого' ? -1 :    // Descending
-                      filterValue === 'Від А до Я' ? 1 :       // Name: A to Z
-                      filterValue === 'Від Я до А' ? -1 :      // Name: Z to A
-                      filterValue === 'На складі' ? 1 :        // Availability: In stock
-                      filterValue === 'Відсутнє' ? -1 :        // Availability: Out of stock
-                      null;  // Default case for unrecognized filter
-    
+            filterValue === 'Від більшого' ? -1 :    // Descending
+                filterValue === 'Від А до Я' ? 1 :       // Name: A to Z
+                    filterValue === 'Від Я до А' ? -1 :      // Name: Z to A
+                        filterValue === 'На складі' ? 1 :        // Availability: In stock
+                            filterValue === 'Відсутнє' ? -1 :        // Availability: Out of stock
+                                null;  // Default case for unrecognized filter
+
         setSelectedFilter({
             ...selectedFilter,
             [column]: value,
@@ -144,6 +163,20 @@ export function ProductPage() {
             setShowSearchButton(false);
         }
     };
+
+
+    const handleScroll = () => {
+        if (productsSectionRef.current) {
+            const { scrollTop, scrollHeight, clientHeight } = productsSectionRef.current;
+            if (scrollTop + clientHeight >= scrollHeight) {
+                console.log('Scrolled to the bottom of the block');
+                loadMore();
+            }
+        }
+    };
+
+
+    console.log(allProducts)
 
     return (
         <div className="product_page">
@@ -259,14 +292,26 @@ export function ProductPage() {
                 </div>
 
                 {/* Render your products here */}
-                <div className="products_section">
-                    {!isLoading && data.products && data.products.length > 0 ? (
-                        data.products.map((product) => (
-                            <ProductCard isSelected={isSelected} handleCheckboxChange={handleCheckboxChange} key={product._id} product={product} index={data.products.indexOf(product)} />
+                <div
+                    className="products_section"
+                    ref={productsSectionRef}
+                    onScroll={handleScroll}
+                >
+                    {!isLoading && allProducts.length > 0 ? (
+                        allProducts.map((product, index) => (
+                            <ProductCard
+                                isSelected={isSelected}
+                                handleCheckboxChange={handleCheckboxChange}
+                                key={product._id}
+                                product={product}
+                                index={index}
+                            />
                         ))
                     ) : (
                         !isLoading && <div className="no_products">Немає доступних продуктів</div>
                     )}
+
+                    {isFetching && <div>Loading more products...</div>}
                 </div>
 
             </div>
