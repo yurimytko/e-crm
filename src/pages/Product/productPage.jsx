@@ -168,7 +168,7 @@ export function ProductPage() {
     const handleScroll = () => {
         if (productsSectionRef.current) {
             const { scrollTop, scrollHeight, clientHeight } = productsSectionRef.current;
-            if (scrollTop + clientHeight >= scrollHeight) {
+            if (scrollTop + clientHeight >= scrollHeight/2) {
                 console.log('Scrolled to the bottom of the block');
                 loadMore();
             }
