@@ -85,6 +85,7 @@ export function Update() {
                 name,
                 price,
                 description,
+                quantity: quantity,
                 section: categoryId
 
             };
