@@ -5,41 +5,51 @@ import "./dist/subSection.css"
 
 import { useGetSubSectionQuery } from "../../store";
 
+import { CatalogCard } from "../../components/CatalogCard/catalogCard";
 
-export function SubSection(){
 
-    const {catalogId} = useParams()
+export function SubSection() {
 
-    const {data, isLoading, error} = useGetSubSectionQuery()
+    const { catalogId } = useParams()
+
+    const { data, isLoading, error } = useGetSubSectionQuery()
 
 
     console.log(data)
 
 
-    const openAddMenu =() => {
+    const openAddMenu = () => {
         document.getElementById("add_sub").style.display = "flex"
-        
+
 
         setTimeout(() => {
-        
+
             document.getElementById("add_sub").style.opacity = "1"
 
 
-            
+
         }, 100);
     }
 
 
-    return(
+    return (
         <div className="sub_section_page">
-            <NavBar/>
+            <NavBar />
             <div className="sub_section_con">
                 <div onClick={openAddMenu} className="add_catalog">
                     <img src="/img/додати.svg" alt="" />
                 </div>
             </div>
 
-            <AddSub/>
+            {!isLoading && data.subSection && data.subSection.length > 0 ? (
+                data.subSection.map((sections) => (
+                    <CatalogCard key={sections._id} product={sections} index={data.subSection.indexOf(sections)} />
+                ))
+            ) : (
+                !isLoading && <div className="no_products">Немає доступних продуктів</div>
+            )}
+
+            <AddSub />
         </div>
     )
 }

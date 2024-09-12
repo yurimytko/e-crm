@@ -4,9 +4,9 @@ import { useState } from "react";
 import { usePostSubSectionMutation } from "../../store";
 import { useParams } from "react-router-dom";
 
-export function AddSub() {
+export function AddSub({id}) {
 
-    const {catalogId} = useParams()
+    const {catalogId} = useParams({})
 
     const [name, setName] = useState('')
     const [photo,setPhoto] = useState('eqweb')
@@ -26,7 +26,7 @@ export function AddSub() {
     const addSub = async() => {
         try{
             const sub ={
-                _id: catalogId,
+                _id: id,
                 name: name
             }
 

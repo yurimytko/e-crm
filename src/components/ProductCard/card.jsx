@@ -98,30 +98,30 @@ export const ProductCard = ({ product, index, handleCheckboxChange, isSelected }
     const handleChangeQuantity = (e) => {
         setQuantity(e.target.value); // Directly store the input value as a string
     };
-    const handleKeyPressQuantity = async(e) => {
+    const handleKeyPressQuantity = async (e) => {
         if (e.key === 'Enter') {
             try {
                 // Use eval to compute the expression entered by the user
-                const result = eval(quantity); 
-                
+                const result = eval(quantity);
+
                 // Set the computed result as the new quantity value
                 setQuantity(result.toString()); // Convert the result to a string and update state
                 setIsEditingQuantity(false)
-                try{
-                    const card ={
+                try {
+                    const card = {
                         id: product._id,
                         article: article,
                         name: name,
                         price: price,
                         quantity: result
-    
+
                     }
                     await putProduct(card)
-                }catch(e){
+                } catch (e) {
                     console.error(e)
-                    
+
                 }
-                
+
             } catch (error) {
                 console.error('Невірний вираз', error); // Handle errors for invalid expressions
             }
@@ -145,14 +145,14 @@ export const ProductCard = ({ product, index, handleCheckboxChange, isSelected }
     };
 
 
-    const handleKeyPress = async(e) => {
+    const handleKeyPress = async (e) => {
         if (e.key === 'Enter') {
             setIsEditingArticle(false);
             setIsEditingName(false);
             setIsEditingPrice(false);
 
-            try{
-                const card ={
+            try {
+                const card = {
                     id: product._id,
                     article: article,
                     name: name,
@@ -160,28 +160,28 @@ export const ProductCard = ({ product, index, handleCheckboxChange, isSelected }
 
                 }
                 await putProduct(card)
-            }catch(e){
+            } catch (e) {
                 console.error(e)
-                
+
             }
 
         }
     };
 
 
-    const openDrop =() => {
-        if(drop === false){
-            document.getElementById('drop_av').style.height= '10vh'
+    const openDrop = () => {
+        if (drop === false) {
+            document.getElementById('drop_av').style.height = '10vh'
             setDrop(true)
         }
-        else{
-            document.getElementById('drop_av').style.height= '0vh'
+        else {
+            document.getElementById('drop_av').style.height = '0vh'
             setDrop(false)
 
 
         }
     }
-    
+
     const handleSpanClick = (value) => {
         setAvailability(value);
     };
@@ -226,8 +226,10 @@ export const ProductCard = ({ product, index, handleCheckboxChange, isSelected }
                 </div>
             )}
 
-            <div className="table_info" style={tiStyle}>{product.category.section?.name}</div>
-            <div className="table_info" style={tiStyle}>{product.category.subSection}</div>
+            <div className="table_info" style={tiStyle}>{product.section?.section?.name}</div>
+            <div className="table_info" style={tiStyle}>
+                {product.section?.subSection?.name || '—'}
+            </div>
             {isEditingPrice ? (
                 <input
                     type="text"
@@ -258,11 +260,11 @@ export const ProductCard = ({ product, index, handleCheckboxChange, isSelected }
             )}
             <div onClick={openDrop} className="table_info" style={tiStyle}>
                 {availability}
-                <div id="drop_av"  className="drop_availability">
-                <span onClick={() => handleSpanClick('На складі')}>На складі</span>
-                <span onClick={() => handleSpanClick('Не в наявності')}>Не в наявності</span>    
+                <div id="drop_av" className="drop_availability">
+                    <span onClick={() => handleSpanClick('На складі')}>На складі</span>
+                    <span onClick={() => handleSpanClick('Не в наявності')}>Не в наявності</span>
 
-                </div>    
+                </div>
             </div>
 
             <div className="card_control">

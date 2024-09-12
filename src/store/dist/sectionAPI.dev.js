@@ -62,7 +62,7 @@ var sectionApi = (0, _react.createApi)({
       postSubSection: build.mutation({
         query: function query(body) {
           return {
-            url: "admin/catalog/subsection?id=".concat(body._id),
+            url: "admin/subsections?id=".concat(body._id),
             method: 'POST',
             body: body
           };

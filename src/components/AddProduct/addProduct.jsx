@@ -1,8 +1,10 @@
 import "./dist/addProduct.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAddProductMutation, useGetSectionsQuery } from "../../store";
 import { Loader } from "../Loader/loader";
 import AddCategory from "../AddCategory/addCat";
+
+import { AddSub } from "../AddSubSection/adSub";
 
 const generateRandomArticle = () => {
     return Math.floor(1000 + Math.random() * 9000).toString();
@@ -14,22 +16,24 @@ export function AddProductMenu() {
         photo: 'abs',
         name: '',
         price: '',
-        url: '',
+        video: '',
         article: generateRandomArticle(),
         description: '',
-        sectionId: '',
         quantity: '',
         display: true,
     });
 
-    const [isOpen, setIsOpen] = useState(false);
-    const [selectedCategory, setSelectedCategory] = useState("Категорія...");
-    const toggleDropdown = () => {
-        setIsOpen(!isOpen);
-    };
+    const [selectedCategory, setSelectedCategory] = useState(null);
+    const [selectedSubCategory, setSelectedSubCategory] = useState("");
+    const [isCategoryOpen, setIsCategoryOpen] = useState(false);
+    const [isSubCategoryOpen, setIsSubCategoryOpen] = useState(false);
+
+
+
 
     const [addProduct, { isLoading, isError, isSuccess }] = useAddProductMutation();
     const { data = [], isloading } = useGetSectionsQuery();
+
 
 
     const [dragging, setDragging] = useState(false);
@@ -57,13 +61,51 @@ export function AddProductMenu() {
 
 
     const handleSectionSelect = (id, name) => {
-        setFormData((prevFormData) => ({
-            ...prevFormData,
-            sectionId: id,
-        }));
+        if (!selectedSubCategory) { // Перевіряємо, чи не вибрана підкатегорія
+            setFormData((prevFormData) => ({
+                ...prevFormData,
+                sectionId: id,
+            }));
+        }
         setSelectedCategory(name); // Оновлюємо вибрану категорію
-        setIsOpen(false); // Закриваємо випадаючий список після вибору
-        console.log(id)
+        setIsCategoryOpen(false); // Закриваємо випадаючий список після вибору
+        console.log("Selected Category ID:", id);
+    };
+    
+    // Функція для вибору підкатегорії
+    const handleSubSectionSelect = (id, name) => {
+        setSelectedSubCategory(name); // Оновлюємо вибрану підкатегорію
+    
+        setFormData((prevFormData) => {
+            const updatedFormData = {
+                ...prevFormData,
+                subSectionId: id, // оновлюємо поле для підкатегорії
+            };
+    
+            // Оновлюємо sectionId тільки якщо підкатегорія не вибрана
+            if (!name) {
+                updatedFormData.sectionId = prevFormData.sectionId;
+            } else {
+                delete updatedFormData.sectionId;
+            }
+    
+            return updatedFormData;
+        });
+    
+        setIsSubCategoryOpen(false); // Закриваємо випадаючий список після вибору
+    };
+    
+    useEffect(() => {
+        console.log("Current formData:", formData);
+    }, [formData]); // Виведе оновлене formData після зміни
+
+    // Відкриття/закриття випадаючого списку
+    const toggleCategoryDropdown = () => {
+        setIsCategoryOpen(!isCategoryOpen);
+    };
+
+    const toggleSubCategoryDropdown = () => {
+        setIsSubCategoryOpen(!isSubCategoryOpen);
     };
 
 
@@ -73,7 +115,6 @@ export function AddProductMenu() {
 
         try {
             await addProduct(formData).unwrap();
-            closeAddMenu();
         } catch (error) {
             console.error("Failed to add the product:", error);
         }
@@ -138,6 +179,22 @@ export function AddProductMenu() {
     };
 
 
+
+
+    const openSubAddMenu = () => {
+        document.getElementById("add_sub").style.display = "flex"
+
+
+        setTimeout(() => {
+
+            document.getElementById("add_sub").style.opacity = "1"
+
+
+
+        }, 100);
+    }
+
+
     const openAddMenu = () => {
         document.getElementById("add_category").style.display = "flex"
 
@@ -163,6 +220,11 @@ export function AddProductMenu() {
 
 
 
+    const filteredSubSections = selectedCategory
+        ? data.sections.find(section => section.name === selectedCategory)?.subSections || []
+        : [];
+
+
 
     return (
         <div id="add_menu" className="add_product_asd">
@@ -174,7 +236,7 @@ export function AddProductMenu() {
                     alt="Close menu"
                 />
                 <div className="left_modal">
-                    <p className="setting_up">Добавити Зображення</p>
+                    <p className="setting_up">Додати Зображення</p>
                     <div className="img_field">
                         <div
                             className="border"
@@ -222,33 +284,70 @@ export function AddProductMenu() {
                         onKeyPress={handleKeyPress}
                     />
 
-                    {formData.result && <p>Результат: {formData.result}</p>}
                     <p className="setting_up">Категорія</p>
-                    <div className="drop_down" onClick={toggleDropdown}>
-                        {selectedCategory}
+                    <div className="drop_down" onClick={toggleCategoryDropdown}>
+                        {selectedCategory || "Виберіть категорію"}
                         <img src="./img/Group 22.svg" alt="" />
-                        <div className={`drop ${isOpen ? "open" : ""}`}>
-                            <span>...</span>
-
+                        <div className={`drop ${isCategoryOpen ? "open" : ""}`}>
+                            <span
+                                onClick={() => {
+                                    setIsCategoryOpen(false);
+                                    setSelectedCategory(null);
+                                }}
+                            >
+                                ...
+                            </span>
                             {!isLoading && data.sections && data.sections.length > 0 ? (
-                                data.sections.map((sections) => (
-                                    <span onClick={(e) => {
-                                        e.stopPropagation(); // Щоб уникнути закриття випадаючого списку при кліку
-                                        handleSectionSelect(sections._id, sections.name);
-                                    }} key={sections._id}>{sections.name}</span>
+                                data.sections.map((section) => (
+                                    <span
+                                        onClick={(e) => {
+                                            e.stopPropagation(); // Щоб уникнути закриття випадаючого списку при кліку
+                                            handleSectionSelect(section._id, section.name);
+                                        }}
+                                        key={section._id}
+                                    >
+                                        {section.name}
+                                    </span>
                                 ))
                             ) : (
-                                !isLoading && <div className="no_products">Немає доступних продуктів</div>
+                                !isLoading && <div className="no_products">Немає доступних категорій</div>
                             )}
-                            <span className="add_category_input" onClick={openAddMenu}>Додати категорію</span>
-
+                            <span className="add_category_input" onClick={openAddMenu}>
+                                Додати категорію
+                            </span>
                         </div>
                     </div>
-                    <p className="setting_up">Під категорія</p>
-                    <div className="drop_down">
-                        Під категорія...
-                        <img src="./img/Group 22.svg" alt="" />
-                    </div>
+
+                    {selectedCategory && (
+                        <>
+                            <p className="setting_up">Під категорія</p>
+                            <div className="drop_down" onClick={toggleSubCategoryDropdown}>
+                                {selectedSubCategory || "Виберіть підкатегорію"}
+                                <img src="./img/Group 22.svg" alt="" />
+                                <div className={`drop ${isSubCategoryOpen ? "open" : ""}`}>
+                                    <span>...</span>
+                                    {!isLoading && filteredSubSections && filteredSubSections.length > 0 ? (
+                                        filteredSubSections.map((subsection) => (
+                                            <span
+                                                onClick={(e) => {
+                                                    e.stopPropagation(); // To prevent dropdown from closing
+                                                    handleSubSectionSelect(subsection, subsection);
+                                                }}
+                                                key={subsection._id}
+                                            >
+                                                {subsection}
+                                            </span>
+                                        ))
+                                    ) : (
+                                        !isLoading && <div className="no_products">Немає доступних підкатегорій</div>
+                                    )}
+                                    <span className="add_category_input" onClick={openSubAddMenu}>
+                                        Додати підкатегорію
+                                    </span>
+                                </div>
+                            </div>
+                        </>
+                    )}
                     <p className="setting_up">Показувати товар</p>
                     <div className="radio-buttons">
                         <label className="radio-button">
@@ -330,8 +429,8 @@ export function AddProductMenu() {
                                 type="text"
                                 placeholder="Посилання на відео..."
                                 name="name"
-                                value={formData.url}
-                                onChange={handleChange}
+                                value={formData.video}
+                                onChange={(e) => setFormData({ ...formData, video: e.target.value })}
                             />
                         </div>
                     )}
@@ -341,6 +440,7 @@ export function AddProductMenu() {
                 </div>
             </div>
             <AddCategory />
+            <AddSub id={formData.sectionId} />
         </div>
     );
 }

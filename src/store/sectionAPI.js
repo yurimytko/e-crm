@@ -45,7 +45,7 @@ export const sectionApi = createApi({
 
         postSubSection: build.mutation({
             query: (body) => ({
-                url: `admin/catalog/subsection?id=${body._id}`,
+                url: `admin/subsections?id=${body._id}`,
                 method: 'POST',
                 body
             }),
