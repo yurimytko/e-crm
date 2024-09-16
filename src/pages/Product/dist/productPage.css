@@ -125,7 +125,7 @@
   font-weight: 400;
   border: none;
 }
-.table_titles.active {
+.table_titles.selected {
   background-color: #373737;
   color: #fff /* Змінений фон при активності */;
 }
@@ -139,4 +139,16 @@
   border-radius: 1vh;
   padding: 1vh 1vw;
   box-sizing: border-box;
+}
+.filter_menu {
+  width: 100%;
+  padding: 1vh 0;
+  color: #000;
+  background: #fff;
+  z-index: 100;
+  position: absolute;
+  top: 6.2vh;
+}
+.filter_menu input {
+  width: 60%;
 }

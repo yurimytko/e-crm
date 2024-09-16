@@ -42,7 +42,7 @@ export const blogApi = createApi({
         }),
         deletePost: build.mutation({
             query: (id)=> ({
-                url: `posts?id=${id}`,
+                url: `admin/posts?id=${id}`,
                 method: 'DELETE',
             })
         }),

@@ -19,6 +19,7 @@ export default function AddCategory(){
         menuElement.style.opacity = "0";
         setTimeout(() => {
             menuElement.style.display = "none";
+            setName('')
         }, 100);
     }
 

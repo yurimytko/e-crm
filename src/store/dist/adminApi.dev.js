@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.useGetUsersQuery = exports.useSingInMutation = exports.adminApi = void 0;
+exports.useDeleteUserMutation = exports.useGetUsersQuery = exports.useSingInMutation = exports.adminApi = void 0;
 
 var _react = require("@reduxjs/toolkit/query/react");
 
@@ -37,12 +37,22 @@ var adminApi = (0, _react.createApi)({
         query: function query() {
           return 'admin/users/';
         }
+      }),
+      deleteUser: build.mutation({
+        query: function query(body) {
+          return {
+            url: "admin/users?id=".concat(body.id),
+            method: 'DELETE'
+          };
+        }
       })
     };
   }
 });
 exports.adminApi = adminApi;
 var useSingInMutation = adminApi.useSingInMutation,
-    useGetUsersQuery = adminApi.useGetUsersQuery;
+    useGetUsersQuery = adminApi.useGetUsersQuery,
+    useDeleteUserMutation = adminApi.useDeleteUserMutation;
+exports.useDeleteUserMutation = useDeleteUserMutation;
 exports.useGetUsersQuery = useGetUsersQuery;
 exports.useSingInMutation = useSingInMutation;

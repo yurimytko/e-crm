@@ -45,7 +45,7 @@ export function AddProductMenu() {
         const { name, value, type, checked } = e.target;
         setFormData(prevState => ({
             ...prevState,
-            [name]: type === 'radio' ? checked : value
+            [name]: type === 'radio' ? JSON.parse(value) : value
         }));
     };
 
@@ -71,35 +71,34 @@ export function AddProductMenu() {
         setIsCategoryOpen(false); // Закриваємо випадаючий список після вибору
         console.log("Selected Category ID:", id);
     };
-    
+
     // Функція для вибору підкатегорії
     const handleSubSectionSelect = (id, name) => {
         setSelectedSubCategory(name); // Оновлюємо вибрану підкатегорію
-    
+
         setFormData((prevFormData) => {
             const updatedFormData = {
                 ...prevFormData,
                 subSectionId: id, // оновлюємо поле для підкатегорії
             };
-    
+
             // Оновлюємо sectionId тільки якщо підкатегорія не вибрана
             if (!name) {
                 updatedFormData.sectionId = prevFormData.sectionId;
             } else {
                 delete updatedFormData.sectionId;
             }
-    
+
             return updatedFormData;
         });
-    
+
         setIsSubCategoryOpen(false); // Закриваємо випадаючий список після вибору
     };
-    
+
     useEffect(() => {
         console.log("Current formData:", formData);
-    }, [formData]); // Виведе оновлене formData після зміни
+    }, [formData]);
 
-    // Відкриття/закриття випадаючого списку
     const toggleCategoryDropdown = () => {
         setIsCategoryOpen(!isCategoryOpen);
     };
@@ -143,7 +142,6 @@ export function AddProductMenu() {
 
         const files = e.dataTransfer.files;
         if (files.length > 0) {
-            // Handle file upload logic here
             console.log(files[0]);
         }
     };
@@ -152,7 +150,6 @@ export function AddProductMenu() {
     const handleChangeC = (e) => {
         const { name, value } = e.target;
 
-        // Перевірка на допустимі символи (числа, +, -, *, /)
         if (/^[\d+\-*/.]*$/.test(value)) {
             setFormData({
                 ...formData,
@@ -164,10 +161,8 @@ export function AddProductMenu() {
     const handleKeyPress = (e) => {
         if (e.key === 'Enter') {
             try {
-                // Обчислення результату
                 const result = eval(formData.quantity);
 
-                // Запис результату в поле quantity
                 setFormData({
                     ...formData,
                     quantity: result.toString(), // зберігаємо результат як текст
@@ -183,28 +178,16 @@ export function AddProductMenu() {
 
     const openSubAddMenu = () => {
         document.getElementById("add_sub").style.display = "flex"
-
-
         setTimeout(() => {
-
             document.getElementById("add_sub").style.opacity = "1"
-
-
-
         }, 100);
     }
 
 
     const openAddMenu = () => {
         document.getElementById("add_category").style.display = "flex"
-
-
         setTimeout(() => {
-
             document.getElementById("add_category").style.opacity = "1"
-
-
-
         }, 100);
     }
 
@@ -218,13 +201,9 @@ export function AddProductMenu() {
         setActiveIndex(index);
     };
 
-
-
     const filteredSubSections = selectedCategory
         ? data.sections.find(section => section.name === selectedCategory)?.subSections || []
         : [];
-
-
 
     return (
         <div id="add_menu" className="add_product_asd">
@@ -331,11 +310,11 @@ export function AddProductMenu() {
                                             <span
                                                 onClick={(e) => {
                                                     e.stopPropagation(); // To prevent dropdown from closing
-                                                    handleSubSectionSelect(subsection, subsection);
+                                                    handleSubSectionSelect(subsection._id, subsection.name);
                                                 }}
                                                 key={subsection._id}
                                             >
-                                                {subsection}
+                                                {subsection.name}
                                             </span>
                                         ))
                                     ) : (

@@ -29,7 +29,7 @@ export function AddSub({id}) {
                 _id: id,
                 name: name
             }
-
+            closeAddCat()
             await subr(sub)
         }catch(e){
             console.error(e)

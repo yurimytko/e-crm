@@ -15,11 +15,15 @@ export const sectionApi = createApi({
             return headers;
         }
     }), // Ensure the protocol is included
-    tagTypes: ['Section'], // Define a tag type
+    tagTypes: ['Section', 'SubSection'], // Define a tag type
     endpoints: (build) => ({
         getSections: build.query({
             query: () => '/catalog',
             providesTags: ['Section'], // Provide this tag for automatic refetching
+        }),
+        getSection: build.query({
+            query: (body) => `/catalog?id=${body.id}`,
+            invalidatesTags: ['Section']
         }),
 
         postSection: build.mutation({
@@ -33,14 +37,15 @@ export const sectionApi = createApi({
 
         deleteSection: build.mutation({
             query: (body) => ({
-                url: `admin/sections?${body.id}`,
+                url: `admin/sections?id=${body.id}`,
                 method: 'DELETE',
                 body
             })
         }),
 
         getSubSection: build.query({
-            query: () => 'catalog/subsections'
+            query: () => 'catalog/subsections',
+            providesTags: ['Section']
         }),
 
         postSubSection: build.mutation({
@@ -51,7 +56,15 @@ export const sectionApi = createApi({
             }),
             invalidatesTags: ['Section'], // Invalidate the 'Section' tag to refetch sections
         }),
+        deleteSubSection: build.mutation({
+            query: (body) => ({
+                url: `admin/subsections?id=${body.id}`,
+                method: 'DELETE',
+                body
+            }),
+            invalidatesTags: ['Section'], // Invalidate the 'Section' tag to refetch sections
+        }),
     }),
 });
 
-export const { useGetSectionsQuery, usePostSectionMutation, usePostSubSectionMutation, useDeleteSectionMutation, useGetSubSectionQuery } = sectionApi;
+export const { useGetSectionsQuery, usePostSectionMutation, usePostSubSectionMutation, useDeleteSectionMutation, useGetSubSectionQuery, useDeleteSubSectionMutation, useGetSectionQuery } = sectionApi;

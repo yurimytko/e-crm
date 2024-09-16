@@ -3,19 +3,18 @@ import { AddSub } from "../../components/AddSubSection/adSub";
 import { NavBar } from "../../components/NavBar/nav"
 import "./dist/subSection.css"
 
-import { useGetSubSectionQuery } from "../../store";
+import { useGetSectionQuery } from "../../store";
 
-import { CatalogCard } from "../../components/CatalogCard/catalogCard";
-
+import { SubCard } from "../../components/SubSectionCard/subCard";
 
 export function SubSection() {
 
     const { catalogId } = useParams()
 
-    const { data, isLoading, error } = useGetSubSectionQuery()
+    const { data, isLoading, error } = useGetSectionQuery({ id: catalogId })
 
 
-    console.log(data)
+    console.log(data?.section.subSections)
 
 
     const openAddMenu = () => {
@@ -35,21 +34,26 @@ export function SubSection() {
     return (
         <div className="sub_section_page">
             <NavBar />
-            <div className="sub_section_con">
-                <div onClick={openAddMenu} className="add_catalog">
-                    <img src="/img/додати.svg" alt="" />
+            <div className="sub_con">
+                <div className="page_title">Підкатегорія</div>
+
+                <div className="sub_section_con">
+                    <div onClick={openAddMenu} className="add_catalog">
+                        <img src="/img/додати.svg" alt="" />
+                    </div>
+                    {!isLoading && data?.section.subSections && data.section.subSections.length > 0 ? (
+                        data.section.subSections.map((sections) => (
+                            <SubCard key={sections._id} product={sections} index={data.section.subSections.indexOf(sections)} />
+                        ))
+                    ) : (
+                        !isLoading && <div className="no_products">Немає доступних продуктів</div>
+                    )}
                 </div>
             </div>
 
-            {!isLoading && data.subSection && data.subSection.length > 0 ? (
-                data.subSection.map((sections) => (
-                    <CatalogCard key={sections._id} product={sections} index={data.subSection.indexOf(sections)} />
-                ))
-            ) : (
-                !isLoading && <div className="no_products">Немає доступних продуктів</div>
-            )}
 
-            <AddSub />
+
+            <AddSub id={catalogId} />
         </div>
     )
 }

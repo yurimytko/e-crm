@@ -8,105 +8,27 @@ import { useState, useEffect, useRef } from "react";
 import { useDeleteProductsMutation } from "../../store";
 
 export function ProductPage() {
-    const [allProducts, setAllProducts] = useState([]); // локальное состояние для всех продуктов
-    const [page, setPage] = useState(1); // состояние текущей страницы
+    const [page, setPage] = useState(1);
     const [selectedIds, setSelectedIds] = useState([]);
     const [isSelected, setIsSelected] = useState(false);
     const [deleteProduct] = useDeleteProductsMutation();
-    const [tags, setTags] = useState([]);
-    const [inputValue, setInputValue] = useState('');
-    const [showSearchButton, setShowSearchButton] = useState(false);
-    const [activeFilter, setActiveFilter] = useState(null);
-    const [selectedFilter, setSelectedFilter] = useState({
-        article: null,
-        creationDate: null,
-        name: null,
-        quantity: null,
-        availability: null,
-    });
-    const [activeColumns, setActiveColumns] = useState({
-        article: false,
-        creationDate: false,
-        name: false,
-        quantity: false,
-        availability: false,
-    });
 
-    const productsSectionRef = useRef(null);
+    const [selectedColumns, setSelectedColumns] = useState([]);
+    const [filterMenus, setFilterMenus] = useState({});
+    const [url, setUrl] = useState('')
+    const [article, setArticle] = useState()
+    const productsSectionRef = useRef()
+
+    const { data: products = [], isLoading, isFetching } = useGetProductsQuery(`?${url}`);
 
 
+    const articelFilter = (e) => {
 
-    const generateQueryString = () => {
-        const sortBy = Object.keys(selectedFilter)
-            .filter(key => selectedFilter[key] !== null)
-            .join(',');
-        const orderBy = Object.values(selectedFilter)
-            .filter(value => value !== null)
-            .join(',');
-        return `?sortBy=${sortBy}&orderBy=${orderBy}&page=${page}`;
-    };
-
-    const { data: products = [], isLoading, isFetching } = useGetProductsQuery(generateQueryString());
-
-
-    useEffect(() => {
-        if (products.products) {
-            setAllProducts((prevProducts) => [...prevProducts, ...products.products]);
+        if (e.key === 'Enter') {
+            setUrl(`article=${article}`)
         }
-    }, [products]);
+    }
 
-    const loadMore = () => {
-        if (page < products.totalPages) {
-            setPage((prevPage) => prevPage + 1);
-          }
-    };
-
-    const toggleFilter = (column) => {
-        if (activeColumns[column]) {
-            setSelectedFilter(prev => ({
-                ...prev,
-                [column]: null,
-            }));
-            setActiveColumns(prev => ({
-                ...prev,
-                [column]: false,
-            }));
-        } else {
-            setActiveFilter(activeFilter === column ? null : column);
-        }
-    };
-
-    useEffect(() => {
-        const logActiveFilters = () => {
-            const activeFilters = Object.keys(activeColumns).filter(column => activeColumns[column]);
-            const filters = activeFilters.reduce((acc, column) => {
-                acc[column] = selectedFilter[column];
-                return acc;
-            }, {});
-            console.log('Active Filters:', filters);
-        };
-        logActiveFilters();
-    }, [activeColumns, selectedFilter]);
-
-    const handleFilterClick = (column, filterValue) => {
-        const value = filterValue === 'Від меншого' ? 1 :      // Ascending
-            filterValue === 'Від більшого' ? -1 :    // Descending
-                filterValue === 'Від А до Я' ? 1 :       // Name: A to Z
-                    filterValue === 'Від Я до А' ? -1 :      // Name: Z to A
-                        filterValue === 'На складі' ? 1 :        // Availability: In stock
-                            filterValue === 'Відсутнє' ? -1 :        // Availability: Out of stock
-                                null;  // Default case for unrecognized filter
-
-        setSelectedFilter({
-            ...selectedFilter,
-            [column]: value,
-        });
-        setActiveColumns({
-            ...activeColumns,
-            [column]: true,
-        });
-        setActiveFilter(null);
-    };
 
     if (isLoading) {
         return <Loader />;
@@ -114,13 +36,6 @@ export function ProductPage() {
 
     const handleButtonClick = () => {
         setIsSelected(!isSelected);
-    };
-
-    const openAddMenu = () => {
-        document.getElementById("add_menu").style.display = "flex";
-        setTimeout(() => {
-            document.getElementById("add_menu").style.opacity = "1";
-        }, 100);
     };
 
     const handleCheckboxChange = (event, id) => {
@@ -131,52 +46,53 @@ export function ProductPage() {
             setSelectedIds(prevIds => prevIds.filter(ide => ide !== id));
         }
     };
-
     const Delete = async () => {
         try {
             await deleteProduct(selectedIds.join(','));
         } catch (e) {
-            // Handle error
+            console.error(e)
         }
     };
 
-    const handleInputChange = (e) => {
-        setInputValue(e.target.value);
+    const openAddMenu = () => {
+        document.getElementById("add_menu").style.display = "flex";
+        setTimeout(() => {
+            document.getElementById("add_menu").style.opacity = "1";
+        }, 100);
     };
 
-    const handleKeyDown = (e) => {
-        if (e.key === 'Enter' && inputValue.trim()) {
-            e.preventDefault();
-            const newTags = [...tags, inputValue.trim()];
-            setTags(newTags);
-            setInputValue('');
-            if (newTags.length > 0) {
-                setShowSearchButton(true);
-            }
-        }
-    };
 
-    const handleTagClick = (index) => {
-        const updatedTags = tags.filter((_, i) => i !== index);
-        setTags(updatedTags);
-        if (updatedTags.length === 0) {
-            setShowSearchButton(false);
-        }
-    };
+
+
+
 
 
     const handleScroll = () => {
         if (productsSectionRef.current) {
             const { scrollTop, scrollHeight, clientHeight } = productsSectionRef.current;
-            if (scrollTop + clientHeight >= scrollHeight/2) {
+            if (scrollTop + clientHeight >= scrollHeight / 2) {
                 console.log('Scrolled to the bottom of the block');
-                loadMore();
             }
         }
     };
 
 
-    console.log(allProducts)
+    const handleColumnClick = (column) => {
+        setFilterMenus((prevMenus) => ({
+            ...prevMenus,
+            [column]: !prevMenus[column], // Toggle the filter menu for the column
+        }));
+
+        setSelectedColumns((prevSelected) =>
+            prevSelected.includes(column)
+                ? prevSelected.filter((col) => col !== column)
+                : [...prevSelected, column]
+        );
+    };
+
+
+
+
 
     return (
         <div className="product_page">
@@ -189,29 +105,7 @@ export function ProductPage() {
                         <p className="btn_text">Додати товар</p>
                     </button>
                     <div className="search_con">
-                        <div className="tags_container">
-                            {tags.map((tag, index) => (
-                                <span
-                                    key={index}
-                                    className="tag"
-                                    onClick={() => handleTagClick(index)}
-                                >
-                                    {tag}
-                                    <span className="tag_remove">×</span>
-                                </span>
-                            ))}
-                        </div>
-                        <input
-                            className="search_i"
-                            type="text"
-                            value={inputValue}
-                            onChange={handleInputChange}
-                            onKeyDown={handleKeyDown}
-                            placeholder="Введіть тег і натисніть Enter"
-                        />
-                        {showSearchButton && (
-                            <button className="search_button">Пошук</button>
-                        )}
+                        <input className="search_i" type="text" placeholder="Введіть тег і натисніть Enter" />
                     </div>
                     <button className="select_btn" onClick={handleButtonClick}><img src="./img/Group 20574425.svg" alt="" /> Виділити товар</button>
                     <button style={{ opacity: isSelected ? 1 : 0 }} onClick={Delete} className="delete"><img src="./img/Delete (1).svg" alt="" />Видалити виділене</button>
@@ -220,85 +114,25 @@ export function ProductPage() {
                 <div className="table_section">
                     <div></div>
                     <div className="table_titles">НТ</div>
-
-                    <div
-                        className={`table_titles ${activeFilter === 'article' || activeColumns.article ? 'active' : ''}`}
-                        onClick={() => toggleFilter('article')}
-                    >
-                        Артикул
-                        {activeFilter === 'article' && (
-                            <div className="filter_block">
-                                <p className="filter" onClick={() => handleFilterClick('article', 'Від меншого')}>Від меншого</p>
-                                <p className="filter" onClick={() => handleFilterClick('article', 'Від більшого')}>Від більшого</p>
+                    <div className={`table_titles ${selectedColumns.includes("article") ? 'selected' : ''
+                        }`}
+                        onClick={() => handleColumnClick("article")}>Артикул
+                        {filterMenus["article"] && (
+                            <div onClick={(e)=> {e.stopPropagation()}} className="filter_menu">
+                                <input onKeyDown={articelFilter} type="text" placeholder="Артикуль" />
                             </div>
-                        )}
-                    </div>
-
-                    <div
-                        className={`table_titles ${activeFilter === 'creationDate' || activeColumns.creationDate ? 'active' : ''}`}
-                        onClick={() => toggleFilter('creationDate')}
-                    >
-                        Дата створення
-                        {activeFilter === 'creationDate' && (
-                            <div className="filter_block">
-                                <p className="filter" onClick={() => handleFilterClick('creationDate', 'Від меншого')}>Від меншого</p>
-                                <p className="filter" onClick={() => handleFilterClick('creationDate', 'Від більшого')}>Від більшого</p>
-                            </div>
-                        )}
-                    </div>
-
-                    <div
-                        className={`table_titles ${activeFilter === 'name' || activeColumns.name ? 'active' : ''}`}
-                        onClick={() => toggleFilter('name')}
-                    >
-                        Назва товару
-                        {activeFilter === 'name' && (
-                            <div className="filter_block">
-                                <p className="filter" onClick={() => handleFilterClick('name', 'Від А до Я')}>Від А до Я</p>
-                                <p className="filter" onClick={() => handleFilterClick('name', 'Від Я до А')}>Від Я до А</p>
-                            </div>
-                        )}
-                    </div>
-
+                        )}</div>
+                    <div className={"table_titles"}>Дата створення</div>
+                    <div className={`table_titles `}>Назва товару</div>
                     <div className="table_titles">Розділ</div>
                     <div className="table_titles">Під розділ</div>
-                    <div
-                        className={`table_titles ${activeFilter === 'price' || activeColumns.price ? 'active' : ''}`}
-                        onClick={() => toggleFilter('price')}
-                    >
-                        Ціна
-                        {activeFilter === 'price' && (
-                            <div className="filter_block">
-                                <p className="filter" onClick={() => handleFilterClick('price', 'Від меншого')}>Від меншого</p>
-                                <p className="filter" onClick={() => handleFilterClick('price', 'Від більшого')}>Від більшого</p>
-                            </div>
-                        )}
-                    </div>
-                    <div className="table_titles">
-                        Кількість
-                    </div>
-                    <div
-                        className={`table_titles ${activeFilter === 'availability' || activeColumns.availability ? 'active' : ''}`}
-                        onClick={() => toggleFilter('availability')}
-                    >
-                        Наявність
-                        {activeFilter === 'availability' && (
-                            <div className="filter_block">
-                                <p className="filter" onClick={() => handleFilterClick('availability', 'На складі')}>На складі</p>
-                                <p className="filter" onClick={() => handleFilterClick('availability', 'Відсутнє')}>Відсутнє</p>
-                            </div>
-                        )}
-                    </div>
+                    <div className={`table_titles`}>Ціна</div>
+                    <div className="table_titles">Кількість</div>
+                    <div className={`table_titles`}>Наявність</div>
                 </div>
-
-                {/* Render your products here */}
-                <div
-                    className="products_section"
-                    ref={productsSectionRef}
-                    onScroll={handleScroll}
-                >
-                    {!isLoading && allProducts.length > 0 ? (
-                        allProducts.map((product, index) => (
+                <div className="products_section" ref={productsSectionRef} onScroll={handleScroll}>
+                    {!isLoading && products.products.length > 0 ? (
+                        products.products.map((product, index) => (
                             <ProductCard
                                 isSelected={isSelected}
                                 handleCheckboxChange={handleCheckboxChange}
@@ -314,8 +148,8 @@ export function ProductPage() {
                     {isFetching && <div>Loading more products...</div>}
                 </div>
 
-            </div>
+            </div >
             <AddProductMenu />
-        </div>
+        </div >
     );
 }

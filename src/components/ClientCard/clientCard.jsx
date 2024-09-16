@@ -1,7 +1,12 @@
 import "./dist/client.css"
 import { useState } from "react";
 
+import { useDeleteUserMutation } from "../../store/adminApi";
+
 export function ClientCard({ user }) {
+
+
+    const [deleteUser] = useDeleteUserMutation()
 
     const [isEditingName, setIsEditingName] = useState(false);
     const [isEditingPhone, setIsEditingPhone] = useState(false);
@@ -74,6 +79,15 @@ export function ClientCard({ user }) {
     };
 
 
+
+    const deleteUsers = async()=> {
+        try{
+            await deleteUser({id: user._id})
+        }catch(e){
+            console.log(e)
+        }
+    }
+
     return (
         <div className="card">
             <div className="table_info_c">001</div>
@@ -119,8 +133,12 @@ export function ClientCard({ user }) {
                     {email}
                 </div>
             )}
+            <div className="table_info_c">{user.city}</div>
             <div className="table_info_c">001</div>
-            <div className="table_info_c">001</div>
+            <div className="user_control">
+                <img src="/img/Delete.svg" onClick={deleteUsers} alt="" />
+            </div>
+
 
 
         </div>

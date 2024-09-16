@@ -3,20 +3,23 @@ import { productApi } from "./productAPI";
 import { sectionApi } from "./sectionAPI";
 import { adminApi } from "./adminApi";
 import { blogApi } from "./blogApi";
+import { ordersApi } from "./ordersApi";
 
 export const store = configureStore({
     reducer: {
         [productApi.reducerPath]: productApi.reducer,
         [sectionApi.reducerPath]: sectionApi.reducer,
         [adminApi.reducerPath]: adminApi.reducer,
-        [blogApi.reducerPath]: blogApi.reducer
+        [blogApi.reducerPath]: blogApi.reducer,
+        [ordersApi.reducerPath]: ordersApi.reducer
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware()
             .concat(productApi.middleware)
             .concat(sectionApi.middleware)
             .concat(adminApi.middleware)
-            .concat(blogApi.middleware),
+            .concat(blogApi.middleware)
+            .concat(ordersApi.middleware),
 });
 
 export default store;

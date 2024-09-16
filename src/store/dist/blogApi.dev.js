@@ -55,7 +55,7 @@ var blogApi = (0, _react.createApi)({
       deletePost: build.mutation({
         query: function query(id) {
           return {
-            url: "posts?id=".concat(id),
+            url: "admin/posts?id=".concat(id),
             method: 'DELETE'
           };
         }

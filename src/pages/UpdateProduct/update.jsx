@@ -43,7 +43,7 @@ export function Update() {
     const [isSubCategoryOpen, setIsSubCategoryOpen] = useState(false);
     const [categoryId, setCategoryId] = useState('')
     const [subCategoryId, setSubCategoryId] = useState('')
-    
+
 
     useEffect(() => {
         // Refetch product data when component mounts
@@ -209,10 +209,10 @@ export function Update() {
                                                 key={section._id}
                                                 onClick={(e) => {
                                                     e.stopPropagation();
-                                                    handleSectionSelect(section._id, section.name);
+                                                    handleSectionSelect(section._id, section?.name);
                                                 }}
                                             >
-                                                {section.name}
+                                                {section?.name}
                                             </span>
                                         ))
                                         : 'Немає доступних категорій'}

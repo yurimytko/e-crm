@@ -1,17 +1,22 @@
-import { NavBar } from "../../components/NavBar/nav"
-import "./dist/orders.css"
+import { NavBar } from "../../components/NavBar/nav";
+import "./dist/orders.css";
+import { OrderCard } from "../../components/OrderCard/orderCard";
+import { useGetOrdersQuery } from "../../store/ordersApi";
 
-import { OrderCard } from "../../components/OrderCard/orderCard"
+export function OrdersPage() {
+    const { data: orders = [], isLoading, error } = useGetOrdersQuery();
 
-export function OrdersPage(){
+    if (isLoading) {
+        return <div>Loading...</div>;
+    }
 
-    
+    if (error) {
+        return <div>Error loading orders: {error.message}</div>;
+    }
 
-
-
-    return(
+    return (
         <div className="orders_page">
-            <NavBar/>
+            <NavBar />
             <div className="table_part">
                 <div className="page_title">Список замовлень</div>
                 <div className="control_panel">
@@ -25,9 +30,8 @@ export function OrdersPage(){
                     </div>
                 </div>
                 <div className="table_order_section">
-                    <div className="table_titles" >HT</div>
+                    <div className="table_titles">HT</div>
                     <div className="table_titles">Дата створення</div>
-                    <div className="table_titles">Дата редагування </div>
                     <div className="table_titles">ПІБ</div>
                     <div className="table_titles">Телефон</div>
                     <div className="table_titles">Доставка</div>
@@ -36,13 +40,16 @@ export function OrdersPage(){
                     <div className="table_titles">Оплата</div>
                     <div className="table_titles">Тип оплати</div>
                     <div className="table_titles">Коментар до замовлення</div>
+                    <div className="table_titles">Коментар від менеджера</div>
                     <div className="table_titles">Статус</div>
-
+                    
                 </div>
                 <div className="table">
-
+                    {orders.orders.map((order) => (
+                        <OrderCard key={order.id} order={order} />
+                    ))}
                 </div>
             </div>
         </div>
-    )
+    );
 }
