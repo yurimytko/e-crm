@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.useGetOrdersQuery = exports.ordersApi = void 0;
+exports.usePutOrderMutation = exports.useDeleteOrderMutation = exports.useGetOrdersQuery = exports.ordersApi = void 0;
 
 var _react = require("@reduxjs/toolkit/query/react");
 
@@ -28,10 +28,31 @@ var ordersApi = (0, _react.createApi)({
         query: function query() {
           return 'orders';
         }
+      }),
+      deleteOrder: build.mutation({
+        query: function query(body) {
+          return {
+            url: "https://superogshmal.pp.ua/admin/orders?id=".concat(body.id),
+            method: 'DELETE'
+          };
+        }
+      }),
+      putOrder: build.mutation({
+        query: function query(body) {
+          return {
+            url: "orders?id=".concat(body.id),
+            method: "PUT",
+            body: body
+          };
+        }
       })
     };
   }
 });
 exports.ordersApi = ordersApi;
-var useGetOrdersQuery = ordersApi.useGetOrdersQuery;
+var useGetOrdersQuery = ordersApi.useGetOrdersQuery,
+    useDeleteOrderMutation = ordersApi.useDeleteOrderMutation,
+    usePutOrderMutation = ordersApi.usePutOrderMutation;
+exports.usePutOrderMutation = usePutOrderMutation;
+exports.useDeleteOrderMutation = useDeleteOrderMutation;
 exports.useGetOrdersQuery = useGetOrdersQuery;

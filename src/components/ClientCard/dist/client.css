@@ -25,5 +25,9 @@
   align-items: center;
 }
 .user_control {
+  display: flex;
+  justify-content: space-around;
+}
+.user_control img {
   cursor: pointer;
 }

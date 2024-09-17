@@ -236,10 +236,10 @@ export function Update() {
                                                     key={subsection._id}
                                                     onClick={(e) => {
                                                         e.stopPropagation();
-                                                        handleSubSectionSelect(subsection, subsection);
+                                                        handleSubSectionSelect(subsection._id, subsection.name);
                                                     }}
                                                 >
-                                                    {subsection}
+                                                    {subsection.name}
                                                 </span>
                                             ))
                                             : 'Немає доступних підкатегорій'}

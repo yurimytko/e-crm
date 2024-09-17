@@ -1,6 +1,8 @@
 import "./dist/client.css"
 import { useState } from "react";
 
+import { NavLink } from "react-router-dom";
+
 import { useDeleteUserMutation } from "../../store/adminApi";
 
 export function ClientCard({ user }) {
@@ -136,6 +138,8 @@ export function ClientCard({ user }) {
             <div className="table_info_c">{user.city}</div>
             <div className="table_info_c">001</div>
             <div className="user_control">
+                <NavLink to={`${user._id}`}><img src="/img/More Info.svg" alt="" /></NavLink>
+                <div className="sep_line"></div>
                 <img src="/img/Delete.svg" onClick={deleteUsers} alt="" />
             </div>
 

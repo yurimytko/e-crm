@@ -13,7 +13,7 @@ const generateRandomArticle = () => {
 
 export function AddProductMenu() {
     const [formData, setFormData] = useState({
-        photo: 'abs',
+        image: 'abs',
         name: '',
         price: '',
         video: '',

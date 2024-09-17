@@ -22,9 +22,22 @@ export const ordersApi = createApi({
     endpoints: (build) => ({
         getOrders: build.query({
             query: ()=> 'orders'
+        }),
+        deleteOrder: build.mutation({
+            query: (body) => ({
+                url: `https://superogshmal.pp.ua/admin/orders?id=${body.id}`,
+                method: 'DELETE'
+            })
+        }),
+        putOrder: build.mutation({
+            query: (body) => ({
+                url: `orders?id=${body.id}`,
+                method: "PUT",
+                body
+            })
         })
     })
 
 })
 
-export const {useGetOrdersQuery} = ordersApi
+export const {useGetOrdersQuery, useDeleteOrderMutation, usePutOrderMutation} = ordersApi

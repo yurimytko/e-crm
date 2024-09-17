@@ -37,10 +37,13 @@ export const adminApi = createApi({
                 url: `admin/users?id=${body.id}`,
                 method: 'DELETE',
             })
+        }),
+        getUserById: build.query({
+            query: (body) => `admin/users?id=${body.id}`,
         })
     })
 
 }) 
 
 
-export const {useSingInMutation, useGetUsersQuery, useDeleteUserMutation} = adminApi
+export const {useSingInMutation, useGetUsersQuery, useDeleteUserMutation, useGetUserByIdQuery} = adminApi

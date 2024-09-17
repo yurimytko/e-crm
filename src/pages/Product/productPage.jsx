@@ -6,6 +6,7 @@ import { useGetProductsQuery } from "../../store";
 import { Loader } from "../../components/Loader/loader";
 import { useState, useEffect, useRef } from "react";
 import { useDeleteProductsMutation } from "../../store";
+import { useLazyExportProductQuery } from "../../store/exportApi";
 
 export function ProductPage() {
     const [page, setPage] = useState(1);
@@ -18,6 +19,9 @@ export function ProductPage() {
     const [url, setUrl] = useState('')
     const [article, setArticle] = useState()
     const productsSectionRef = useRef()
+
+    const [triggerExport, { data, error, isloading }] = useLazyExportProductQuery();
+    const [exportData, setExportData] = useState(null);
 
     const { data: products = [], isLoading, isFetching } = useGetProductsQuery(`?${url}`);
 
@@ -33,6 +37,34 @@ export function ProductPage() {
     if (isLoading) {
         return <Loader />;
     }
+
+    const handleClick = async () => {
+        try {
+            const result = await triggerExport(); // Trigger the query manually
+
+            if (result.error) {
+                console.error("Error exporting product:", result.error);
+            } else {
+                console.log("Raw CSV Data:", result.data); // Log the raw CSV data
+
+                // Create a Blob from the CSV string
+                const blob = new Blob([result.data], { type: 'text/csv;charset=utf-8;' });
+
+                // Create a link and trigger a download
+                const link = document.createElement('a');
+                const url = URL.createObjectURL(blob);
+                link.href = url;
+                link.setAttribute('download', 'Продукти.csv');  // Set filename
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+        } catch (err) {
+            console.error("Error exporting product:", err);
+        }
+    };
+
+
 
     const handleButtonClick = () => {
         setIsSelected(!isSelected);
@@ -94,6 +126,8 @@ export function ProductPage() {
 
 
 
+
+
     return (
         <div className="product_page">
             <NavBar />
@@ -118,7 +152,7 @@ export function ProductPage() {
                         }`}
                         onClick={() => handleColumnClick("article")}>Артикул
                         {filterMenus["article"] && (
-                            <div onClick={(e)=> {e.stopPropagation()}} className="filter_menu">
+                            <div onClick={(e) => { e.stopPropagation() }} className="filter_menu">
                                 <input onKeyDown={articelFilter} type="text" placeholder="Артикуль" />
                             </div>
                         )}</div>
@@ -129,9 +163,11 @@ export function ProductPage() {
                     <div className={`table_titles`}>Ціна</div>
                     <div className="table_titles">Кількість</div>
                     <div className={`table_titles`}>Наявність</div>
+                    <div className="export_btn" onClick={handleClick}><img src="/img/Export CSV.svg" alt="" /></div>
+
                 </div>
                 <div className="products_section" ref={productsSectionRef} onScroll={handleScroll}>
-                    {!isLoading && products.products.length > 0 ? (
+                    {!isLoading && products?.products?.length > 0 ? (
                         products.products.map((product, index) => (
                             <ProductCard
                                 isSelected={isSelected}
@@ -144,8 +180,6 @@ export function ProductPage() {
                     ) : (
                         !isLoading && <div className="no_products">Немає доступних продуктів</div>
                     )}
-
-                    {isFetching && <div>Loading more products...</div>}
                 </div>
 
             </div >

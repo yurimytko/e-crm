@@ -8,7 +8,7 @@ import { useState } from 'react';
 export default function AddCategory(){
 
     const [name, setName] = useState('')
-    const [photo,setPhoto] = useState('eqweb')
+    const [image,setPhoto] = useState('eqweb')
 
     const [createCategory, {data, isLoading, error}] = usePostSectionMutation()
 
@@ -27,7 +27,7 @@ export default function AddCategory(){
     const addSection = async() => {
         try{
             const category ={
-                photo,
+                image,
                 name
             }
 
