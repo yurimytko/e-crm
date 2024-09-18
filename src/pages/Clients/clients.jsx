@@ -8,7 +8,6 @@ import { useState } from "react"; // Add this if needed
 export function Clients() {
   // Fetch users
   const { data: usersData, isLoading: usersLoading, error: usersError } = useGetUsersQuery();
-
   // Lazy query for export
   const [triggerExport, { isLoading: exportLoading }] = useLazyExportUsersQuery();
 
@@ -72,7 +71,7 @@ export function Clients() {
           {usersLoading && <p>Loading clients...</p>}
           {usersError && <p>Error loading clients: {usersError.message}</p>}
           {usersData &&
-            usersData.map((user) => <ClientCard key={user.id} user={user} />)}
+            usersData.users.map((user) => <ClientCard key={user.id} user={user} />)}
         </div>
       </div>
     </div>

@@ -2,12 +2,14 @@ import { NavLink, useParams } from 'react-router-dom';
 import { NavBar } from '../../components/NavBar/nav';
 import './dist/userPage.css';
 import { useGetUserByIdQuery } from '../../store/adminApi';
+import { UserOrder } from '../../components/UserOrderCard/userOrder';
+import { Loader } from '../../components/Loader/loader';
 
 export function UserPage() {
     const { userId } = useParams();
     const { data: user = {}, isLoading, error } = useGetUserByIdQuery({ id: userId });
 
-    if (isLoading) return <div>Loading...</div>;
+    if (isLoading) return <Loader />;
     if (error) return <div>Error loading user data</div>;
 
     const userData = user?.user?.[0];
@@ -15,6 +17,7 @@ export function UserPage() {
     if (!userData) {
         return <div>No user found</div>;
     }
+
 
     const formatedDate = new Date(userData.createdAt).toLocaleDateString();
 
@@ -30,7 +33,7 @@ export function UserPage() {
                 </div>
                 <div className="about_user">
                     <div className="info_user_con">
-                        <span className="info_user_span">Віктор Павлович Онищенко</span>
+                        <span className="info_user_span">{userData.fullname}</span>
                         <span className="info_user_span">Дата реєстрації: {formatedDate}</span>
                     </div>
                     <div className="info_user_con">
@@ -42,6 +45,19 @@ export function UserPage() {
                     </div>
                 </div>
                 <span className="recent_orders">Останні замовлення</span>
+
+                <div className="user_order_con">
+                    {
+                        userData.history.map((item, index)=> (
+                            <UserOrder item = {item} />
+
+                        ))
+                    }
+
+
+
+                </div>
+
             </div>
         </div>
     );

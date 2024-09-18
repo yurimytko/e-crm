@@ -19,22 +19,30 @@ export const ordersApi = createApi({
           }
     }),
 
+    tagTypes: ['Orders'],
+
     endpoints: (build) => ({
         getOrders: build.query({
-            query: ()=> 'orders'
+            query: ()=> 'orders',
+            providesTags: ['Orders'],
+
         }),
         deleteOrder: build.mutation({
             query: (body) => ({
                 url: `https://superogshmal.pp.ua/admin/orders?id=${body.id}`,
                 method: 'DELETE'
-            })
+            }),
+            invalidatesTags: ['Orders'],
+
         }),
         putOrder: build.mutation({
             query: (body) => ({
                 url: `orders?id=${body.id}`,
                 method: "PUT",
                 body
-            })
+            }),
+            invalidatesTags: ['Orders'],
+
         })
     })
 

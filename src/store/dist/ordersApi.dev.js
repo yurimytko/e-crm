@@ -22,12 +22,14 @@ var ordersApi = (0, _react.createApi)({
       return headers;
     }
   }),
+  tagTypes: ['Orders'],
   endpoints: function endpoints(build) {
     return {
       getOrders: build.query({
         query: function query() {
           return 'orders';
-        }
+        },
+        providesTags: ['Orders']
       }),
       deleteOrder: build.mutation({
         query: function query(body) {
@@ -35,7 +37,8 @@ var ordersApi = (0, _react.createApi)({
             url: "https://superogshmal.pp.ua/admin/orders?id=".concat(body.id),
             method: 'DELETE'
           };
-        }
+        },
+        invalidatesTags: ['Orders']
       }),
       putOrder: build.mutation({
         query: function query(body) {
@@ -44,7 +47,8 @@ var ordersApi = (0, _react.createApi)({
             method: "PUT",
             body: body
           };
-        }
+        },
+        invalidatesTags: ['Orders']
       })
     };
   }

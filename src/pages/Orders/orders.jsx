@@ -5,14 +5,21 @@ import { useGetOrdersQuery, useDeleteOrderMutation } from "../../store/ordersApi
 import { Loader } from "../../components/Loader/loader";
 import { useLazyExportOrdersQuery } from "../../store/exportApi";
 import { useState, useEffect } from "react";
+import { UpdateOrder } from "../../components/UpdateOrder/upOrder";
 
 export function OrdersPage() {
     const [selectedIds, setSelectedIds] = useState([]);
     const [isSelected, setIsSelected] = useState(false);
 
+    const [selectedOrder, setSelectedOrder] = useState(null);
+
     const { data: orders = [], isLoading, error } = useGetOrdersQuery();
     const [deleteOrders] = useDeleteOrderMutation();
     const [triggerExport, { isLoading: exportLoading }] = useLazyExportOrdersQuery();
+
+    useEffect(() => {
+        console.log(selectedOrder)
+    },[selectedOrder])
 
     useEffect(() => {
         console.log("Selected IDs:", selectedIds); // Logs selectedIds to monitor changes
@@ -24,6 +31,8 @@ export function OrdersPage() {
 
     if (error) {
     }
+
+    
 
     const handleClick = async () => {
         try {
@@ -72,6 +81,19 @@ export function OrdersPage() {
             console.error(e);
         }
     };
+
+
+    const handleEditClick = (order) => {
+        setSelectedOrder(order);
+        const menuElement = document.getElementById("update_order");
+        menuElement.style.display = "flex";
+
+        setTimeout(() => {
+            menuElement.style.opacity = "1";
+
+        }, 300);
+    };
+
 
     return (
         <div className="orders_page">
@@ -123,6 +145,7 @@ export function OrdersPage() {
                                 isSelected={isSelected}
                                 key={order.id}
                                 order={order}
+                                handleEditClick= {handleEditClick}
                             />
                         ))
                     ) : (
@@ -130,6 +153,7 @@ export function OrdersPage() {
                     )}
                 </div>
             </div>
+            <UpdateOrder order= {selectedOrder}/>
         </div>
     );
 }

@@ -22,6 +22,7 @@
   width: 100%;
 }
 .table_info_o {
+  position: relative;
   height: 9vh;
   background: rgba(187,237,210,0.5);
   display: flex;
@@ -40,4 +41,15 @@
 }
 .order_card:nth-child(even) #id {
   background: rgba(119,190,151,0.5);
+}
+.dropdown_menu {
+  width: 7vw;
+  display: flex;
+  justify-content: space-around;
+  flex-direction: column;
+  height: 8vh;
+  position: absolute;
+  z-index: 5;
+  top: 9vh;
+  background: #fff;
 }

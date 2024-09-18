@@ -2,18 +2,45 @@ import "./dist/orderCard.css";
 import { useState } from "react";
 import { useDeleteOrderMutation, usePutOrderMutation } from "../../store/ordersApi";
 
-export function OrderCard({ order, isSelected, handleCheckboxChange }) {
+export function OrderCard({ order, isSelected, handleCheckboxChange, handleEditClick }) {
 
     const [isEditingName, setIsEditingName] = useState(false);
     const [isEditingPhone, setIsEditingPhone] = useState(false);
     const [isEditingCity, setIsEditingCity] = useState(false);
-
-
+    const [isEditingcomment, setIsEdittingComment] = useState(false);
+    const [isEditingAddress, setIsEditingAddress] = useState(false);
 
     const [name, setName] = useState(order.fullname);
     const [phone, setPhone] = useState(order.phone);
     const [city, setCity] = useState(order.city);
+    const [comment, setComment] = useState(order.managerComment);
+    const [address, setAddress] = useState(order.address)
+    const [selectedDeliveryType, setSelectedDeliveryType] = useState(null);
 
+    const [menuVisible, setMenuVisible] = useState(false);
+
+    const handleClick = () => {
+        setMenuVisible(!menuVisible);
+    };
+
+
+    const updateDelivery = async(deliveryType) => {
+
+        const requestPayload = deliveryType === 'Нова пошта' ? 'NP' : 'UKRP';
+
+        try{
+            await putOrder({id: order._id,deliveryType: requestPayload});
+        }catch(e){
+
+        }
+    }
+
+    const handleMenuItemClick = (deliveryType) => {
+        setSelectedDeliveryType(deliveryType);
+        setMenuVisible(false);
+        // Відправити запит з вибраним значенням
+        updateDelivery(deliveryType);
+    };
 
 
 
@@ -41,6 +68,18 @@ export function OrderCard({ order, isSelected, handleCheckboxChange }) {
         setIsEditingName(false); // Deactivate editing mode on blur
     };
 
+    const handleDoubleClickAddress = () => {
+        setIsEditingAddress(true); // Activate editing mode
+    };
+
+    const handleChangeAddress = (e) => {
+        setAddress(e.target.value); // Update name on text change
+    };
+
+    const handleBlurAddress = () => {
+        setIsEditingAddress(false); // Deactivate editing mode on blur
+    };
+
     const handleDoubleClickPhone = () => {
         setIsEditingPhone(true); // Activate editing mode
     };
@@ -65,11 +104,27 @@ export function OrderCard({ order, isSelected, handleCheckboxChange }) {
         setIsEditingCity(false); // Deactivate editing mode on blur
     };
 
+
+    const handleDoubleClickComment = () => {
+        setIsEdittingComment(true); // Activate editing mode
+    };
+
+    const handleChangeComment = (e) => {
+        setComment(e.target.value); // Update name on text change
+    };
+
+    const handleBlurComment = () => {
+        setIsEdittingComment(false); // Deactivate editing mode on blur
+    };
+
     const handleKeyPress = async (e) => {
         if (e.key === 'Enter') {
             setIsEditingName(false); // Deactivate editing mode on Enter
             setIsEditingPhone(false);
             setIsEditingCity(false) // Deactivate editing mode on Enter
+            setIsEdittingComment(false) // Deactivate editing mode on Enter
+            setIsEditingAddress(false)
+
 
 
             try {
@@ -78,6 +133,8 @@ export function OrderCard({ order, isSelected, handleCheckboxChange }) {
                     fullname: name,
                     phone: phone,
                     city: city,
+                    managerComment: comment,
+                    address: address,
 
 
                 };
@@ -87,6 +144,8 @@ export function OrderCard({ order, isSelected, handleCheckboxChange }) {
             }
         }
     };
+
+
 
     return (
         <div className="order_card">
@@ -105,7 +164,7 @@ export function OrderCard({ order, isSelected, handleCheckboxChange }) {
                     onKeyDown={handleKeyPress}
                 />
             ) : (
-                <div className="table_info" onDoubleClick={handleDoubleClickName}>
+                <div className="table_info_o" onDoubleClick={handleDoubleClickName}>
                     {name}
                 </div>
             )}
@@ -119,11 +178,21 @@ export function OrderCard({ order, isSelected, handleCheckboxChange }) {
                     onKeyDown={handleKeyPress}
                 />
             ) : (
-                <div className="table_info" onDoubleClick={handleDoubleClickPhone}>
+                <div className="table_info_o" onDoubleClick={handleDoubleClickPhone}>
                     {phone}
                 </div>
             )}
-            <div className="table_info_o">{order.deliveryType}</div>
+
+            <div className="table_info_o" onClick={handleClick}>
+                {order.deliveryType === 'NP' ? 'Нова пошта' : 'Укр пошта'}
+                {menuVisible && (
+                    <div className="dropdown_menu">
+                        <span  onClick={() => handleMenuItemClick('Нова пошта')}>Нова пошта</span>
+                        <span onClick={() => handleMenuItemClick('Укр пошта')}>Укр пошта</span>
+                    </div>
+                )}
+            </div>
+
             {isEditingCity ? (
                 <input
                     type="text"
@@ -134,18 +203,51 @@ export function OrderCard({ order, isSelected, handleCheckboxChange }) {
                     onKeyDown={handleKeyPress}
                 />
             ) : (
-                <div className="table_info" onDoubleClick={handleDoubleClickCity}>
+                <div className="table_info_o" onDoubleClick={handleDoubleClickCity}>
                     {city}
                 </div>
             )}
-            <div className="table_info_o">{order.address}</div>
-            <div className="table_info_o">{order.payment}</div>
+            {isEditingAddress ? (
+                <input
+                    type="text"
+                    value={address}
+                    onChange={handleChangeAddress}
+                    onBlur={handleBlurAddress}
+                    autoFocus
+                    onKeyDown={handleKeyPress}
+                />
+            ) : (
+                <div className="table_info_o" onDoubleClick={handleDoubleClickAddress}>
+                    {address}
+                </div>
+            )}
+            <div className="table_info_o">
+                {order.payment ? 'Успішна' : 'Відсутня'}
+            </div>
             <div className="table_info_o">1001</div>
             <div className="table_info_o">{order.customerComment}</div>
-            <div className="table_info_o">1001</div>
+            {isEditingcomment ? (
+                <input
+                    type="text"
+                    value={comment}
+                    onChange={handleChangeComment}
+                    onBlur={handleBlurComment}
+                    autoFocus
+                    onKeyDown={handleKeyPress}
+                />
+            ) : (
+                <div className="table_info_o" onDoubleClick={handleDoubleClickComment}>
+                    {order.managerComment ? order.managerComment : '—'}
+                </div>
+            )}
+
+
+            {/* <div className="table_info_o">
+                {order.managerComment ? order.managerComment : '—'}
+            </div> */}
             <div className="table_info_o">{order.status}</div>
             <div className="card_control_order">
-                <img src="./img/Edit.svg" alt="" />
+                <img onClick={() => { handleEditClick(order) }} src="./img/Edit.svg" alt="" />
                 <div className="sep_line"></div>
                 <img src="./img/Delete.svg" onClick={handleDeleteOrder} alt="" />
             </div>
