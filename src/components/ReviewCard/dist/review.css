@@ -1,0 +1,92 @@
+.review_card {
+  margin-top: 5vh;
+}
+.r_card {
+  position: relative;
+  width: 50vw;
+  padding: 2vh;
+  box-sizing: border-box;
+  background: #fff;
+  border-radius: 1vh;
+  margin-top: 2vh;
+  font-family: Jura;
+  font-size: 2vh;
+  font-weight: 400;
+}
+.date {
+  position: absolute;
+  top: 2vh;
+  right: 1vw;
+  font-family: Jura;
+  font-size: 1.5vh;
+  font-weight: 700;
+  color: #b3b3b3;
+}
+.rev_name {
+  margin-bottom: 2vh;
+}
+.answer {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+}
+.res_card {
+  position: relative;
+  width: 40vw;
+  padding: 2vh;
+  box-sizing: border-box;
+  background: #fff;
+  border-radius: 1vh;
+  margin-top: 2vh;
+  font-family: Jura;
+  font-size: 2vh;
+  font-weight: 400;
+  display: flex;
+  flex-direction: column;
+}
+.who_name {
+  font-family: Jura;
+  font-size: 2vh;
+  font-weight: 700;
+}
+.control_review {
+  margin-top: 3vh;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.control_review input {
+  width: 80%;
+  display: block;
+  border: none;
+  outline: none;
+  box-shadow: inset 0px 0px 0.6vh 0px rgba(0,0,0,0.308);
+  height: 6vh;
+  border-radius: 1vh;
+  padding: 0 0 0 1vw;
+  box-sizing: border-box;
+  font-family: Jura;
+  font-size: 2.4vh;
+  font-weight: 500;
+}
+.control_review button {
+  cursor: pointer;
+  background: #219653;
+  color: #fff;
+  font-family: Jura;
+  font-size: 2vh;
+  font-weight: 700;
+  height: 6vh;
+  width: 8vw;
+  border-radius: 1vh;
+  border: none;
+}
+.delete_rew {
+  cursor: pointer;
+  position: absolute;
+  bottom: 1vh;
+  right: 1vh;
+}
+.text_rew {
+  width: 90%;
+}

@@ -10,6 +10,10 @@ import { Blog } from './pages/Blog/blog';
 import { BlogPage } from './pages/BlogPage/blogPage';
 import { SubSection } from './pages/SubSection/subSection';
 import { UserPage } from './pages/UserPage/userPage';
+import { PacksPage } from './pages/PacksPage/packsPage';
+import { ChatPage } from './pages/Chat/caht';
+import { ReviewsPage } from './pages/Reviews/reviews';
+import { UserChat } from './pages/UserChat/UserChat';
 
 function App() {
   return (
@@ -26,6 +30,10 @@ function App() {
           <Route path='/blog/:blogId' element={<BlogPage/>}/>
           <Route path='/catalog/:catalogId' element={<SubSection/>}/>
           <Route path='/clients/:userId' element={<UserPage/>}/>
+          <Route path='/packs' element={<PacksPage/>}/>
+          <Route path='/chat' element={<ChatPage/>}/>
+          <Route path='/chat/user' element={<UserChat/>}/>
+          <Route path='/reviews' element={<ReviewsPage/>}/>
         </Routes>
       </Router>
     </div>

@@ -4,14 +4,12 @@ import "./dist/clients.css";
 import { useGetUsersQuery } from "../../store/adminApi";
 import { useLazyExportUsersQuery } from "../../store/exportApi";
 import { useState } from "react"; // Add this if needed
+import { Loader } from "../../components/Loader/loader";
 
 export function Clients() {
-  // Fetch users
   const { data: usersData, isLoading: usersLoading, error: usersError } = useGetUsersQuery();
-  // Lazy query for export
   const [triggerExport, { isLoading: exportLoading }] = useLazyExportUsersQuery();
 
-  // Handle export button click
   const handleClick = async () => {
     try {
       const result = await triggerExport(); // Trigger the query manually
@@ -68,7 +66,7 @@ export function Clients() {
 
         {/* Display users */}
         <div className="client_section">
-          {usersLoading && <p>Loading clients...</p>}
+          {usersLoading && <Loader/>}
           {usersError && <p>Error loading clients: {usersError.message}</p>}
           {usersData &&
             usersData.users.map((user) => <ClientCard key={user.id} user={user} />)}

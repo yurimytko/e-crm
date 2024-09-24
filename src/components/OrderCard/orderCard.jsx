@@ -38,7 +38,6 @@ export function OrderCard({ order, isSelected, handleCheckboxChange, handleEditC
     const handleMenuItemClick = (deliveryType) => {
         setSelectedDeliveryType(deliveryType);
         setMenuVisible(false);
-        // Відправити запит з вибраним значенням
         updateDelivery(deliveryType);
     };
 

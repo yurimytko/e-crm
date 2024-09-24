@@ -9,7 +9,7 @@ export function UserOrder({item}) {
     const formData =  new Date(item.createdAt).toLocaleDateString()
 
     return (
-        <div class="parent">
+        <div class="parent_user">
             <div class="div1 grid_title_column">нз</div>
             <div class="div2 grid_title_column">дата створення</div>
             <div class="div3 grid_title_column">Доставка</div>
@@ -20,7 +20,7 @@ export function UserOrder({item}) {
             <div class="div8 grid_title_column">Коментар від менеджера</div>
             <div class="div9 grid_title_column">Коментар до замовлення</div>
             <div class="div10">Виконано</div>
-            <div class="div11 order_id"> qwer</div>
+            <div class="div111 order_id"> qwer</div>
             <div class="div12">
                 <span>Разом</span>
                 <span>{item.cost} грн</span>

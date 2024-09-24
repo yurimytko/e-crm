@@ -7,6 +7,7 @@ import { CatalogCard } from "../../components/CatalogCard/catalogCard";
 
 import { useGetSectionsQuery } from "../../store";
 import AddCategory from "../../components/AddCategory/addCat";
+import { Loader } from "../../components/Loader/loader";
 
 export function Catalog() {
     const { data = [], isLoading } = useGetSectionsQuery()
@@ -37,6 +38,7 @@ export function Catalog() {
                     <div onClick={openAddMenu} className="add_catalog">
                         <img src="./img/додати.svg" alt="" />
                     </div>
+                    {isLoading && <Loader/>}
                     {!isLoading && data.sections && data.sections.length > 0 ? (
                         data.sections.map((sections) => (
                             <CatalogCard key={sections._id} product={sections} index={data.sections.indexOf(sections)} />

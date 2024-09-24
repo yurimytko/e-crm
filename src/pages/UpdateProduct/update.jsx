@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom'; // Import useNavigate
 import { NavBar } from '../../components/NavBar/nav';
 import {
     useGetProductQuery,
     usePutProductMutation,
     useGetSectionsQuery,
-    useGetSubSectionQuery
 } from '../../store';
 import './dist/update.css';
 import AddCategory from '../../components/AddCategory/addCat';
+import { Loader } from '../../components/Loader/loader';
 
 export function Update() {
     const { id } = useParams();
+    const navigate = useNavigate(); // Initialize navigate
 
     // Fetching product data
     const {
@@ -46,24 +47,28 @@ export function Update() {
 
 
     useEffect(() => {
-        // Refetch product data when component mounts
         refetchProduct();
     }, [refetchProduct]);
 
     useEffect(() => {
         if (productData?.product) {
-            setName(productData.product.name);
-            setPrice(productData.product.price);
-            setDescr(productData.product.description);
-            setQuantity(productData.product.quantity);
-            setVideo(productData.product.video);
-            setSelectedCategory(productData.product.section.section.name)
-            setCategoryId(productData.product.section.section._id)
-            setSubCategoryId(productData.product.section?.subSections)
+            setName(productData.product.name || '');
+            setPrice(productData.product.price || '');
+            setDescr(productData.product.description || '');
+            setQuantity(productData.product.quantity || '');
+            setVideo(productData.product.video || '');
+
+            // Check if section and section.name exist before accessing them
+            const sectionName = productData.product.section?.section?.name || '';
+            const sectionId = productData.product.section?.section?._id || '';
+            const subSections = productData.product.section?.subSection?.name || [];
+
+            setSelectedCategory(sectionName);
+            setCategoryId(sectionId);
+            setSubCategoryId(subSections);
         }
     }, [productData]);
 
-    if (productLoading) return <div>Loading...</div>;
     if (productError) return <div>Failed to load product.</div>;
 
     const formattedDate = new Date(productData?.product?.createdAt).toLocaleDateString('uk-UA', {
@@ -73,10 +78,13 @@ export function Update() {
     });
 
     const handleClick = (index) => {
-        setActiveIndex(index);
+        if (index === 3) { // Assuming the "Відгуки" tab is at index 3
+            navigate('/reviews'); // Navigate to the reviews page
+        } else {
+            setActiveIndex(index);
+        }
     };
-
-    const points = ['Опис', 'Характеристика', 'Застосування'];
+    const points = ['Опис', 'Характеристика', 'Застосування', "Відгуки"];
 
     const handleUpdate = async () => {
         try {
@@ -158,12 +166,13 @@ export function Update() {
 
 
     const filteredSubSections = selectedCategory && sectionsData?.sections
-        ? sectionsData.sections.find(section => section.name === selectedCategory)?.subSections || []
+        ? sectionsData.sections.find(section => section?.name === selectedCategory)?.subSections || []
         : [];
 
     return (
         <div className="update_page">
             <NavBar />
+            {productLoading&&<Loader/>}
             <div className="update_field">
                 <div className="left_update">
                     <div className="carusel_block">
@@ -227,7 +236,7 @@ export function Update() {
                             <>
                                 <p className="setting_up">Під категорія</p>
                                 <div className="drop_down" onClick={toggleSubCategoryDropdown}>
-                                    {selectedSubCategory || 'Виберіть підкатегорію'}
+                                    {subCategoryId || 'Виберіть підкатегорію'}
                                     <img src="./img/Group 22.svg" alt="" />
                                     <div className={`drop ${isSubCategoryOpen ? 'open' : ''}`}>
                                         {filteredSubSections?.length > 0

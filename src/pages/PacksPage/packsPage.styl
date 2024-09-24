@@ -1,0 +1,56 @@
+.packs_page
+    display: flex
+    background: rgba(243, 243, 243, 1)
+.packs_window
+    padding: 7vh 0 0 2vw
+    box-sizing: border-box
+.control_packs
+    display: flex
+    gap 0.4vw
+    margin-top 6vh
+
+.parent {
+    margin-top 1.3vh
+    display: grid;
+    grid-template-columns:  3vw 2vw 5vw 9vw 11vw 10vw 5vw 5vw 5vw 1vw; // Checkbox column widened and placed first
+    grid-template-rows: 1fr;
+    grid-column-gap: 0.1vw;
+    grid-row-gap: 0px;
+}
+
+.div1 { grid-area: 1 / 1 / 2 / 2; }
+.div2 { grid-area: 1 / 2 / 2 / 3; }
+.div3 { grid-area: 1 / 3 / 2 / 4; }
+.div4 { grid-area: 1 / 4 / 2 / 5; }
+.div5 { grid-area: 1 / 5 / 2 / 6; }
+
+.div8 { grid-area: 1 / 6 / 2 / 7; }
+.div9 { grid-area: 1 / 7 / 2 / 8; }
+.div10 { grid-area: 1 / 8 / 2 / 9; }
+.div11 { grid-area: 1 / 9 / 2 / 10; }
+.div12 { grid-area: 1 / 10 / 2 / 11; }
+
+
+.packs_column_title
+    background: rgba(33, 150, 83, 1)
+    color white
+    height: 6vh
+    display: flex
+    justify-content: center
+    align-items: center
+    font-family: Inter;
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 18.15px;
+    text-align: center;
+
+.packs_export
+    padding: 0
+    width 3vw
+    cursor pointer
+    border 1px solid rgba(33, 150, 83, 1)
+    border-radius: 0 1vh 1vh 0vh
+    display: flex
+    justify-content: center
+    align-items: center
+    

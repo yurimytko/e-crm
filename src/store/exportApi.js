@@ -21,13 +21,25 @@ export const exportApi = createApi({
     }),
     endpoints: (build) => ({
         exportProduct: build.query({
-            query: () => 'export?collection=products' // Your export endpoint
+            query: () => 'export?collection=products'
+        }),
+        exportProductById: build.query({
+            query: (body) => `export?collection=products&id=${body.id}` 
         }),
         exportUsers: build.query({
-            query: () => 'export?collection=users' // Your export endpoint
+            query: () => 'export?collection=users' 
         }),
         exportOrders: build.query({
-            query: () => 'export?collection=orders' // Your export endpoint
+            query: () => 'export?collection=orders' 
+        }),
+        exportOrdersById: build.query({
+            query: (body) => `export?collection=orders&id=${body.id}` 
+        }),
+        exportPacks: build.query({
+            query: () => 'export?collection=packs' 
+        }),
+        exportPacksById: build.query({
+            query: (body) => `export?collection=packs&id=${body.id}` 
         }),
     })
 });
@@ -35,5 +47,9 @@ export const exportApi = createApi({
 export const {
     useLazyExportProductQuery,
     useLazyExportUsersQuery,
-    useLazyExportOrdersQuery
+    useLazyExportOrdersQuery,
+    useLazyExportProductByIdQuery,
+    useLazyExportOrdersByIdQuery,
+    useLazyExportPacksQuery,
+    useLazyExportPacksByIdQuery
 } = exportApi;

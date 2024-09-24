@@ -1,0 +1,23 @@
+.custommer_chat_card {
+  background: #fff;
+  width: 50vw;
+  border-radius: 1vh;
+  height: 9vh;
+  display: flex;
+  justify-content: space-between;
+  padding: 2vh 1vw;
+  box-sizing: border-box;
+}
+.c_date_c {
+  width: 6vw;
+}
+.customer_mes {
+  width: 80%;
+  font-family: Inter;
+  font-size: 1.3vh;
+  font-weight: 300;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}

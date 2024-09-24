@@ -3,7 +3,7 @@ import "./dist/orders.css";
 import { OrderCard } from "../../components/OrderCard/orderCard";
 import { useGetOrdersQuery, useDeleteOrderMutation } from "../../store/ordersApi";
 import { Loader } from "../../components/Loader/loader";
-import { useLazyExportOrdersQuery } from "../../store/exportApi";
+import { useLazyExportOrdersQuery, useLazyExportOrdersByIdQuery } from "../../store/exportApi";
 import { useState, useEffect } from "react";
 import { UpdateOrder } from "../../components/UpdateOrder/upOrder";
 
@@ -16,6 +16,7 @@ export function OrdersPage() {
     const { data: orders = [], isLoading, error } = useGetOrdersQuery();
     const [deleteOrders] = useDeleteOrderMutation();
     const [triggerExport, { isLoading: exportLoading }] = useLazyExportOrdersQuery();
+    const [triggerExportById] = useLazyExportOrdersByIdQuery()
 
     useEffect(() => {
         console.log(selectedOrder)
@@ -25,40 +26,43 @@ export function OrdersPage() {
         console.log("Selected IDs:", selectedIds); // Logs selectedIds to monitor changes
     }, [selectedIds]);
 
-    if (isLoading) {
-        return <Loader />;
-    }
-
-    if (error) {
-    }
 
     
 
     const handleClick = async () => {
         try {
-            const result = await triggerExport(); // Trigger the query manually
+            let result;
+            if (isSelected && selectedIds.length > 0) {
+                result = await triggerExportById({id:selectedIds.join(',')}); // Export by selected IDs
+            } else {
+                result = await triggerExport(); // Export without specific IDs
+            }
 
             if (result.error) {
-                console.error("Error exporting orders:", result.error);
+                console.error("Error exporting product:", result.error);
             } else {
-                console.log("Raw CSV Data:", result.data); // Log the raw CSV data
+                console.log("Raw CSV Data:", result.data);
 
-                const blob = new Blob([result.data], { type: "text/csv;charset=utf-8;" });
-                const link = document.createElement("a");
+                const blob = new Blob([result.data], { type: 'text/csv;charset=utf-8;' });
+
+                const link = document.createElement('a');
                 const url = URL.createObjectURL(blob);
                 link.href = url;
-                link.setAttribute("download", "Замовлення.csv"); // Set filename
+                link.setAttribute('download', 'Замовлення.csv');
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
             }
         } catch (err) {
-            console.error("Error exporting orders:", err);
+            console.error("Error exporting product:", err);
         }
     };
 
     const handleButtonClick = () => {
         setIsSelected(!isSelected);
+        if(isSelected === false){
+            setSelectedIds([])
+        }
     };
 
     const handleCheckboxChange = (event, id) => {
@@ -138,6 +142,7 @@ export function OrdersPage() {
                     </div>
                 </div>
                 <div className="table">
+                    {isLoading && <Loader/>}
                     {orders.orders ? (
                         orders.orders.map((order) => (
                             <OrderCard

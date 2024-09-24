@@ -1,5 +1,6 @@
 import { AddBlog } from "../../components/AddBlog/addBlog"
 import { BlogCard } from "../../components/BlogCard/blog"
+import { Loader } from "../../components/Loader/loader"
 import { NavBar } from "../../components/NavBar/nav"
 import { useGetPostsQuery } from "../../store/blogApi"
 import "./dist/blog.css"
@@ -28,7 +29,7 @@ export function Blog() {
                         <img src="./img/додати.svg" alt="" />
                     </div>
                     {isLoading ? (
-                        <p>Loading...</p>
+                        <Loader/>
                     ) : error ? (
                         <p>Error loading posts</p>
                     ) : (

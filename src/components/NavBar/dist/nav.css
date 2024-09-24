@@ -19,7 +19,7 @@
   margin-top: 3vh;
   height: 8.7vh;
   width: 100%;
-  background: #85d4a9;
+  background: #219653;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -27,12 +27,15 @@
   font-size: 3vh;
   font-weight: 700;
   transition: 0.3s ease-in-out;
+  color: #fff;
 }
 .links:hover {
-  background: #bce4ce;
+  background: #85d4a9;
+  color: #000;
 }
 .active {
-  background: #bce4ce;
+  background: #85d4a9;
+  color: #000;
 }
 a {
   text-decoration: none;

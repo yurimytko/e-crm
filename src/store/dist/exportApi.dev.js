@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.useLazyExportOrdersQuery = exports.useLazyExportUsersQuery = exports.useLazyExportProductQuery = exports.exportApi = void 0;
+exports.useLazyExportPacksByIdQuery = exports.useLazyExportPacksQuery = exports.useLazyExportOrdersByIdQuery = exports.useLazyExportProductByIdQuery = exports.useLazyExportOrdersQuery = exports.useLazyExportUsersQuery = exports.useLazyExportProductQuery = exports.exportApi = void 0;
 
 var _react = require("@reduxjs/toolkit/query/react");
 
@@ -30,20 +30,37 @@ var exportApi = (0, _react.createApi)({
       exportProduct: build.query({
         query: function query() {
           return 'export?collection=products';
-        } // Your export endpoint
-
+        }
+      }),
+      exportProductById: build.query({
+        query: function query(body) {
+          return "export?collection=products&id=".concat(body.id);
+        }
       }),
       exportUsers: build.query({
         query: function query() {
           return 'export?collection=users';
-        } // Your export endpoint
-
+        }
       }),
       exportOrders: build.query({
         query: function query() {
           return 'export?collection=orders';
-        } // Your export endpoint
-
+        }
+      }),
+      exportOrdersById: build.query({
+        query: function query(body) {
+          return "export?collection=orders&id=".concat(body.id);
+        }
+      }),
+      exportPacks: build.query({
+        query: function query() {
+          return 'export?collection=packs';
+        }
+      }),
+      exportPacksById: build.query({
+        query: function query(body) {
+          return "export?collection=packs&id=".concat(body.id);
+        }
       })
     };
   }
@@ -51,7 +68,15 @@ var exportApi = (0, _react.createApi)({
 exports.exportApi = exportApi;
 var useLazyExportProductQuery = exportApi.useLazyExportProductQuery,
     useLazyExportUsersQuery = exportApi.useLazyExportUsersQuery,
-    useLazyExportOrdersQuery = exportApi.useLazyExportOrdersQuery;
+    useLazyExportOrdersQuery = exportApi.useLazyExportOrdersQuery,
+    useLazyExportProductByIdQuery = exportApi.useLazyExportProductByIdQuery,
+    useLazyExportOrdersByIdQuery = exportApi.useLazyExportOrdersByIdQuery,
+    useLazyExportPacksQuery = exportApi.useLazyExportPacksQuery,
+    useLazyExportPacksByIdQuery = exportApi.useLazyExportPacksByIdQuery;
+exports.useLazyExportPacksByIdQuery = useLazyExportPacksByIdQuery;
+exports.useLazyExportPacksQuery = useLazyExportPacksQuery;
+exports.useLazyExportOrdersByIdQuery = useLazyExportOrdersByIdQuery;
+exports.useLazyExportProductByIdQuery = useLazyExportProductByIdQuery;
 exports.useLazyExportOrdersQuery = useLazyExportOrdersQuery;
 exports.useLazyExportUsersQuery = useLazyExportUsersQuery;
 exports.useLazyExportProductQuery = useLazyExportProductQuery;

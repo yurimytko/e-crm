@@ -92,7 +92,7 @@ export function ClientCard({ user }) {
 
     return (
         <div className="card">
-            <div className="table_info_c">001</div>
+            <div id="id" className="table_info_c">001</div>
             {isEditingName ? (
                 <input
                     type="text"

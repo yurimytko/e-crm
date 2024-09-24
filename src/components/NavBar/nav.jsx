@@ -14,6 +14,8 @@ export function NavBar(){
 
             <NavLink className="links" activeClassName ="active" to='/catalog'>Каталог</NavLink>
             <NavLink className="links" activeClassName ="active" to ='/clients'>Список клієнтів</NavLink>
+            <NavLink className="links" activeClassName ="active" to ='/packs'>Набори</NavLink>
+
             <NavLink className="links" activeClassName ="active" to ='/sign-in'>Увійти</NavLink>
 
         </div>

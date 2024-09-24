@@ -1,0 +1,49 @@
+.pack_card {
+    display: grid;
+    grid-template-columns: 3vw 2vw 5vw 9vw 11vw 10vw 5vw 5vw 5vw  3vw; // Checkbox column widened and placed first
+    grid-template-rows: 1fr;
+    grid-column-gap: 0.1vw;
+    grid-row-gap: 0px;
+}
+
+.delete_check {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    // Ensure checkbox stays centered
+}
+
+.packs_column_title_card {
+    position: relative;
+    height: 9vh;
+    background: rgba(187, 237, 210, 0.5);
+    display: flex;
+    overflow: auto;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-family: Inter;
+    font-size: 1.7vh;
+    font-weight: 400;
+}
+
+.packs_product {
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
+#id {
+    background: rgba(133, 212, 169, 0.5);
+}
+
+.pack_card:nth-child(even) .packs_column_title_card {
+    background: rgba(168, 214, 189, 0.5);
+}
+
+.pack_card:nth-child(even) #id {
+    background: rgba(119, 190, 151, 0.5);
+}
+
+.pack_card:hover .packs_control {
+    width: 6vw;
+}

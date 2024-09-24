@@ -1,0 +1,161 @@
+.add_packs {
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: rgba(0,0,0,0.308);
+  backdrop-filter: blur(2px);
+  transition: 0.4s ease;
+  opacity: 0;
+  display: none;
+  justify-content: center;
+  align-items: center;
+}
+.packs_modal {
+  position: relative;
+  width: 55vw;
+  height: 94vh;
+  background: #f3f3f3;
+  border-radius: 1vh;
+  padding: 0 1vw;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.left_modal_packs {
+  height: 90%;
+  width: 25vw;
+}
+.right_modal_packs {
+  height: 90%;
+  width: 25vw;
+}
+.packs_add_sep {
+  height: 90%;
+  width: 0.1vw;
+  background: #9c9c9c;
+}
+.img_drag_con {
+  margin: 2vh 0 0 0;
+  background: #fff;
+  width: 100%;
+  height: 22vh;
+  border-radius: 1vh;
+}
+.add_pack {
+  margin-top: 4vh;
+  cursor: pointer;
+  background: #219653;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 1vh;
+  border: none;
+  height: 5vh;
+  width: 6vw;
+  font-family: Inter;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 16.94px;
+  text-align: center;
+}
+.product_pack_con {
+  display: flex;
+  flex-direction: column;
+  gap: 1vh;
+  overflow-y: scroll;
+  height: 30vh;
+}
+.set {
+  margin: 2vh 0 2vh 0;
+}
+.product_pack_con::-webkit-scrollbar {
+  display: none;
+}
+.product_point {
+  user-select: none;
+  transition: 0.1s ease;
+  position: relative;
+  width: 100%;
+  padding: 2vh 0 2vh 5vw;
+  box-sizing: border-box;
+  background: #fff;
+  border-radius: 1vh;
+  font-family: Inter;
+  font-size: 2vh;
+  font-weight: 400;
+}
+.remove_img {
+  cursor: pointer;
+  border-radius: 1vh;
+  top: 0;
+  right: 0;
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 2vw;
+  background: #85d4a9;
+  transition: 0.1s ease;
+}
+.counter {
+  left: 0;
+  border-radius: 1vh;
+  top: 0;
+  position: absolute;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 100%;
+  width: 4vw;
+  background: #219653;
+  color: #fff;
+  overflow: hidden;
+}
+.remove_img img {
+  transition: 0.1s ease;
+  transform: rotate(45deg);
+}
+.product_point.selected {
+  background-color: #85d4a9; /* Замініть на будь-який колір для вибраного продукту */
+}
+.remove_img.selected {
+  background: #219653;
+}
+.remove_img.selected img {
+  transform: rotate(0);
+}
+.search_container {
+  position: relative;
+  width: 24vw;
+}
+.dropdown {
+  background: #fff;
+  position: absolute;
+  overflow: auto;
+  max-height: 15vh;
+  height: fit-content;
+  width: 100%;
+  top: 4vh;
+  left: 0;
+  z-index: 500;
+}
+.dropdown_item {
+  padding: 1vh 0;
+  cursor: pointer;
+  font-family: Inter;
+  font-size: 2vh;
+  font-weight: 400;
+  border-bottom: 0.1vh solid #000;
+}
+.product_point button {
+  cursor: pointer;
+  height: 100%;
+  border: none;
+  background: #219653;
+  color: #fff;
+}

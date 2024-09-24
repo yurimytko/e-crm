@@ -9,17 +9,10 @@ export function UserPage() {
     const { userId } = useParams();
     const { data: user = {}, isLoading, error } = useGetUserByIdQuery({ id: userId });
 
-    if (isLoading) return <Loader />;
-    if (error) return <div>Error loading user data</div>;
-
     const userData = user?.user?.[0];
 
-    if (!userData) {
-        return <div>No user found</div>;
-    }
-
-
-    const formatedDate = new Date(userData.createdAt).toLocaleDateString();
+    // Safely check if userData is available before accessing createdAt
+    const formatedDate = userData ? new Date(userData.createdAt).toLocaleDateString() : '';
 
     return (
         <div className='user_page'>
@@ -29,35 +22,33 @@ export function UserPage() {
                     <NavLink to={`/clients`}>Список клієнтів</NavLink>
                     <div className="sep_line_link"></div>
                     <span>Детальніше</span>
-
                 </div>
                 <div className="about_user">
-                    <div className="info_user_con">
-                        <span className="info_user_span">{userData.fullname}</span>
-                        <span className="info_user_span">Дата реєстрації: {formatedDate}</span>
-                    </div>
-                    <div className="info_user_con">
-                        <span className="info_user_span">{userData.phone}</span>
-                        <span className="info_user_span">Місто: {userData.city}</span>
-                    </div>
-                    <div className="info_user_con">
-                        <span className="info_user_span">{userData.email}</span>
-                    </div>
+                    {userData ? (
+                        <>
+                            <div className="info_user_con">
+                                <span className="info_user_span">{userData.fullname}</span>
+                                <span className="info_user_span">Дата реєстрації: {formatedDate}</span>
+                            </div>
+                            <div className="info_user_con">
+                                <span className="info_user_span">{userData.phone}</span>
+                                <span className="info_user_span">Місто: {userData.city}</span>
+                            </div>
+                            <div className="info_user_con">
+                                <span className="info_user_span">{userData.email}</span>
+                            </div>
+                        </>
+                    ) : (
+                        <Loader />
+                    )}
                 </div>
                 <span className="recent_orders">Останні замовлення</span>
-
                 <div className="user_order_con">
-                    {
-                        userData.history.map((item, index)=> (
-                            <UserOrder item = {item} />
-
-                        ))
-                    }
-
-
-
+                    {isLoading && <Loader />}
+                    {userData?.history?.map((item, index) => (
+                        <UserOrder key={index} item={item} />
+                    ))}
                 </div>
-
             </div>
         </div>
     );
