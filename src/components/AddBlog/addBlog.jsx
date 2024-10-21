@@ -7,35 +7,30 @@ export function AddBlog() {
   const [blogTitle, setTitle] = useState("");
   const [blogText, setText] = useState("");
   const [blogVideo, setVideo] = useState("");
-
-  const [formData, setFormData] = useState({
-    display: true, // Стан для радіо-кнопок
-  });
+  const [formData, setFormData] = useState({ display: true });
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
 
   const create = async () => {
     try {
-      const post = {
-        title: blogTitle,
-        text: blogText,
-        display: formData.display, // Додаємо значення радіо-кнопки до посту
-        image: imageFile,
-        video: blogVideo // Додаємо файл зображення до посту
-      };
-      
+      const post = new FormData(); // Create a FormData object
+      post.append("title", blogTitle);
+      post.append("text", blogText);
+      post.append("display", formData.display); // Append the display value
+      if (imageFile) {
+        post.append("image", imageFile); // Append the image file
+      }
+      post.append("video", blogVideo); // Append the video link
+
       await createPost(post);
-      window.location.reload()
+      window.location.reload();
     } catch (e) {
       console.error(e);
     }
   };
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      display: e.target.value === "true", // Преобразовуємо рядок в булеве значення
-    });
+    setFormData({ ...formData, display: e.target.value === "true" });
   };
 
   const closeAddMenu = () => {
@@ -43,13 +38,12 @@ export function AddBlog() {
     menuElement.style.opacity = "0";
     setTimeout(() => {
       menuElement.style.display = "none";
-
       // Reset all states when the menu is closed
       setTitle("");
       setText("");
       setImageFile(null);
       setImagePreview(null);
-      setFormData({ display: true }); // Reset radio button to its default state
+      setFormData({ display: true });
     }, 300);
   };
 
@@ -111,6 +105,7 @@ export function AddBlog() {
               className="file-upload-input"
               accept="image/*"
               onChange={handleFileSelect}
+              style={{ display: 'none' }} // Hide the default file input
             />
           </div>
         </div>
@@ -119,7 +114,7 @@ export function AddBlog() {
           onClick={closeAddMenu}
           className="blog_close"
           src="/img/close_menu.svg"
-          alt=""
+          alt="Close"
         />
         <span className="blog_title">Заголовок</span>
         <input

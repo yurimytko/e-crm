@@ -79,7 +79,7 @@ export function Update() {
 
     const handleClick = (index) => {
         if (index === 3) { // Assuming the "Відгуки" tab is at index 3
-            navigate('/reviews'); // Navigate to the reviews page
+            navigate('reviews'); // Navigate to the reviews page
         } else {
             setActiveIndex(index);
         }

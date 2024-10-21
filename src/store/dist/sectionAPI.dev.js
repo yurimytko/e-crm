@@ -18,7 +18,6 @@ var sectionApi = (0, _react.createApi)({
         headers.set('Authorization', "accessToken=".concat(authToken));
       }
 
-      headers.set('Content-Type', 'application/json');
       return headers;
     }
   }),
@@ -41,11 +40,12 @@ var sectionApi = (0, _react.createApi)({
         invalidatesTags: ['Section']
       }),
       postSection: build.mutation({
-        query: function query(body) {
+        query: function query(formData) {
           return {
             url: 'admin/sections',
             method: 'POST',
-            body: body
+            body: formData // Send the FormData object directly
+
           };
         },
         invalidatesTags: ['Section'] // Invalidate the 'Section' tag to refetch sections
@@ -67,15 +67,16 @@ var sectionApi = (0, _react.createApi)({
         providesTags: ['Section']
       }),
       postSubSection: build.mutation({
-        query: function query(body) {
+        query: function query(_ref) {
+          var id = _ref.id,
+              formData = _ref.formData;
           return {
-            url: "admin/subsections?id=".concat(body._id),
+            url: "admin/subsections?id=".concat(id),
             method: 'POST',
-            body: body
+            body: formData
           };
         },
-        invalidatesTags: ['Section'] // Invalidate the 'Section' tag to refetch sections
-
+        invalidatesTags: ['Section']
       }),
       deleteSubSection: build.mutation({
         query: function query(body) {

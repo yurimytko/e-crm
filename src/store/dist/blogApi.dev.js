@@ -18,7 +18,6 @@ var blogApi = (0, _react.createApi)({
         headers.set('Authorization', "accessToken=".concat(authToken));
       }
 
-      headers.set('Content-Type', 'application/json');
       return headers;
     }
   }),

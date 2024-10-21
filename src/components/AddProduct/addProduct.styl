@@ -1,303 +1,186 @@
-.add_product_asd
-    width 100vw
-    height: 100vh
-    position: absolute
-    top 0
-    left 0
-    background: rgba(0, 0, 0, 0.308)
-    backdrop-filter: blur(2px);
-    transition: 0.4s ease
-    opacity 0
-    display: none
-    justify-content: center
-    align-items: center
-.modal_add_product
-    position relative
-    overflow: hidden
-    background: rgba(243, 243, 243, 1)
-    width 55vw
-    height: 92vh
-    border-radius: 1vh
-    display: flex
-    justify-content: space-between
-    padding: 5vh 1.7vw 0 1.7vw
-    box-sizing: border-box
-    background: rgba(243, 243, 243, 1)
+dialog
+  background: rgba(243, 243, 243, 1)
+  border none
+  border-radius: 1vh
+  padding 4vh 4vh
 
+
+dialog form
+  display: flex
+  justify-content: center
+  align-items: center
+  gap 2vh
 .setting_up
-    font-family: Jura;
-    font-size: 2.4vh;
-    font-weight: 700;
-    margin 2vh 0 0 0
-.input_field
-    margin-top 1.6vh
-    background: rgba(255, 255, 255, 1)
-    width 24vw
-    height: 22vh
-    border-radius: 1vh
-.input
-    display: block
-    margin-top 1.4vh
-    border none
-    outline: none
-    box-shadow: inset 0px 0px 0.6vh 0px rgba(0, 0, 0, 0.308);
-    width 24vw
-    height: 4.4vh
-    border-radius: 1vh
-    padding: 0 0 0 1vw
-    box-sizing: border-box
-    font-family: Jura;
-    font-size: 2.4vh;
-    font-weight: 500;
-
-.close_img
-    width 5vh
-    position: absolute
-    right: 1vh
-    top 1vh
-    cursor pointer
-
-.radio-buttons {
-    margin-top 2vh
-    display: flex;
-    color: white;
-    gap 2vw
-}
-
-.radio-button {
-  display: flex;
-  align-items: center;
-  margin-bottom: 10px;
-  cursor: pointer;
-}
-
-.radio-button input[type="radio"] {
-  display: none;
-}
-
-.radio-circle {
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  border: 2px solid #aaa;
-  position: relative;
-  margin-right: 10px;
-}
-
-.radio-circle::before {
-  content: "";
-  display: block;
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background-color: #ddd;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%) scale(0);
-  transition: all 0.2s ease-in-out;
-}
-
-.radio-button input[type="radio"]:checked + .radio-circle::before {
-  transform: translate(-50%, -50%) scale(1);
-}
-
-.radio-button input[type="radio"]:checked + .radio-circle::before {
-  background-color: rgba(40, 208, 117, 1);
-}
-
-
-
-.radio-label {
   font-family: Jura;
-  font-size: 15px;
-  font-weight: 500;
-
-  color black
-}
-
-
-.modal_sep
-  width 0.1vw
-  height: 85%
-  background: rgba(156, 156, 156, 1)
-.text_area
-  margin-top 2vh
-  width 24vw
-  height: 30vh
-  resize: none;
-  font-family: Jura;
-  font-size: 2.6vh;
-  font-weight: 500;
-  outline: none
-  border: none
-  box-shadow: inset 0px 0px 0.6vh 0px rgba(0, 0, 0, 0.308);
-  border-radius: 1vh
-  padding 1vh 1vw
-  box-sizing: border-box
-.char_block
-  margin-top 2vh
-  width 24vw
-  height: 30vh
-.char_con
-  display: flex
-  gap 0.2vw
-  margin 0 0 2vh 0
-.char_name
-  overflow: hidden
-  display: flex
-  justify-content: center
-  align-items: center
-  height: 5vh
-  width 5vw
-  background: white
-  border-radius: 1vh
-  box-shadow: inset 0px 0px 0.6vh 0px rgba(0, 0, 0, 0.308);
-.char_name input
-  outline: none
-  background: none
-  border none
-  width 80%
-  height: 100%
-  font-family: Jura;
-  font-size: 1.8vh;
-  font-weight: 400;
-
-
-.char_descr
-  padding:  0 0 0 1vw
-  box-sizing: border-box
-  overflow: hidden
-  display: flex
-  align-items: center
-  height: 5vh
-  width 19vw
-  background: white
-  border-radius: 1vh
-  box-shadow: inset 0px 0px 0.6vh 0px rgba(0, 0, 0, 0.308);
-.char_descr input
-  outline: none
-  background: none
-  border none
-  width 80%
-  height: 70%
-  font-family: Jura;
-  font-size: 1.8vh;
-  font-weight: 400;
-  border-right: 1px solid rgba(156, 156, 156, 1)
-.char_descr img
-  cursor: pointer
-  margin 0 0 0 1vw
-
-.submit_button
-  margin-top 4vh
-  background: rgba(133, 212, 169, 1)
-  font-family: Jura;
-  font-size: 2vh;
+  font-size: 2.4vh;
   font-weight: 700;
-  border-radius: 0.5vh
-  width: 10vw
-  height: 6vh
+  margin 2vh 0 0 0
+  
+.upload_img_con
+  margin-top 1.4vh
+  border-radius:  1vh
+  border 0.2vh dashed rgba(105, 105, 105, 1)
+  height: 20vh
   display: flex
+  flex-direction: column
   justify-content: center
   align-items: center
-.drop_down {
-  user-select: none;
-  position: relative;
-  display: flex;
-  align-items: center;
-  margin-top: 1.4vh;
-  border: none;
-  outline: none;
-  box-shadow: inset 0px 0px 0.6vh 0px rgba(0, 0, 0, 0.308);
-  width: 24vw;
-  height: 4.4vh;
-  border-radius: 1vh;
-  padding: 0 0 0 1vw;
-  box-sizing: border-box;
+
+.product_price_con
+  margin-top 2vh
+  background: rgba(255, 255, 255, 1)
+  border-radius:  1vh
+  padding 1vh
+  box-sizing: border-box
+
+.drop_down_cat
+  user-select: none
+  display: flex
+  align-items: center
+  position relative
+  margin-top 1.4vh
   font-family: Jura;
   font-size: 2.4vh;
   font-weight: 500;
-  background: white;
-}
+  padding: 0 0 0 1vw
+  box-sizing: border-box
+  width 24vw
+  height: 4vh
+  outline: none
+  border-radius: 1vh
+  border 0.1vh solid rgba(0, 0, 0, 0.25)
+.drop_down_cat img
+  position absolute
+  right: 0.6vw
 
-.drop_down img {
+.dropdown_cat 
+  z-index 3
+  overflow-y: auto; 
+  box-shadow: 0px 2px 7px rgba(0, 0, 0, 0.25);
   position: absolute;
-  right: 1vw;
-}
-
-.drop {
-  z-index: 1000;
-  display: flex;
-  flex-direction: column;
-  position: absolute;
+  top: 4.3vh;
   left: 0;
-  top: 4.5vh;
+  max-height: 15vh; 
   width: 100%;
-  height: 0%
-  max-height: 20vh;
-  background: white;
-  box-shadow: 0 2px 7px rgba(0, 0, 0, 0.25);
-  overflow: hidden;
-  transition: height 0.3s ease;
-}
+  background: rgba(255, 255, 255, 1);
+  transition: max-height 0.3s ease; 
 
-.drop.open {
-  height: 20vh;
-  overflow-y: auto;
-}
+.dropdown_cat span
+  cursor pointer
+  padding 0 0 0 1vw
+  box-sizing: border-box
+  display: flex
+  align-items: center
+  height: 5vh
+  border-bottom: 0.2vh solid black
 
-.drop.open::-webkit-scrollbar {
-  display: none;
-}
-
-.drop span {
-  padding: 0 0 0 1vw;
-  box-sizing: border-box;
-  display: flex;
-  align-items: center;
-  height: 5vh;
-  cursor: pointer;
-  width: 100%;
-  border-bottom: 1px solid black;
-  flex-shrink: 0; /* Зберігає висоту 5vh для кожного елемента */
-}
-
-.add_category_input
+.add_cat_in_add
   background: rgba(206, 229, 216, 1)
-.img_field
-  user-select: none
+.input_field
+  margin-top 1.6vh
+  background: rgba(255, 255, 255, 1)
   width 24vw
   height: 22vh
-  background: white 
   border-radius: 1vh
+.input
+  margin-top 1.4vh
+  font-family: Jura;
+  font-size: 2.4vh;
+  font-weight: 500;
+  padding: 0 0 0 1vw
+  box-sizing: border-box
+  width 24vw
+  height: 4vh
+  outline: none
+  border-radius: 1vh
+  display: block
+  border 0.1vh solid rgba(0, 0, 0, 0.25)
+
+.sep_add_line
+  height: 90%
+  width 0.1vw
+  background: rgba(221, 221, 221, 1)
+.modal_left_part
+  height: 100%
+
+
+.options_con
+  border-radius:  1vh
+  background: rgba(255, 255, 255, 1)
+
+  padding: 1vh;
+  box-sizing: border-box;
+
+.point_choose_add_menu
+  overflow: hidden
+  border-radius: 1vh
+  width 100%
+  height: 5vh
+  background: rgba(229, 252, 240, 1)
+  display: flex
+
+.point_add
+  transition: 0.3s
+  cursor pointer
+  width 100%
+  height: 100%
   display: flex
   justify-content: center
   align-items: center
-  padding: 1vh 1vh
-  box-sizing: border-box
-.border {
-  width: 100%;
-  height: 100%;
-  border-radius: 1vh;
-  border: 0.1vh dashed rgba(105, 105, 105, 1);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 20px; /* Додаємо відступи для кращого вигляду */
-  box-sizing: border-box; /* Щоб padding не виходив за межі контейнера */
-}
-
-.file-upload-label {
-  color: rgba(133, 212, 169, 1);
-  cursor: pointer;
-  font-family: Jura, sans-serif;
+  font-family: Jura;
+  font-size: 1.5vh;
   font-weight: 700;
-  margin: 0;
-  text-align: center;
-}
+.point_add:hover
+  background: rgba(33, 150, 83, 1)
+  color white
+.active_add 
+  background: rgba(33, 150, 83, 1)
+  color white
 
-.file-upload-input {
-  display: none; /* Сховати стандартний інпут */
-}
+textarea
+  display: block
+  resize: none
+  margin-top 1.4vh
+  font-family: Jura;
+  font-size: 2.4vh;
+  font-weight: 500;
+  padding: 0 0 0 1vw
+  box-sizing: border-box
+  width 24vw
+  height: 15vh
+  outline: none
+  border-radius: 1vh
+  display: block
+  border 0.1vh solid rgba(0, 0, 0, 0.25)
+
+
+.add_btn_con
+  margin-top 3.5vh
+  display: flex
+  justify-content: flex-end
+  gap 1vw
+
+.cancel_add
+  cursor pointer
+  border-radius: 1vh
+  height: 5vh
+  border none
+  background: rgba(154, 154, 154, 1)
+  color rgba(255, 255, 255, 1)
+  font-family: Inter;
+  font-size: 1.5vh;
+  font-weight: 700;
+  width 5vw
+.add_product_btn
+  background: rgba(33, 150, 83, 1)
+  color rgba(255, 255, 255, 1)
+  font-family: Inter;
+  font-size: 1.5vh;
+  font-weight: 700;
+  cursor pointer
+  border-radius: 1vh
+  height: 5vh
+  border none
+  width 5vw
+
+

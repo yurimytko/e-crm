@@ -1,35 +1,82 @@
-.add_product_asd {
-  width: 100vw;
-  height: 100vh;
-  position: absolute;
-  top: 0;
-  left: 0;
-  background: rgba(0,0,0,0.308);
-  backdrop-filter: blur(2px);
-  transition: 0.4s ease;
-  opacity: 0;
-  display: none;
+dialog {
+  background: #f3f3f3;
+  border: none;
+  border-radius: 1vh;
+  padding: 4vh 4vh;
+}
+dialog form {
+  display: flex;
   justify-content: center;
   align-items: center;
-}
-.modal_add_product {
-  position: relative;
-  overflow: hidden;
-  background: #f3f3f3;
-  width: 55vw;
-  height: 92vh;
-  border-radius: 1vh;
-  display: flex;
-  justify-content: space-between;
-  padding: 5vh 1.7vw 0 1.7vw;
-  box-sizing: border-box;
-  background: #f3f3f3;
+  gap: 2vh;
 }
 .setting_up {
   font-family: Jura;
   font-size: 2.4vh;
   font-weight: 700;
   margin: 2vh 0 0 0;
+}
+.upload_img_con {
+  margin-top: 1.4vh;
+  border-radius: 1vh;
+  border: 0.2vh dashed #696969;
+  height: 20vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.product_price_con {
+  margin-top: 2vh;
+  background: #fff;
+  border-radius: 1vh;
+  padding: 1vh;
+  box-sizing: border-box;
+}
+.drop_down_cat {
+  user-select: none;
+  display: flex;
+  align-items: center;
+  position: relative;
+  margin-top: 1.4vh;
+  font-family: Jura;
+  font-size: 2.4vh;
+  font-weight: 500;
+  padding: 0 0 0 1vw;
+  box-sizing: border-box;
+  width: 24vw;
+  height: 4vh;
+  outline: none;
+  border-radius: 1vh;
+  border: 0.1vh solid rgba(0,0,0,0.25);
+}
+.drop_down_cat img {
+  position: absolute;
+  right: 0.6vw;
+}
+.dropdown_cat {
+  z-index: 3;
+  overflow-y: auto;
+  box-shadow: 0px 2px 7px rgba(0,0,0,0.25);
+  position: absolute;
+  top: 4.3vh;
+  left: 0;
+  max-height: 15vh;
+  width: 100%;
+  background: #fff;
+  transition: max-height 0.3s ease;
+}
+.dropdown_cat span {
+  cursor: pointer;
+  padding: 0 0 0 1vw;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  height: 5vh;
+  border-bottom: 0.2vh solid #000;
+}
+.add_cat_in_add {
+  background: #cee5d8;
 }
 .input_field {
   margin-top: 1.6vh;
@@ -39,257 +86,104 @@
   border-radius: 1vh;
 }
 .input {
-  display: block;
   margin-top: 1.4vh;
-  border: none;
-  outline: none;
-  box-shadow: inset 0px 0px 0.6vh 0px rgba(0,0,0,0.308);
-  width: 24vw;
-  height: 4.4vh;
-  border-radius: 1vh;
-  padding: 0 0 0 1vw;
-  box-sizing: border-box;
   font-family: Jura;
   font-size: 2.4vh;
   font-weight: 500;
-}
-.close_img {
-  width: 5vh;
-  position: absolute;
-  right: 1vh;
-  top: 1vh;
-  cursor: pointer;
-}
-.radio-buttons {
-  margin-top: 2vh;
-  display: flex;
-  color: #fff;
-  gap: 2vw;
-}
-.radio-button {
-  display: flex;
-  align-items: center;
-  margin-bottom: 10px;
-  cursor: pointer;
-}
-.radio-button input[type="radio"] {
-  display: none;
-}
-.radio-circle {
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  border: 2px solid #aaa;
-  position: relative;
-  margin-right: 10px;
-}
-.radio-circle::before {
-  content: "";
+  padding: 0 0 0 1vw;
+  box-sizing: border-box;
+  width: 24vw;
+  height: 4vh;
+  outline: none;
+  border-radius: 1vh;
   display: block;
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background-color: #ddd;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%) scale(0);
-  transition: all 0.2s ease-in-out;
+  border: 0.1vh solid rgba(0,0,0,0.25);
 }
-.radio-button input[type="radio"]:checked + .radio-circle::before {
-  transform: translate(-50%, -50%) scale(1);
-}
-.radio-button input[type="radio"]:checked + .radio-circle::before {
-  background-color: #28d075;
-}
-.radio-label {
-  font-family: Jura;
-  font-size: 15px;
-  font-weight: 500;
-  color: #000;
-}
-.modal_sep {
+.sep_add_line {
+  height: 90%;
   width: 0.1vw;
-  height: 85%;
-  background: #9c9c9c;
+  background: #ddd;
 }
-.text_area {
-  margin-top: 2vh;
-  width: 24vw;
-  height: 30vh;
-  resize: none;
-  font-family: Jura;
-  font-size: 2.6vh;
-  font-weight: 500;
-  outline: none;
-  border: none;
-  box-shadow: inset 0px 0px 0.6vh 0px rgba(0,0,0,0.308);
-  border-radius: 1vh;
-  padding: 1vh 1vw;
-  box-sizing: border-box;
-}
-.char_block {
-  margin-top: 2vh;
-  width: 24vw;
-  height: 30vh;
-}
-.char_con {
-  display: flex;
-  gap: 0.2vw;
-  margin: 0 0 2vh 0;
-}
-.char_name {
-  overflow: hidden;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 5vh;
-  width: 5vw;
-  background: #fff;
-  border-radius: 1vh;
-  box-shadow: inset 0px 0px 0.6vh 0px rgba(0,0,0,0.308);
-}
-.char_name input {
-  outline: none;
-  background: none;
-  border: none;
-  width: 80%;
+.modal_left_part {
   height: 100%;
-  font-family: Jura;
-  font-size: 1.8vh;
-  font-weight: 400;
 }
-.char_descr {
-  padding: 0 0 0 1vw;
-  box-sizing: border-box;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  height: 5vh;
-  width: 19vw;
-  background: #fff;
+.options_con {
   border-radius: 1vh;
-  box-shadow: inset 0px 0px 0.6vh 0px rgba(0,0,0,0.308);
+  background: #fff;
+  padding: 1vh;
+  box-sizing: border-box;
 }
-.char_descr input {
-  outline: none;
-  background: none;
-  border: none;
-  width: 80%;
-  height: 70%;
-  font-family: Jura;
-  font-size: 1.8vh;
-  font-weight: 400;
-  border-right: 1px solid #9c9c9c;
+.point_choose_add_menu {
+  overflow: hidden;
+  border-radius: 1vh;
+  width: 100%;
+  height: 5vh;
+  background: #e5fcf0;
+  display: flex;
 }
-.char_descr img {
+.point_add {
+  transition: 0.3s;
   cursor: pointer;
-  margin: 0 0 0 1vw;
-}
-.submit_button {
-  margin-top: 4vh;
-  background: #85d4a9;
-  font-family: Jura;
-  font-size: 2vh;
-  font-weight: 700;
-  border-radius: 0.5vh;
-  width: 10vw;
-  height: 6vh;
+  width: 100%;
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
+  font-family: Jura;
+  font-size: 1.5vh;
+  font-weight: 700;
 }
-.drop_down {
-  user-select: none;
-  position: relative;
-  display: flex;
-  align-items: center;
+.point_add:hover {
+  background: #219653;
+  color: #fff;
+}
+.active_add {
+  background: #219653;
+  color: #fff;
+}
+textarea {
+  display: block;
+  resize: none;
   margin-top: 1.4vh;
-  border: none;
-  outline: none;
-  box-shadow: inset 0px 0px 0.6vh 0px rgba(0,0,0,0.308);
-  width: 24vw;
-  height: 4.4vh;
-  border-radius: 1vh;
-  padding: 0 0 0 1vw;
-  box-sizing: border-box;
   font-family: Jura;
   font-size: 2.4vh;
   font-weight: 500;
-  background: #fff;
-}
-.drop_down img {
-  position: absolute;
-  right: 1vw;
-}
-.drop {
-  z-index: 1000;
-  display: flex;
-  flex-direction: column;
-  position: absolute;
-  left: 0;
-  top: 4.5vh;
-  width: 100%;
-  height: 0%;
-  max-height: 20vh;
-  background: #fff;
-  box-shadow: 0 2px 7px rgba(0,0,0,0.25);
-  overflow: hidden;
-  transition: height 0.3s ease;
-}
-.drop.open {
-  height: 20vh;
-  overflow-y: auto;
-}
-.drop.open::-webkit-scrollbar {
-  display: none;
-}
-.drop span {
   padding: 0 0 0 1vw;
   box-sizing: border-box;
-  display: flex;
-  align-items: center;
-  height: 5vh;
-  cursor: pointer;
-  width: 100%;
-  border-bottom: 1px solid #000;
-  flex-shrink: 0; /* Зберігає висоту 5vh для кожного елемента */
-}
-.add_category_input {
-  background: #cee5d8;
-}
-.img_field {
-  user-select: none;
   width: 24vw;
-  height: 22vh;
-  background: #fff;
+  height: 15vh;
+  outline: none;
   border-radius: 1vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 1vh 1vh;
-  box-sizing: border-box;
+  display: block;
+  border: 0.1vh solid rgba(0,0,0,0.25);
 }
-.border {
-  width: 100%;
-  height: 100%;
-  border-radius: 1vh;
-  border: 0.1vh dashed #696969;
+.add_btn_con {
+  margin-top: 3.5vh;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 20px; /* Додаємо відступи для кращого вигляду */
-  box-sizing: border-box; /* Щоб padding не виходив за межі контейнера */
+  justify-content: flex-end;
+  gap: 1vw;
 }
-.file-upload-label {
-  color: #85d4a9;
+.cancel_add {
   cursor: pointer;
-  font-family: Jura, sans-serif;
+  border-radius: 1vh;
+  height: 5vh;
+  border: none;
+  background: #9a9a9a;
+  color: #fff;
+  font-family: Inter;
+  font-size: 1.5vh;
   font-weight: 700;
-  margin: 0;
-  text-align: center;
+  width: 5vw;
 }
-.file-upload-input {
-  display: none; /* Сховати стандартний інпут */
+.add_product_btn {
+  background: #219653;
+  color: #fff;
+  font-family: Inter;
+  font-size: 1.5vh;
+  font-weight: 700;
+  cursor: pointer;
+  border-radius: 1vh;
+  height: 5vh;
+  border: none;
+  width: 5vw;
 }

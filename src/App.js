@@ -33,7 +33,7 @@ function App() {
           <Route path='/packs' element={<PacksPage/>}/>
           <Route path='/chat' element={<ChatPage/>}/>
           <Route path='/chat/user' element={<UserChat/>}/>
-          <Route path='/reviews' element={<ReviewsPage/>}/>
+          <Route path='/:pId/reviews' element={<ReviewsPage/>}/>
         </Routes>
       </Router>
     </div>

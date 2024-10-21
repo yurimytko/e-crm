@@ -14,8 +14,9 @@ export function ReviewCard({ review }) {
                 replyText: text,
             };
 
-            await putReview(reviews).unwrap(); // Use unwrap to handle the response or error
-            setText(""); // Clear input after submission
+            await putReview(reviews).unwrap(); 
+            setText(""); 
+            window.location.reload()
         } catch (e) {
             console.error(e);
         }
@@ -27,7 +28,7 @@ export function ReviewCard({ review }) {
                 id: review._id,
             };
 
-            await deleteReview(reviews).unwrap(); // Use unwrap to handle the response or error
+            await deleteReview(reviews).unwrap(); 
         } catch (e) {
             console.error(e);
         }

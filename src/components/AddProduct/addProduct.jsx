@@ -1,425 +1,295 @@
 import "./dist/addProduct.css";
-import { useState, useEffect } from "react";
-import { useAddProductMutation, useGetSectionsQuery } from "../../store";
-import { Loader } from "../Loader/loader";
-import AddCategory from "../AddCategory/addCat";
+import { createPortal } from "react-dom";
+import { useRef, useImperativeHandle, forwardRef, useState } from "react";
 
-import { AddSub } from "../AddSubSection/adSub";
+import { useGetSectionsQuery } from "../../store";
+
+import { useAddProductMutation } from "../../store";
+import { wait } from "@testing-library/user-event/dist/utils";
 
 const generateRandomArticle = () => {
     return Math.floor(1000 + Math.random() * 9000).toString();
 };
 
-
-export function AddProductMenu() {
-    const [formData, setFormData] = useState({
-        image: 'abs',
-        name: '',
-        price: '',
-        video: '',
-        article: generateRandomArticle(),
-        description: '',
-        quantity: '',
-        display: true,
-    });
-
-    const [selectedCategory, setSelectedCategory] = useState(null);
-    const [selectedSubCategory, setSelectedSubCategory] = useState("");
-    const [isCategoryOpen, setIsCategoryOpen] = useState(false);
-    const [isSubCategoryOpen, setIsSubCategoryOpen] = useState(false);
+const AddProductMenu = forwardRef(function AddProductMenu(props, ref) {
 
 
+    const [addProduct, {data, isLoading: isloading, Error: Error}] = useAddProductMutation()
 
-
-    const [addProduct, { isLoading, isError, isSuccess }] = useAddProductMutation();
-    const { data = [], isloading } = useGetSectionsQuery();
-
-
-
-    const [dragging, setDragging] = useState(false);
-    const [labelText, setLabelText] = useState('Завантажте фото або перетягніть файл');
     const [activeIndex, setActiveIndex] = useState(0);
 
+    const [category, setCategory] = useState("Категорія")
+    const [isCategoryOpen, setIsCatOpen] = useState(false)
+    const [isSubOpen, setIsSubOpen] = useState(false)
 
-    const handleChange = (e) => {
-        const { name, value, type, checked } = e.target;
-        setFormData(prevState => ({
-            ...prevState,
-            [name]: type === 'radio' ? JSON.parse(value) : value
-        }));
-    };
+    const [isCategorySelected, setIsCategorySelected] = useState(false)
 
 
 
-    const closeAddMenu = () => {
-        const menuElement = document.getElementById("add_menu");
-        menuElement.style.opacity = "0";
-        setTimeout(() => {
-            menuElement.style.display = "none";
-        }, 300);
-    };
+    const [subCategory, setSubCategory] = useState("Під категорія")
+    const [subsetcions, setSubsections] = useState([])
 
 
-    const handleSectionSelect = (id, name) => {
-        if (!selectedSubCategory) { // Перевіряємо, чи не вибрана підкатегорія
-            setFormData((prevFormData) => ({
-                ...prevFormData,
-                sectionId: id,
-            }));
-        }
-        setSelectedCategory(name); // Оновлюємо вибрану категорію
-        setIsCategoryOpen(false); // Закриваємо випадаючий список після вибору
-        console.log("Selected Category ID:", id);
-    };
+    const [description, setDescr] = useState()
 
-    // Функція для вибору підкатегорії
-    const handleSubSectionSelect = (id, name) => {
-        setSelectedSubCategory(name); // Оновлюємо вибрану підкатегорію
+    const [categoryId, setCategoryId] = useState()
+    const [subCategoryId, setSubCategoryId] = useState()
 
-        setFormData((prevFormData) => {
-            const updatedFormData = {
-                ...prevFormData,
-                subSectionId: id, // оновлюємо поле для підкатегорії
-            };
+    const [promotion, setPromotion] = useState({isActive: false, discount: ''})
 
-            // Оновлюємо sectionId тільки якщо підкатегорія не вибрана
-            if (!name) {
-                updatedFormData.sectionId = prevFormData.sectionId;
-            } else {
-                delete updatedFormData.sectionId;
+    const [selectedFiles, setSelectedFiles] = useState([]);
+
+
+    const { data: categoryq = [], isLoading, error } = useGetSectionsQuery()
+
+
+
+    const dialog = useRef();
+
+    useImperativeHandle(ref, () => {
+        return {
+            open() {
+                dialog.current.showModal();
+                dialog.current.style.display = "flex";
             }
+        };
+    });
 
-            return updatedFormData;
-        });
 
-        setIsSubCategoryOpen(false); // Закриваємо випадаючий список після вибору
-    };
+    const closeModal = () => {
+        dialog.current.close();
+        dialog.current.style.display = "none";
 
-    useEffect(() => {
-        console.log("Current formData:", formData);
-    }, [formData]);
-
-    const toggleCategoryDropdown = () => {
-        setIsCategoryOpen(!isCategoryOpen);
-    };
-
-    const toggleSubCategoryDropdown = () => {
-        setIsSubCategoryOpen(!isSubCategoryOpen);
+        setCategory("Категорія");
+        setIsCategorySelected(false);
+        setSubCategory("Під категорія");
+        setSubsections([]);
     };
 
 
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-        console.log("Display state on submit:", formData.display);
+    function openDrop() {
+        setIsCatOpen(!isCategoryOpen)
+        setIsSubOpen(false)
+    }
+    function openDropSub() {
+        setIsCatOpen(false)
 
-        try {
-            await addProduct(formData).unwrap();
-        } catch (error) {
-            console.error("Failed to add the product:", error);
-        }
-    };
+        setIsSubOpen(!isSubOpen)
+    }
 
+    const chooseCat = (title) => {
+        setCategory(title.name)
+        setCategoryId(title._id)
+        setIsCategorySelected(true)
+        setSubsections(title.subSections)
+        setSubCategory("Під категорія")
 
-    const handleDragEnter = (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        setDragging(true);
-        setLabelText('Відпустіть файл');
-    };
+        console.log(title)
 
-    const handleDragLeave = (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        setDragging(false);
-        setLabelText('Завантажте фото або перетягніть файл');
-    };
+    }
+    const resetCat = () => {
+        setCategory("Категорія")
+        setIsCategorySelected(false)
+    }
 
-    const handleDrop = (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        setDragging(false);
-        setLabelText('Завантажте фото або перетягніть файл');
-
-        const files = e.dataTransfer.files;
-        if (files.length > 0) {
-            console.log(files[0]);
-        }
-    };
-
-
-    const handleChangeC = (e) => {
-        const { name, value } = e.target;
-
-        if (/^[\d+\-*/.]*$/.test(value)) {
-            setFormData({
-                ...formData,
-                [name]: value,
-            });
-        }
-    };
-
-    const handleKeyPress = (e) => {
-        if (e.key === 'Enter') {
-            try {
-                const result = eval(formData.quantity);
-
-                setFormData({
-                    ...formData,
-                    quantity: result.toString(), // зберігаємо результат як текст
-                });
-            } catch (error) {
-                console.error('Невірний вираз');
-            }
-        }
-    };
-
-
-
-
-    const openSubAddMenu = () => {
-        document.getElementById("add_sub").style.display = "flex"
-        setTimeout(() => {
-            document.getElementById("add_sub").style.opacity = "1"
-        }, 100);
+    const resetSub = () => {
+        setSubCategory("Під категорія")
     }
 
 
-    const openAddMenu = () => {
-        document.getElementById("add_category").style.display = "flex"
-        setTimeout(() => {
-            document.getElementById("add_category").style.opacity = "1"
-        }, 100);
+    const handelPromotion = (e) => {
+        const value = e.target.value
+        if(value !== ''){
+            setPromotion(prevValues => ({
+                ...prevValues,
+                isActive: true,
+                discount: value
+            }))
+        }
+        console.log(promotion.isActive)
     }
 
-    const points = [
-        'Опис',
-        'Характеристика',
-        'Застосування',
-    ];
+
+    const chooseSub = (title) => {
+        setSubCategory(title.name)
+        setSubCategoryId(title._id)
+        setCategoryId(null)
+
+        console.log(title)
+
+    }
+
+    const points = ['Опис', 'Характеристика', 'Застосування'];
 
     const handleClick = (index) => {
         setActiveIndex(index);
     };
 
-    const filteredSubSections = selectedCategory
-        ? data.sections.find(section => section.name === selectedCategory)?.subSections || []
-        : [];
 
-    return (
-        <div id="add_menu" className="add_product_asd">
-            <div className="modal_add_product">
-                <img
-                    onClick={closeAddMenu}
-                    className="close_img"
-                    src="./img/close_menu.svg"
-                    alt="Close menu"
-                />
-                <div className="left_modal">
-                    <p className="setting_up">Додати Зображення</p>
-                    <div className="img_field">
-                        <div
-                            className="border"
-                            onDragEnter={handleDragEnter}
-                            onDragOver={(e) => e.preventDefault()} // Required to allow dropping
-                            onDragLeave={handleDragLeave}
-                            onDrop={handleDrop}
-                        >
-                            <label htmlFor="file-upload" className="file-upload-label">
-                                {labelText}
+    const handleFileChange = (e) => {
+        const files = Array.from(e.target.files);
+        setSelectedFiles(files);
+    };
+
+    async function onSubmit(e) {
+        try {
+            e.preventDefault();
+            console.log("Submitted");
+        
+            const fd = new FormData(e.target);
+        
+            const randomArticle = generateRandomArticle();
+            fd.append("article", randomArticle);
+        
+            if (description) {
+                fd.append("description", description);
+            }
+        
+            if (categoryId) {
+                fd.append("sectionId", categoryId);
+            } else if (subCategoryId) {
+                fd.append("subSectionId", subCategoryId);
+            }
+        
+            console.log([...fd]); // Check if all form data including the description is appended
+        
+            await addProduct(fd).unwrap();
+        
+            console.log("Product added successfully");
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    return createPortal(
+        <dialog ref={dialog}>
+            <form onSubmit={onSubmit}>
+                <div className="modal_left_part">
+                    <div className="img_con">
+                        <span className="setting_up">Добавити Зображення</span>
+                        <div className="upload_img_con">
+                            <label htmlFor="file_input">
+                                <span style={{ color: 'rgba(33, 150, 83, 1)', cursor: 'pointer' }}>Завантажте фото</span> або перетягніть файл
                             </label>
                             <p>Jpg, Png / Макс 8 мб / Мін 214px х 214px</p>
+
                             <input
-                                id="file-upload"
+                                name ="image"
+                                id="file_input"
                                 type="file"
-                                className="file-upload-input"
-                                accept="image/*"
+                                accept=".jpg, .jpeg, .png"
+                                style={{ display: 'none' }}
+                                onChange={handleFileChange}
+                                multiple 
                             />
                         </div>
                     </div>
-
-                    <input
-                        className="input"
-                        type="text"
-                        placeholder="Назва товару..."
-                        name="name"
-                        value={formData.name}
-                        onChange={handleChange}
-                    />
-                    <input
-                        className="input"
-                        type="text"
-                        placeholder="Ціна..."
-                        name="price"
-                        value={formData.price}
-                        onChange={handleChange}
-                    />
-                    <input
-                        className="input"
-                        type="text"
-                        placeholder="Кількість на складі..."
-                        name="quantity"
-                        value={formData.quantity}
-                        onChange={handleChangeC}
-                        onKeyPress={handleKeyPress}
-                    />
-
-                    <p className="setting_up">Категорія</p>
-                    <div className="drop_down" onClick={toggleCategoryDropdown}>
-                        {selectedCategory || "Виберіть категорію"}
-                        <img src="./img/Group 22.svg" alt="" />
-                        <div className={`drop ${isCategoryOpen ? "open" : ""}`}>
-                            <span
-                                onClick={() => {
-                                    setIsCategoryOpen(false);
-                                    setSelectedCategory(null);
-                                }}
-                            >
-                                ...
-                            </span>
-                            {!isLoading && data.sections && data.sections.length > 0 ? (
-                                data.sections.map((section) => (
-                                    <span
-                                        onClick={(e) => {
-                                            e.stopPropagation(); // Щоб уникнути закриття випадаючого списку при кліку
-                                            handleSectionSelect(section._id, section.name);
-                                        }}
-                                        key={section._id}
-                                    >
-                                        {section.name}
-                                    </span>
-                                ))
-                            ) : (
-                                !isLoading && <div className="no_products">Немає доступних категорій</div>
-                            )}
-                            <span className="add_category_input" onClick={openAddMenu}>
-                                Додати категорію
-                            </span>
-                        </div>
+                    <div className="product_price_con">
+                        <span className="setting_up">Назва товару</span>
+                        <input name="name" type="text" placeholder="Назва..." className="input" />
                     </div>
-
-                    {selectedCategory && (
-                        <>
-                            <p className="setting_up">Під категорія</p>
-                            <div className="drop_down" onClick={toggleSubCategoryDropdown}>
-                                {selectedSubCategory || "Виберіть підкатегорію"}
-                                <img src="./img/Group 22.svg" alt="" />
-                                <div className={`drop ${isSubCategoryOpen ? "open" : ""}`}>
-                                    <span>...</span>
-                                    {!isLoading && filteredSubSections && filteredSubSections.length > 0 ? (
-                                        filteredSubSections.map((subsection) => (
-                                            <span
-                                                onClick={(e) => {
-                                                    e.stopPropagation(); // To prevent dropdown from closing
-                                                    handleSubSectionSelect(subsection._id, subsection.name);
-                                                }}
-                                                key={subsection._id}
-                                            >
-                                                {subsection.name}
-                                            </span>
-                                        ))
-                                    ) : (
-                                        !isLoading && <div className="no_products">Немає доступних підкатегорій</div>
-                                    )}
-                                    <span className="add_category_input" onClick={openSubAddMenu}>
-                                        Додати підкатегорію
-                                    </span>
-                                </div>
-                            </div>
-                        </>
-                    )}
-                    <p className="setting_up">Показувати товар</p>
-                    <div className="radio-buttons">
-                        <label className="radio-button">
-                            <input
-                                type="radio"
-                                name="display"
-                                value={true}
-                                checked={formData.display === true}
-                                onChange={handleChange}
-                            />
-                            <div className="radio-circle"></div>
-                            <span className="radio-label">Так</span>
-                        </label>
-                        <label className="radio-button">
-                            <input
-                                type="radio"
-                                name="display"
-                                value={false}
-                                checked={formData.display === false}
-                                onChange={handleChange}
-                            />
-                            <div className="radio-circle"></div>
-                            <span className="radio-label">Ні</span>
-                        </label>
-                    </div>
-                </div>
-                <div className="modal_sep"></div>
-                <div className="right_modal">
-                    <div className="point_choose">
-                        {points.map((point, index) => (
-                            <span
-                                key={index}
-                                className={`point ${activeIndex === index ? 'active' : ''}`}
-                                onClick={() => handleClick(index)}
-                            >
-                                {point}
-                            </span>
-                        ))}
-                    </div>
-                    {activeIndex === 0 && (
-                        <div className="edit_block">
-                            <p className="setting_up">Опис</p>
-                            <textarea
-                                className="text_area"
-                                placeholder="Опис товару..."
-                                name="description"
-                                value={formData.description}
-                                onChange={handleChange}
-                            ></textarea>
-                        </div>
-                    )}
-
-                    {activeIndex === 1 && (
-                        <div className="edit_block">
-                            {/* Content for another block when activeIndex is 1 */}
-                            <p className="setting_up">Характеристики</p>
-                            <div className="char_block">
-                                <div className="char_con">
-                                    <div className="char_name"><input type="text" placeholder="Пункт" /></div>
-                                    <div className="char_descr"><input type="text" placeholder="Опис" /><img src="/img/Delete.svg" alt="" /></div>
-                                </div>
-                                <div className="char_con">
-                                    <div className="char_name"><input type="text" placeholder="Пункт" /></div>
-                                    <div className="char_descr"><input type="text" placeholder="Опис" /><img src="/img/Delete.svg" alt="" /></div>
-                                </div>
-                                <div className="char_con">
-                                    <div className="char_name"><input type="text" placeholder="Пункт" /></div>
-                                    <div className="char_descr"><input type="text" placeholder="Опис" /><img src="/img/Delete.svg" alt="" /></div>
-                                </div>
+                    <div className="product_price_con">
+                        <span className="setting_up">Категорія</span>
+                        <div onClick={openDrop} className="drop_down_cat">
+                            <div className="catigory">{category}</div>
+                            <img src="/img/Group 22.svg" alt="" />
+                            <div className="dropdown_cat" style={{ height: isCategoryOpen ? "auto" : "0" }}>
+                                <span onClick={resetCat}>...</span>
+                                {categoryq?.sections && categoryq.sections.length > 0 ? (
+                                    categoryq.sections.map(section => (
+                                        <span onClick={() => chooseCat(section)} className="category_on_add" key={section._id}>{section.name}</span>
+                                    ))
+                                ) : (
+                                    <span>немає категорій</span>
+                                )}
+                                <span className="add_cat_in_add">Додати категорію</span>
                             </div>
                         </div>
-                    )}
-                    {activeIndex === 2 && (
-                        <div className="edit_block">
-                            {/* Content for another block when activeIndex is 1 */}
-                            <p className="setting_up">Застосування</p>
-                            <input
-                                className="input"
-                                type="text"
-                                placeholder="Посилання на відео..."
-                                name="name"
-                                value={formData.video}
-                                onChange={(e) => setFormData({ ...formData, video: e.target.value })}
-                            />
+                        <div onClick={openDropSub} className="drop_down_cat" style={{ display: isCategorySelected ? "flex" : "none" }}>
+                            <div className="catigory">{subCategory}</div>
+                            <img src="/img/Group 22.svg" alt="" />
+                            <div className="dropdown_cat" style={{ height: isSubOpen ? "auto" : "0" }}>
+                                <span onClick={resetSub}>...</span>
+                                {subsetcions && subsetcions.length > 0 ? (
+                                    subsetcions.map(section => (
+                                        <span onClick={() => chooseSub(section)} className="category_on_add" key={section._id}>{section.name}</span>
+                                    ))
+                                ) : (
+                                    <span>немає категорій</span>
+                                )}
+                                <span className="add_cat_in_add">Додати категорію</span>
+                            </div>
                         </div>
-                    )}
-                    <div className="submit_button" onClick={handleSubmit}>
-                        {isLoading ? "Товар додається" : "Додати"}
+
+
+
+                    </div>
+                    <div className="product_price_con">
+                        <span className="setting_up">Додати знижку</span>
+                        <input value={promotion.discount} onChange={handelPromotion}  type="number" placeholder="xx %" className="input" />
                     </div>
                 </div>
-            </div>
-            <AddCategory />
-            <AddSub id={formData.sectionId} />
-        </div>
+
+                <div className="sep_add_line"></div>
+
+                <div className="modal_left_part">
+                    <div className="options_con">
+                        <div className="point_choose_add_menu">
+                            {points.map((point, index) => (
+                                <span
+                                    key={index}
+                                    className={`point_add ${activeIndex === index ? 'active_add' : ''}`}
+                                    onClick={() => handleClick(index)}
+                                >
+                                    {point}
+                                </span>
+                            ))}
+                        </div>
+                        {activeIndex === 0 && (
+                            <div className="product_price_con">
+                                <span className="setting_up">Опис</span>
+                                <textarea  name="description" id="" placeholder="Опис..." value={description} onChange={(e) => {setDescr(e.target.value)}}/>
+                            </div>
+                        )}
+                        {activeIndex === 1 && (
+                            <div className="product_price_con">
+                                <span className="setting_up">Опис</span>
+                                <input  type="number" placeholder="xx шт" className="input" />
+                            </div>
+                        )}
+                        {activeIndex === 2 && (
+                            <div className="product_price_con">
+                                <span className="setting_up">Посилання на відео</span>
+                                <input type="text" placeholder="Посилання..." className="input" name="video"/>
+                            </div>
+                        )}
+
+
+                    </div>
+                    <div className="product_price_con">
+                        <span className="setting_up">Кількість на складі</span>
+                        <input name="quantity" type="number" placeholder="xx шт" className="input" />
+                    </div>
+                    <div className="product_price_con">
+                        <span className="setting_up">Ціна</span>
+                        <input name="price" type="number" placeholder="Ціна..." className="input" />
+                    </div>
+                    <div className="product_price_con">
+                        <span className="setting_up">Показувати товар</span>
+                        <input type="number" placeholder="xx шт" className="input" />
+                    </div>
+
+                    <div className="add_btn_con">
+                        <button type="button" className="cancel_add" onClick={closeModal}>Скасувати</button>
+
+                        <button type="submit" className="add_product_btn">Додати</button>
+                    </div>
+
+                </div>
+            </form>
+        </dialog>,
+        document.getElementById("add_product")
     );
-}
+});
+
+export default AddProductMenu;

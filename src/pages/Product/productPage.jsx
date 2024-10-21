@@ -1,7 +1,7 @@
 import "./dist/productPage.css";
 import { NavBar } from "../../components/NavBar/nav";
 import { ProductCard } from "../../components/ProductCard/card";
-import { AddProductMenu } from "../../components/AddProduct/addProduct";
+import  AddProductMenu  from "../../components/AddProduct/addProduct";
 import { useGetProductsQuery } from "../../store";
 import { Loader } from "../../components/Loader/loader";
 import { useState, useEffect, useRef } from "react";
@@ -14,24 +14,35 @@ export function ProductPage() {
     const [isSelected, setIsSelected] = useState(false);
     const [deleteProduct] = useDeleteProductsMutation();
 
-    const [selectedColumns, setSelectedColumns] = useState([]);
-    const [filterMenus, setFilterMenus] = useState({});
+
+    const productAdd = useRef()
+
+    const [filtersVisibility, setFiltersVisibility] = useState({
+        article: false,
+        date: false,
+        name: false,
+        section: false,
+        price: false,
+        quantity: false,
+    });
+    
+    const [activeFilters, setActiveFilters] = useState({
+        article: null,
+        date: null,
+        name: null,
+        section: null,
+        price: null,
+        quantity: null,
+    });
     const [url, setUrl] = useState('')
-    const [article, setArticle] = useState()
     const productsSectionRef = useRef()
 
-    const [triggerExport, { data, error, isloading }] = useLazyExportProductQuery();
+    const [triggerExport] = useLazyExportProductQuery();
     const [triggerExportById] = useLazyExportProductByIdQuery()
 
     const { data: products = [], isLoading, isFetching } = useGetProductsQuery(`?${url}`);
 
 
-    const articelFilter = (e) => {
-
-        if (e.key === 'Enter') {
-            setUrl(`article=${article}`)
-        }
-    }
 
 
 
@@ -39,7 +50,7 @@ export function ProductPage() {
         try {
             let result;
             if (isSelected && selectedIds.length > 0) {
-                result = await triggerExportById({id:selectedIds.join(',')}); // Export by selected IDs
+                result = await triggerExportById({ id: selectedIds.join(',') }); // Export by selected IDs
             } else {
                 result = await triggerExport(); // Export without specific IDs
             }
@@ -87,10 +98,7 @@ export function ProductPage() {
     };
 
     const openAddMenu = () => {
-        document.getElementById("add_menu").style.display = "flex";
-        setTimeout(() => {
-            document.getElementById("add_menu").style.opacity = "1";
-        }, 100);
+        productAdd.current.open()
     };
 
 
@@ -109,20 +117,40 @@ export function ProductPage() {
     };
 
 
-    const handleColumnClick = (column) => {
-        setFilterMenus((prevMenus) => ({
-            ...prevMenus,
-            [column]: !prevMenus[column], // Toggle the filter menu for the column
-        }));
 
-        setSelectedColumns((prevSelected) =>
-            prevSelected.includes(column)
-                ? prevSelected.filter((col) => col !== column)
-                : [...prevSelected, column]
-        );
+
+    const toggleFilter = (column) => {
+        setFiltersVisibility((prev) => ({
+            ...prev,
+            [column]: !prev[column], // Toggle dropdown visibility
+        }));
     };
 
+    const toggleSort = (column, order) => {
+        setActiveFilters((prev) => ({
+            ...prev,
+            [column]: order, // Set active filter for the column
+        }));
+        setUrl(buildUrl());
 
+        // Close the filter dropdown after selecting a sorting option
+        setFiltersVisibility((prev) => ({
+            ...prev,
+            [column]: false, // Close the specific filter dropdown
+        }));
+    };
+
+    const buildUrl = () => {
+        const sortBy = Object.keys(activeFilters)
+            .filter((key) => activeFilters[key] !== null)
+            .join(',');
+
+        const orderBy = Object.values(activeFilters)
+            .filter((value) => value !== null)
+            .join(',');
+
+        return `sortBy=${sortBy}&orderBy=${orderBy}`;
+    };
 
 
 
@@ -130,6 +158,8 @@ export function ProductPage() {
 
     return (
         <div className="product_page">
+            <AddProductMenu ref = {productAdd}/>
+
             <NavBar />
             <div className="table_part">
                 <div className="page_title">Список товарів</div>
@@ -148,26 +178,47 @@ export function ProductPage() {
                 <div className="table_section">
                     <div></div>
                     <div className="table_titles">НТ</div>
-                    <div className={`table_titles ${selectedColumns.includes("article") ? 'selected' : ''
-                        }`}
-                        onClick={() => handleColumnClick("article")}>Артикул
-                        {filterMenus["article"] && (
-                            <div onClick={(e) => { e.stopPropagation() }} className="filter_menu">
-                                <input onKeyDown={articelFilter} type="text" placeholder="Артикуль" />
+                    {/* Артикул */}
+                    <div className="table_titles_container">
+                        <div
+                            className={`table_titles ${activeFilters.article ? 'selected' : ''}`}
+                            onClick={() => toggleFilter('article')}
+                        >
+                            Артикул
+                        </div>
+                        {filtersVisibility.article && (
+                            <div className="filter_dropdown">
+                                <button onClick={() => toggleSort('article', 1)}>від А до Я</button>
+                                <button onClick={() => toggleSort('article', -1)}>від Я до А</button>
                             </div>
-                        )}</div>
+                        )}
+                    </div>
+
                     <div className={"table_titles"}>Дата створення</div>
-                    <div className={`table_titles `}>Назва товару</div>
+                    <div className="table_titles_container">
+                        <div
+                            className={`table_titles ${filtersVisibility.name ? 'selected' : ''}`}
+                            onClick={() => toggleFilter('name')}
+                        >
+                            Назва товару
+                        </div>
+                        {filtersVisibility.name && (
+                            <div className="filter_dropdown">
+                                <button onClick={() => toggleSort('name', 1)}>від А до Я</button>
+                                <button onClick={() => toggleSort('name', -1)}>від Я до А</button>
+                            </div>
+                        )}
+                    </div>
                     <div className="table_titles">Розділ</div>
                     <div className="table_titles">Під розділ</div>
                     <div className={`table_titles`}>Ціна</div>
                     <div className="table_titles">Кількість</div>
                     <div className={`table_titles`}>Наявність</div>
-                    <div className="export_btn" onClick={handleClick}><img src="/img/Export CSV.svg" alt="" /></div>
+                    <div className="table_titles_container export" onClick={handleClick}><img src="/img/Export CSV.svg" alt="" /></div>
 
                 </div>
                 <div className="products_section" ref={productsSectionRef} onScroll={handleScroll}>
-                    {isLoading&&<Loader/>}
+                    {isLoading && <Loader />}
                     {!isLoading && products?.products?.length > 0 ? (
                         products.products.map((product, index) => (
                             <ProductCard
@@ -184,7 +235,6 @@ export function ProductPage() {
                 </div>
 
             </div >
-            <AddProductMenu />
         </div >
     );
 }

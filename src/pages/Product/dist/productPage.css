@@ -79,14 +79,12 @@
   font-weight: 400;
   text-align: center;
 }
-.filter_block {
-  z-index: 100;
+.filter_dropdown {
+  position: relative;
+  z-index: 300;
   cursor: auto;
-  position: absolute;
-  top: 6vh;
-  left: 0;
   width: 100%;
-  height: 10vh;
+  height: fit-content;
   background: #fff;
   border-radius: 0vh 0vh 1vh 1vh;
 }
@@ -153,11 +151,23 @@
 .filter_menu input {
   width: 60%;
 }
-.export_btn {
+.export {
   cursor: pointer;
   border: 1px solid #219653;
   border-radius: 0 1vh 1vh 0vh;
+  height: 5.9vh;
   display: flex;
   justify-content: center;
   align-items: center;
+}
+.filter_dropdown button {
+  cursor: pointer;
+  width: 100%;
+  display: block;
+  font-family: Inter;
+  font-size: 2vh;
+  font-weight: 400;
+  text-align: center;
+  background: none;
+  border: none;
 }

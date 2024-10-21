@@ -14,8 +14,6 @@ export const productApi = createApi({
           if (authToken) {
             headers.set('Authorization', `accessToken=${authToken}`);
           }
-      
-          headers.set('Content-Type', 'application/json');
           
           return headers;
         }

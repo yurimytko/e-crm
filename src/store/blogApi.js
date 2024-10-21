@@ -13,7 +13,6 @@ export const blogApi = createApi({
               headers.set('Authorization', `accessToken=${authToken}`);
             }
         
-            headers.set('Content-Type', 'application/json');
             
             return headers;
           }

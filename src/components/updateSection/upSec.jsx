@@ -1,4 +1,7 @@
-import './dist/addCat.css'
+import "./upSec.css"
+
+export function UpdateSection(){
+    import './dist/addCat.css'
 
 import { usePostSectionMutation } from '../../store';
 import { useState } from 'react';
@@ -116,4 +119,6 @@ export default function AddCategory() {
             </div>
         </div>
     );
+}
+
 }

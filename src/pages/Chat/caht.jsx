@@ -4,8 +4,15 @@ import "./dist/chat.css";
 import { FormCard } from "../../components/BackFormCard/formCard";
 import { CustommerChatCard } from "../../components/CustomerChatCard/customerChat";
 
+import { useGetCallsQuery } from "../../store/calls";
+import { Loader } from "../../components/Loader/loader";
+
 export function ChatPage() {
     const [activeButton, setActiveButton] = useState('feedback'); // Default active button
+
+    const { data: calls = [], isLoading, Error } = useGetCallsQuery()
+
+    console.log(calls)
 
     const handleButtonClick = (button) => {
         setActiveButton(button);
@@ -36,21 +43,25 @@ export function ChatPage() {
                 <div className="content">
                     {activeButton === 'feedback' ? (
                         <div className="from_cards_con">
-                            <FormCard />
-                            <FormCard />
-                            <FormCard />
+                            {isLoading && <Loader/>}
+                            {calls?.calls?.length > 0 && calls?.calls?.map(call => (
+                                <FormCard key={call._id} call={call} />
+                            ))}
+
+                            
+
                         </div>
 
                     ) : (
                         <div className="from_cards_con">
-                            <CustommerChatCard/>
-                            <CustommerChatCard/>
-                            <CustommerChatCard/>
+                            <CustommerChatCard />
+                            <CustommerChatCard />
+                            <CustommerChatCard />
 
                         </div>
                     )}
                 </div>
             </div>
-        </div>
+        </div >
     );
 }

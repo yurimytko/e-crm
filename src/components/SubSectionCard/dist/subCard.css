@@ -2,7 +2,7 @@
   overflow: hidden;
   position: relative;
   cursor: pointer;
-  min-width: 21vw;
+  max-width: 21vw;
   height: 37vh;
   border-radius: 1vh;
   background: #fff;
