@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.useDeleteProductsMutation = exports.usePutProductMutation = exports.useGetProductQuery = exports.useDeleteProductMutation = exports.useAddProductMutation = exports.useGetProductsQuery = exports.productApi = void 0;
+exports.useAddModelsMutation = exports.useDeleteProductsMutation = exports.usePutProductMutation = exports.useGetProductQuery = exports.useDeleteProductMutation = exports.useAddProductMutation = exports.useGetProductsQuery = exports.productApi = void 0;
 
 var _react = require("@reduxjs/toolkit/query/react");
 
@@ -65,6 +65,15 @@ var productApi = (0, _react.createApi)({
           };
         }
       }),
+      addModels: build.mutation({
+        query: function query(body) {
+          return {
+            url: "admin/products/?id=".concat(body.id, "&modelId=new"),
+            method: "PUT",
+            body: body
+          };
+        }
+      }),
       deleteProducts: build.mutation({
         query: function query(ids) {
           return {
@@ -82,7 +91,9 @@ var useGetProductsQuery = productApi.useGetProductsQuery,
     useDeleteProductMutation = productApi.useDeleteProductMutation,
     useGetProductQuery = productApi.useGetProductQuery,
     usePutProductMutation = productApi.usePutProductMutation,
-    useDeleteProductsMutation = productApi.useDeleteProductsMutation;
+    useDeleteProductsMutation = productApi.useDeleteProductsMutation,
+    useAddModelsMutation = productApi.useAddModelsMutation;
+exports.useAddModelsMutation = useAddModelsMutation;
 exports.useDeleteProductsMutation = useDeleteProductsMutation;
 exports.usePutProductMutation = usePutProductMutation;
 exports.useGetProductQuery = useGetProductQuery;

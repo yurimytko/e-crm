@@ -51,6 +51,14 @@ export const productApi = createApi({
                 body,
             }),
         }),
+
+        addModels: build.mutation({
+            query: (body) => ({
+                url: `admin/products/?id=${body.id}&modelId=new`,
+                method: "PUT",
+                body,
+            }),
+        }),
         deleteProducts: build.mutation({
             query: (ids) => ({
                 url: `admin/products?id=${ids}`,
@@ -60,4 +68,4 @@ export const productApi = createApi({
     }),
 });
 
-export const { useGetProductsQuery, useAddProductMutation,useDeleteProductMutation,useGetProductQuery,usePutProductMutation, useDeleteProductsMutation } = productApi;
+export const { useGetProductsQuery, useAddProductMutation,useDeleteProductMutation,useGetProductQuery,usePutProductMutation, useDeleteProductsMutation, useAddModelsMutation } = productApi;

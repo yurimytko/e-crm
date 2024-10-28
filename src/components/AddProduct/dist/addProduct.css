@@ -187,3 +187,79 @@ textarea {
   border: none;
   width: 5vw;
 }
+.radio-container {
+  margin-top: 2vh;
+  max-width: 300px;
+  color: #000;
+  display: flex;
+  font-family: Jura;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 17.75px;
+  text-align: left;
+}
+.radio-button {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+.radio-button input[type="radio"] {
+  display: none;
+}
+.radio-checkmark {
+  display: block;
+  position: relative;
+  width: 2vh;
+  height: 2vh;
+  border: 1px solid #000;
+  border-radius: 50%;
+}
+.radio-checkmark:before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #28d075;
+  transition: all 0.2s ease-in-out;
+}
+.radio-button input[type="radio"]:checked ~ .radio-checkmark:before {
+  transform: translate(-50%, -50%) scale(1);
+}
+.radio-label {
+  width: 100%;
+  margin-left: 0.2vw;
+}
+.add_model {
+  display: block;
+  background: #219653;
+  color: #fff;
+  font-family: Inter;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 16.94px;
+  text-align: center;
+  border: none;
+}
+.models_names {
+  width: 24vw;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4vw;
+  margin-top: 2vh;
+}
+.model {
+  padding: 0.1vh 0.7vw;
+  border-radius: 1vh;
+  background: #219653;
+  color: #fff;
+  font-family: Inter;
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 24.2px;
+  text-align: center;
+}
