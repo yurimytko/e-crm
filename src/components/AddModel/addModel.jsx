@@ -8,7 +8,7 @@ const generateRandomArticle = () => {
     return Math.floor(1000 + Math.random() * 9000).toString();
 };
 
-const AddModel = forwardRef(function AddModel(props, ref) {
+const AddModel = forwardRef(function AddModel({setModels}, ref) {
 
 
     const [activeIndex, setActiveIndex] = useState(0);
@@ -52,32 +52,39 @@ const AddModel = forwardRef(function AddModel(props, ref) {
     const handleFileChange = (e) => {
         const files = Array.from(e.target.files);
         setSelectedFiles(files);
+
+        console.log(files)
     };
 
 
     const handleSave = (e) => {
-        e.preventDefault()
-
+        e.preventDefault();
+        e.stopPropagation();
+    
         const newModel = {
           modelName,
           price: Number(price),
           quantity: Number(quantity),
           description,
+          image: selectedFiles
         };
-
-        const existingModels = JSON.parse(localStorage.getItem('models')) || [];
     
-
-        existingModels.push(newModel);
-
-        localStorage.setItem('models', JSON.stringify(existingModels));
+        // Update the models state directly
+        setModels((prevModels) => {
+            const updatedModels = [...prevModels, newModel];
+            
+            // Update localStorage with the new state
+            localStorage.setItem('models', JSON.stringify(updatedModels));
+            
+            return updatedModels;
+        });
     
-
+        // Reset form fields
         setModelName('');
         setPrice('');
         setQuantity('');
         setDescr('');
-      };
+    };
 
 
     return(
@@ -157,7 +164,7 @@ const AddModel = forwardRef(function AddModel(props, ref) {
                     <div className="add_btn_con">
                         <button type="button" className="cancel_add" onClick={closeModal}>Скасувати</button>
 
-                        <button onClick={handleSave} className="add_product_btn">Додати</button>
+                        <button onClick={handleSave} type="button" className="add_product_btn">Додати</button>
                     </div>
 
                 </div>

@@ -52,13 +52,20 @@ export const productApi = createApi({
             }),
         }),
 
-        addModels: build.mutation({
-            query: (body) => ({
-                url: `admin/products/?id=${body.id}&modelId=new`,
-                method: "PUT",
-                body,
-            }),
-        }),
+addModels: build.mutation({
+    query: (body) => {
+        console.log('Request body:', body); // Log the body before sending the request
+        
+        // Extract the id from the FormData object
+        const id = body.get('id'); // Ensure you have appended 'id' to the FormData
+
+        return {
+            url: `admin/products/?id=${id}&modelId=new`, // Construct URL with extracted ID
+            method: "PUT",
+            body, // Send the FormData as body
+        };
+    },
+}),
         deleteProducts: build.mutation({
             query: (ids) => ({
                 url: `admin/products?id=${ids}`,

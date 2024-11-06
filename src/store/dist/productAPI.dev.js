@@ -67,10 +67,17 @@ var productApi = (0, _react.createApi)({
       }),
       addModels: build.mutation({
         query: function query(body) {
+          console.log('Request body:', body); // Log the body before sending the request
+          // Extract the id from the FormData object
+
+          var id = body.get('id'); // Ensure you have appended 'id' to the FormData
+
           return {
-            url: "admin/products/?id=".concat(body.id, "&modelId=new"),
+            url: "admin/products/?id=".concat(id, "&modelId=new"),
+            // Construct URL with extracted ID
             method: "PUT",
-            body: body
+            body: body // Send the FormData as body
+
           };
         }
       }),

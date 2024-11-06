@@ -16,6 +16,9 @@ dialog form {
   font-weight: 700;
   margin: 2vh 0 0 0;
 }
+.img_con {
+  margin-top: 2vh;
+}
 .upload_img_con {
   margin-top: 1.4vh;
   border-radius: 1vh;
@@ -27,11 +30,16 @@ dialog form {
   align-items: center;
 }
 .product_price_con {
+  width: 25vw;
   margin-top: 2vh;
   background: #fff;
   border-radius: 1vh;
   padding: 1vh;
   box-sizing: border-box;
+}
+#product_options {
+  width: 25vw;
+  margin: 0;
 }
 .drop_down_cat {
   user-select: none;
@@ -198,6 +206,10 @@ textarea {
   line-height: 17.75px;
   text-align: left;
 }
+.radio-wrapper {
+  display: flex;
+  gap: 0.3vw;
+}
 .radio-button {
   display: flex;
   align-items: center;
@@ -231,10 +243,15 @@ textarea {
   transform: translate(-50%, -50%) scale(1);
 }
 .radio-label {
-  width: 100%;
+  width: 8vw;
   margin-left: 0.2vw;
 }
 .add_model {
+  cursor: pointer;
+  height: 4vh;
+  width: 5vw;
+  border-radius: 1vh;
+  margin-top: 1.7vh;
   display: block;
   background: #219653;
   color: #fff;

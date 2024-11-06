@@ -27,28 +27,20 @@ const AddProductMenu = forwardRef(function AddProductMenu(props, ref) {
     const [isSingle, setIsSingle] = useState(1)
 
     const [isCategorySelected, setIsCategorySelected] = useState(false)
-
-
-
     const [subCategory, setSubCategory] = useState("Під категорія")
     const [subsetcions, setSubsections] = useState([])
 
-
     const [description, setDescr] = useState()
-
     const [categoryId, setCategoryId] = useState()
     const [subCategoryId, setSubCategoryId] = useState()
-
     const [promotion, setPromotion] = useState({ isActive: false, discount: '' })
-
     const [selectedFiles, setSelectedFiles] = useState([]);
     const [name, setName] = useState('')
-
     const { data: categoryq = [], isLoading, error } = useGetSectionsQuery()
-
     const [models, setModels] = useState([]);
-
     const [selectedOption, setSelectedOption] = useState('');
+
+    const [display, setDisplay] = useState(false)
 
     const handleOptionChange = (event) => {
         setIsSingle(event.target.id === 'option1' ? 1 : 0);
@@ -69,11 +61,9 @@ const AddProductMenu = forwardRef(function AddProductMenu(props, ref) {
     });
 
 
-
     useEffect(() => {
-        const storedModels = JSON.parse(localStorage.getItem('models')) || [];
-        setModels(storedModels);
-    }, []);
+        console.log(models)
+    }, [models]);
 
 
 
@@ -85,6 +75,8 @@ const AddProductMenu = forwardRef(function AddProductMenu(props, ref) {
         setIsCategorySelected(false);
         setSubCategory("Під категорія");
         setSubsections([]);
+        localStorage.removeItem('models');
+        setModels([])
     };
 
 
@@ -150,9 +142,12 @@ const AddProductMenu = forwardRef(function AddProductMenu(props, ref) {
     const handleFileChange = (e) => {
         const files = Array.from(e.target.files);
         setSelectedFiles(files);
+        console.log(files)
     };
 
-    const openModelsMenu = () => {
+    const openModelsMenu = (e) => {
+        e.preventDefault()
+        e.stopPropagation()
         dialog2.current.open()
     };
 
@@ -174,6 +169,10 @@ const AddProductMenu = forwardRef(function AddProductMenu(props, ref) {
                 fd.append("sectionId", categoryId);
             } else if (subCategoryId) {
                 fd.append("subSectionId", subCategoryId);
+            }
+
+            if (display) {
+                fd.append("display", display);
             }
 
             fd.append("isSingle", isSingle);
@@ -208,11 +207,30 @@ const AddProductMenu = forwardRef(function AddProductMenu(props, ref) {
             const productResponse = await addProduct(fd).unwrap();
             console.log("Product added successfully", productResponse);
 
-            const productId = productResponse?.product._id; 
+            const productId = productResponse?.product._id;
 
             if (productId) {
-                await addModel({ id: productId, models: models }).unwrap();
-                
+                const formData = new FormData();
+                formData.append('id', productId);
+
+                models.forEach((model, index) => {
+                    formData.append(`models[${index}][modelName]`, model.modelName);
+                    formData.append(`models[${index}][price]`, model.price);
+                    formData.append(`models[${index}][quantity]`, model.quantity);
+                    formData.append(`models[${index}][description]`, model.description);
+
+                    // Check if model.image is an array and append each image
+                    if (Array.isArray(model.image)) {
+                        model.image.forEach((img, imgIndex) => {
+                            if (img instanceof File) { // Ensure each item is a File object
+                                formData.append(`models[${index}][image][${imgIndex}]`, img); // Append as a nested array
+                            }
+                        });
+                    }
+                });
+
+                await addModel(formData).unwrap();
+
             }
         } catch (e) {
             console.error(e);
@@ -233,34 +251,7 @@ const AddProductMenu = forwardRef(function AddProductMenu(props, ref) {
         <dialog ref={dialog}>
             <form onSubmit={handleForm}>
                 <div className="modal_left_part">
-                    <div className="img_con">
-                        <span className="setting_up">Добавити Зображення</span>
-                        <div className="upload_img_con">
-                            <label htmlFor="file_input">
-                                <span style={{ color: 'rgba(33, 150, 83, 1)', cursor: 'pointer' }}>Завантажте фото</span> або перетягніть файл
-                            </label>
-                            <p>Jpg, Png / Макс 8 мб / Мін 214px х 214px</p>
-
-                            <input
-                                name="image"
-                                id="file_input"
-                                type="file"
-                                accept=".jpg, .jpeg, .png"
-                                style={{ display: 'none' }}
-                                onChange={handleFileChange}
-                                multiple
-                            />
-                        </div>
-                    </div>
-                    <div className="product_price_con">
-                        <span className="setting_up">Назва товару</span>
-                        <input name="name" value={name} onChange={(e) => { setName(e.target.value) }} type="text" placeholder="Назва..." className="input" />
-                    </div>
-                    <div className="product_price_con">
-                        <span className="setting_up">Ціна</span>
-                        <input name="price" type="number" placeholder="Ціна..." className="input" />
-                    </div>
-                    <div className="product_price_con">
+                    <div id="product_options" className="product_price_con">
                         <span className="setting_up">Фасування</span>
                         <div className="radio-container">
                             <div className="radio-wrapper">
@@ -273,8 +264,9 @@ const AddProductMenu = forwardRef(function AddProductMenu(props, ref) {
                                         onChange={handleOptionChange}
                                     />
                                     <span className="radio-checkmark"></span>
-                                    <span className="radio-label">Без фасування</span>
                                 </label>
+                                <span className="radio-label">Без фасування</span>
+
                             </div>
 
                             <div className="radio-wrapper">
@@ -287,71 +279,44 @@ const AddProductMenu = forwardRef(function AddProductMenu(props, ref) {
                                         onChange={handleOptionChange}
                                     />
                                     <span className="radio-checkmark"></span>
-                                    <span className="radio-label">Додати фасування</span>
                                 </label>
+                                <span className="radio-label">Додати фасування</span>
+
                             </div>
                         </div>
 
-                        {/* Conditionally render the additional block when "Додати фасування" is selected */}
-
                     </div>
-                    {isSingle === 0 && (
-                        <div className="product_price_con">
-                            <span className="setting_up">Фасування</span>
+                    {isSingle === 1 && (
+                        <div className="img_con">
+                            <span className="setting_up">Добавити Зображення</span>
+                            <div className="upload_img_con">
+                                <label htmlFor="file_input">
+                                    <span style={{ color: 'rgba(33, 150, 83, 1)', cursor: 'pointer' }}>Завантажте фото</span> або перетягніть файл
+                                </label>
+                                <p>Jpg, Png / Макс 8 мб / Мін 214px х 214px</p>
 
-                            <button className="add_model" onClick={openModelsMenu}>Додати</button>
-                            <div className="models_names">
-                                {models.map((model, index) => (
-                                    <div className="model">{name} {model.modelName}</div>
-                                ))}
+                                <input
+                                    name="image"
+                                    id="file_input"
+                                    type="file"
+                                    accept=".jpg, .jpeg, .png"
+                                    style={{ display: 'none' }}
+                                    onChange={handleFileChange}
+                                    multiple
+                                />
                             </div>
-
-
                         </div>
                     )}
-
-                </div>
-
-                <div className="sep_add_line"></div>
-
-                <div className="modal_left_part">
-                    <div className="options_con">
-                        <div className="point_choose_add_menu">
-                            {points.map((point, index) => (
-                                <span
-                                    key={index}
-                                    className={`point_add ${activeIndex === index ? 'active_add' : ''}`}
-                                    onClick={() => handleClick(index)}
-                                >
-                                    {point}
-                                </span>
-                            ))}
-                        </div>
-                        {activeIndex === 0 && (
-                            <div className="product_price_con">
-                                <span className="setting_up">Опис</span>
-                                <textarea name="description" id="" placeholder="Опис..." value={description} onChange={(e) => { setDescr(e.target.value) }} />
-                            </div>
-                        )}
-                        {activeIndex === 1 && (
-                            <div className="product_price_con">
-                                <span className="setting_up">Опис</span>
-                                <input type="number" placeholder="xx шт" className="input" />
-                            </div>
-                        )}
-                        {activeIndex === 2 && (
-                            <div className="product_price_con">
-                                <span className="setting_up">Посилання на відео</span>
-                                <input type="text" placeholder="Посилання..." className="input" name="video" />
-                            </div>
-                        )}
-
-
-                    </div>
                     <div className="product_price_con">
-                        <span className="setting_up">Кількість на складі</span>
-                        <input name="quantity" type="number" placeholder="xx шт" className="input" />
+                        <span className="setting_up">Назва товару</span>
+                        <input name="name" value={name} onChange={(e) => { setName(e.target.value) }} type="text" placeholder="Назва..." className="input" />
                     </div>
+                    {isSingle === 1 && (
+                        <div className="product_price_con">
+                            <span className="setting_up">Ціна</span>
+                            <input name="price" type="number" placeholder="Ціна..." className="input" />
+                        </div>
+                    )}
                     <div className="product_price_con">
                         <span className="setting_up">Категорія</span>
                         <div onClick={openDrop} className="drop_down_cat">
@@ -388,7 +353,130 @@ const AddProductMenu = forwardRef(function AddProductMenu(props, ref) {
 
 
                     </div>
+                    {/* <div className="img_con">
+                        <span className="setting_up">Добавити Зображення</span>
+                        <div className="upload_img_con">
+                            <label htmlFor="file_input">
+                                <span style={{ color: 'rgba(33, 150, 83, 1)', cursor: 'pointer' }}>Завантажте фото</span> або перетягніть файл
+                            </label>
+                            <p>Jpg, Png / Макс 8 мб / Мін 214px х 214px</p>
 
+                            <input
+                                name="image"
+                                id="file_input"
+                                type="file"
+                                accept=".jpg, .jpeg, .png"
+                                style={{ display: 'none' }}
+                                onChange={handleFileChange}
+                                multiple
+                            />
+                        </div>
+                    </div> */}
+
+                    {/*  */}
+
+                    {isSingle === 0 && (
+                        <div className="product_price_con">
+                            <span className="setting_up">Фасування</span>
+
+                            <button className="add_model" onClick={openModelsMenu}>Додати</button>
+                            <div className="models_names">
+                                {models.map((model, index) => (
+                                    <div className="model">{name} {model.modelName}</div>
+                                ))}
+                            </div>
+
+
+                        </div>
+                    )}
+
+                </div>
+
+                <div className="sep_add_line"></div>
+
+                <div className="modal_left_part">
+                    {isSingle === 1 && (
+                        <div className="options_con">
+                            <div className="point_choose_add_menu">
+                                {points.map((point, index) => (
+                                    <span
+                                        key={index}
+                                        className={`point_add ${activeIndex === index ? 'active_add' : ''}`}
+                                        onClick={() => handleClick(index)}
+                                    >
+                                        {point}
+                                    </span>
+                                ))}
+                            </div>
+                            {activeIndex === 0 && (
+                                <div className="product_price_con">
+                                    <span className="setting_up">Опис</span>
+                                    <textarea name="description" id="" placeholder="Опис..." value={description} onChange={(e) => { setDescr(e.target.value) }} />
+                                </div>
+                            )}
+                            {activeIndex === 1 && (
+                                <div className="product_price_con">
+                                    <span className="setting_up">Опис</span>
+                                    <input type="number" placeholder="xx шт" className="input" />
+                                </div>
+                            )}
+                            {activeIndex === 2 && (
+                                <div className="product_price_con">
+                                    <span className="setting_up">Посилання на відео</span>
+                                    <input type="text" placeholder="Посилання..." className="input" name="video" />
+                                </div>
+                            )}
+
+
+                        </div>
+                    )}
+
+
+                    {isSingle === 1 && (
+                        <div className="product_price_con">
+                            <span className="setting_up">Кількість на складі</span>
+                            <input name="quantity" type="text" placeholder="xx шт" className="input" />
+                        </div>
+                    )}
+
+                    {isSingle === 0 && (
+                        <div style={{ marginTop: isSingle === 0 ? "0vh" : "2vh" }} className="product_price_con">
+                            <span className="setting_up">Застосування</span>
+                            <input type="text" placeholder="Посилання..." className="input" name="video" />
+                        </div>
+                    )}
+
+                    <div className="product_price_con">
+                        <span className="setting_up">Показувати товар</span>
+                        <div className="radio-container">
+                            <div className="radio-wrapper">
+                                <label className="radio-button">
+                                    <input
+                                        id="option3"
+                                        name="radio-group_1"
+                                        type="radio"
+                                    />
+                                    <span className="radio-checkmark"></span>
+                                </label>
+                                <span className="radio-label">Так</span>
+
+                            </div>
+
+                            <div className="radio-wrapper">
+                                <label className="radio-button">
+                                    <input
+                                        id="option4"
+                                        name="radio-group_1"
+                                        type="radio"
+                                    />
+                                    <span className="radio-checkmark"></span>
+                                </label>
+                                <span className="radio-label">Ні</span>
+
+                            </div>
+                        </div>
+
+                    </div>
                     <div className="product_price_con">
                         <span className="setting_up">Додати знижку</span>
                         <input value={promotion.discount} onChange={handelPromotion} type="number" placeholder="xx %" className="input" />
@@ -402,7 +490,7 @@ const AddProductMenu = forwardRef(function AddProductMenu(props, ref) {
 
                 </div>
             </form>
-            <AddModel ref={dialog2} />
+            <AddModel setModels={setModels} ref={dialog2} />
         </dialog>,
         document.getElementById("add_product")
     );
