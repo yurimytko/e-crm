@@ -75,8 +75,9 @@ const AddProductMenu = forwardRef(function AddProductMenu(props, ref) {
         setIsCategorySelected(false);
         setSubCategory("Під категорія");
         setSubsections([]);
-        localStorage.removeItem('models');
         setModels([])
+        setIsSingle(1)
+        setName("")
     };
 
 
@@ -142,7 +143,10 @@ const AddProductMenu = forwardRef(function AddProductMenu(props, ref) {
     const handleFileChange = (e) => {
         const files = Array.from(e.target.files);
         setSelectedFiles(files);
-        console.log(files)
+        const ar = JSON.stringify(files)
+        console.log(ar)
+
+        
     };
 
     const openModelsMenu = (e) => {

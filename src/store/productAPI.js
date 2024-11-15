@@ -10,9 +10,11 @@ export const productApi = createApi({
         baseUrl: 'https://superogshmal.pp.ua/',
         prepareHeaders: (headers) => {
           const authToken = localStorage.getItem('token');
+          const scrf = localStorage.getItem('csrfToken')
           
-          if (authToken) {
+          if (authToken && scrf) {
             headers.set('Authorization', `accessToken=${authToken}`);
+            headers.set("CSRF-Token", scrf)
           }
           
           return headers;

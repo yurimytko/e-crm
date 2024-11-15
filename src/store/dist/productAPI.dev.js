@@ -13,9 +13,11 @@ var productApi = (0, _react.createApi)({
     baseUrl: 'https://superogshmal.pp.ua/',
     prepareHeaders: function prepareHeaders(headers) {
       var authToken = localStorage.getItem('token');
+      var scrf = localStorage.getItem('csrfToken');
 
-      if (authToken) {
+      if (authToken && scrf) {
         headers.set('Authorization', "accessToken=".concat(authToken));
+        headers.set("CSRF-Token", scrf);
       }
 
       return headers;
