@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.useAddModelsMutation = exports.useDeleteProductsMutation = exports.usePutProductMutation = exports.useGetProductQuery = exports.useDeleteProductMutation = exports.useAddProductMutation = exports.useGetProductsQuery = exports.productApi = void 0;
+exports.usePostImgMutation = exports.useAddModelsMutation = exports.useDeleteProductsMutation = exports.usePutProductMutation = exports.useGetProductQuery = exports.useDeleteProductMutation = exports.useAddProductMutation = exports.useGetProductsQuery = exports.productApi = void 0;
 
 var _react = require("@reduxjs/toolkit/query/react");
 
@@ -13,11 +13,9 @@ var productApi = (0, _react.createApi)({
     baseUrl: 'https://superogshmal.pp.ua/',
     prepareHeaders: function prepareHeaders(headers) {
       var authToken = localStorage.getItem('token');
-      var scrf = localStorage.getItem('csrfToken');
 
-      if (authToken && scrf) {
+      if (authToken) {
         headers.set('Authorization', "accessToken=".concat(authToken));
-        headers.set("CSRF-Token", scrf);
       }
 
       return headers;
@@ -69,17 +67,11 @@ var productApi = (0, _react.createApi)({
       }),
       addModels: build.mutation({
         query: function query(body) {
-          console.log('Request body:', body); // Log the body before sending the request
-          // Extract the id from the FormData object
-
-          var id = body.get('id'); // Ensure you have appended 'id' to the FormData
-
+          console.log('Request body:', body);
           return {
-            url: "admin/products/?id=".concat(id, "&modelId=new"),
-            // Construct URL with extracted ID
+            url: "admin/products/?id=".concat(body.id, "&modelId=new"),
             method: "PUT",
-            body: body // Send the FormData as body
-
+            body: body
           };
         }
       }),
@@ -88,6 +80,15 @@ var productApi = (0, _react.createApi)({
           return {
             url: "admin/products?id=".concat(ids),
             method: "DELETE"
+          };
+        }
+      }),
+      postImg: build.mutation({
+        query: function query(body) {
+          return {
+            url: "admin/images",
+            method: "POST",
+            body: body
           };
         }
       })
@@ -101,7 +102,9 @@ var useGetProductsQuery = productApi.useGetProductsQuery,
     useGetProductQuery = productApi.useGetProductQuery,
     usePutProductMutation = productApi.usePutProductMutation,
     useDeleteProductsMutation = productApi.useDeleteProductsMutation,
-    useAddModelsMutation = productApi.useAddModelsMutation;
+    useAddModelsMutation = productApi.useAddModelsMutation,
+    usePostImgMutation = productApi.usePostImgMutation;
+exports.usePostImgMutation = usePostImgMutation;
 exports.useAddModelsMutation = useAddModelsMutation;
 exports.useDeleteProductsMutation = useDeleteProductsMutation;
 exports.usePutProductMutation = usePutProductMutation;

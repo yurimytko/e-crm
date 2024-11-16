@@ -37,7 +37,7 @@ var sectionApi = (0, _react.createApi)({
         query: function query(body) {
           return "/catalog?id=".concat(body.id);
         },
-        invalidatesTags: ['Section']
+        providesTags: ['Section']
       }),
       postSection: build.mutation({
         query: function query(formData) {

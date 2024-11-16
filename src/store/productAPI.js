@@ -10,11 +10,9 @@ export const productApi = createApi({
         baseUrl: 'https://superogshmal.pp.ua/',
         prepareHeaders: (headers) => {
           const authToken = localStorage.getItem('token');
-          const scrf = localStorage.getItem('csrfToken')
           
-          if (authToken && scrf) {
+          if (authToken) {
             headers.set('Authorization', `accessToken=${authToken}`);
-            headers.set("CSRF-Token", scrf)
           }
           
           return headers;
@@ -56,15 +54,13 @@ export const productApi = createApi({
 
 addModels: build.mutation({
     query: (body) => {
-        console.log('Request body:', body); // Log the body before sending the request
+        console.log('Request body:', body);
         
-        // Extract the id from the FormData object
-        const id = body.get('id'); // Ensure you have appended 'id' to the FormData
 
         return {
-            url: `admin/products/?id=${id}&modelId=new`, // Construct URL with extracted ID
+            url: `admin/products/?id=${body.id}&modelId=new`, 
             method: "PUT",
-            body, // Send the FormData as body
+            body,
         };
     },
 }),
@@ -74,7 +70,15 @@ addModels: build.mutation({
                 method: "DELETE",        
             }),
         }),
+
+        postImg: build.mutation({
+            query: (body) => ({
+                url: `admin/images`,
+                method: "POST",
+                body
+            })
+        })
     }),
 });
 
-export const { useGetProductsQuery, useAddProductMutation,useDeleteProductMutation,useGetProductQuery,usePutProductMutation, useDeleteProductsMutation, useAddModelsMutation } = productApi;
+export const { useGetProductsQuery, useAddProductMutation,useDeleteProductMutation,useGetProductQuery,usePutProductMutation, useDeleteProductsMutation, useAddModelsMutation, usePostImgMutation } = productApi;

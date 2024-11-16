@@ -1,15 +1,17 @@
 import './dist/addCat.css'
 
 import { usePostSectionMutation } from '../../store';
-import { useState } from 'react';
-import { isAction } from '@reduxjs/toolkit';
+import { useState, useRef } from 'react';
 
 export default function AddCategory() {
 
-    const [name, setName] = useState('');
-    const [photo, setPhoto] = useState(null);
+    const input = useRef()
 
-    const [promotion, setPromotion] = useState({ isActive: false, discount: '' });
+    const [dragActive, setDragActive] = useState(false);
+
+    const [name, setName] = useState('');
+
+    const [photo, setPhoto] = useState([]);
 
     const [createCategory, { data, isLoading, error }] = usePostSectionMutation();
 
@@ -19,101 +21,112 @@ export default function AddCategory() {
         setTimeout(() => {
             menuElement.style.display = "none";
             setName('');
-            setPhoto(null);
+            setPhoto([]);
         }, 100);
     }
 
 
 
-    function addPromotion(e) {
-        setPromotion(prevPromotion => ({
-            ...prevPromotion,
-            isActive: true,
-            discount: e.target.value
-        }));
 
-        if(e.target.value === ''){
-            setPromotion(prevPromotion => ({
-                ...prevPromotion,
-                isActive: false,
-                discount: e.target.value
-            }));
-        }
+    const handleInput = () => {
+        input.current.click();
+    };
 
-        console.log(promotion)
-    }
-
-
-    const addSection = async () => {
+    const addSection = async (e) => {
+        e.preventDefault()
         try {
+
             const formData = new FormData();
             formData.append('image', photo);
             formData.append('name', name);
-            formData.append('promotion', JSON.stringify(promotion)); 
-    
             await createCategory(formData);
             closeAddCat();
-
             console.log(formData)
         } catch (e) {
             console.log(e);
         }
     };
 
-    const handleFileChange = (event) => {
-        const file = event.target.files[0];
-        setPhoto(file);
+
+    const handleDragOver = (e) => {
+        e.preventDefault();
+        setDragActive(true);
+    };
+
+    const handleDragLeave = () => {
+        setDragActive(false);
+    };
+
+    const handleDrop = (e) => {
+        e.preventDefault();
+        setDragActive(false);
+        const file = e.dataTransfer.files[0];
+        if (file && (file.type === 'image/png' || file.type === 'image/jpeg')) {
+            setPhoto(file);
+        } else {
+            alert('Only PNG and JPG images are allowed');
+        }
     };
 
     return (
         <div id='add_category' className="add_category">
-            <div className="add_cat_menu">
-                <img
-                    onClick={closeAddCat}
-                    className="close_img"
-                    src="./img/close_menu.svg"
-                    alt="Close menu"
-                />
+            <form className="add_cat_menu" onSubmit={addSection}>
 
-                <div className="img_con">
-                    {photo ? (
-                        <div className="image_preview">
-                            <img
-                                src={URL.createObjectURL(photo)}
-                                alt="Прев'ю фото"
-                                style={{ maxWidth: '100%', maxHeight: '214px' }} // Стиль для прев'ю
-                            />
-                            <button onClick={() => setPhoto(null)}>Завантажити інше фото</button>
-                        </div>
-                    ) : (
-                        <div className="drag_area">
-                            <label htmlFor="file_input">
-                                <span style={{ color: 'rgba(33, 150, 83, 1)', cursor: 'pointer' }}>Завантажте фото</span> або перетягніть файл
-                            </label>
-                            <p>Jpg, Png / Макс 8 мб / Мін 214px х 214px</p>
+                <div className="img_con ty">
+                    <span className="titile_set">Добавити Зображення</span>
+                    {photo.length === 0 ? (
+                        <div
+                            className={`drag_and_drop ${dragActive ? 'drag_active' : ''}`}
+                            onDragOver={handleDragOver}
+                            onDragLeave={handleDragLeave}
+                            onDrop={handleDrop}
+                        >
+                            <span className='input_click' onClick={handleInput}>
+                                Завантажте фото
+                                <span className='normal_text' onClick={(e) => { e.stopPropagation(); }}>
+                                    {' '}або перетягніть файл
+                                </span>
+                            </span>
+                            <span className='instruction'>Jpg, Png / Макс 8 мб / Мін 214px х 214px</span>
 
                             <input
-                                id="file_input"
+                                ref={input}
+                                style={{ display: "none" }}
                                 type="file"
-                                accept=".jpg, .jpeg, .png"
-                                style={{ display: 'none' }}
-                                onChange={handleFileChange}
+                                accept=".png, .jpeg, .jpg"
+                                onChange={(e) => {
+                                    const file = e.target.files[0];
+                                    if (file && (file.type === 'image/png' || file.type === 'image/jpeg')) {
+                                        setPhoto(file);
+                                    }
+                                }}
                             />
                         </div>
+                    ) : (
+                        <div
+                            onDragOver={handleDragOver}
+                            onDragLeave={handleDragLeave}
+                            onDrop={handleDrop}
+                            className={`uploaded_photo ${dragActive ? 'drag_active' : ''}`}
+                        >
+                            <img src={URL.createObjectURL(photo)} alt="Uploaded" className="preview_image" />
+                        </div>
                     )}
+
                 </div>
 
-                <span>Категорія</span>
+                <div className="set_con">
+                    <span className="titile_set">Категорія</span>
+                    <input onChange={(e) => {setName(e.target.value)}} className="input_add" type="text" />
+                </div>
 
-                <input type="text" placeholder='Назва' onChange={(e) => { setName(e.target.value) }} />
-                <span>Знижка</span>
+                <div className="btn_group">
+                    <button onClick={closeAddCat} type='button' className='button_cat cancel'>Скасувати</button>
+                    <button className='button_cat add'>Добавити</button>
 
-                <input type="text" placeholder='Назва' onChange={addPromotion} />
+                </div>
 
-
-
-                <button className='cat_btn' onClick={addSection}>Створити</button>
-            </div>
+            </form>
         </div>
     );
 }

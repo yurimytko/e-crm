@@ -1,7 +1,7 @@
 .add_category {
   transition: 0.3s ease;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   position: absolute;
   top: 0;
   left: 0;
@@ -15,92 +15,147 @@
 }
 .add_cat_menu {
   position: relative;
-  min-height: 44.6vh;
-  width: 19.4vw;
+  min-height: 50vh;
+  width: 25vw;
   background: #f3f3f3;
   border-radius: 1vh;
   display: flex;
-  justify-content: space-between;
   align-items: center;
   flex-direction: column;
-  padding: 3vh 1.3vw;
+  padding: 2vh 1.3vw;
   box-sizing: border-box;
 }
-.add_cat_menu span {
-  text-align: center;
-  width: 10vw;
-  font-family: Jura;
-  font-size: 2.4vh;
-  font-weight: 700;
+.drag_active {
+  background: rgba(0,0,0,0.67);
+  transition: 0.2s;
+  color: #fff;
+  border: #fff;
 }
-.add_cat_menu input {
-  display: block;
-  border: none;
+.drag_active .normal_text {
+  color: #fff;
+  transition: 0.2s;
+}
+.drag_active .instruction {
+  color: #fff;
+  transition: 0.2s;
+}
+.close_img {
+  cursor: pointer;
+  position: absolute;
+  top: 1vh;
+  right: 1vw;
+}
+.img_con {
+  padding: 1vh 1vw;
+  box-sizing: border-box;
+  height: 28vh;
   width: 100%;
   background: #fff;
-  margin-top: 1.4vh;
-  box-shadow: inset 0px 0px 0.6vh 0px rgba(0,0,0,0.308);
-  height: 4.4vh;
   border-radius: 1vh;
-  padding: 0 0 0 1vw;
+  display: flex;
+  justify-content: space-around;
+  flex-direction: column;
+}
+.ty {
+  margin: 0;
+}
+.input_click {
+  color: #85d4a9;
+  font-family: Jura;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.normal_text {
+  cursor: auto;
+  color: #000;
+  font-family: Jura;
+  font-size: 14px;
+  font-weight: 700;
+}
+.drag_and_drop {
+  transition: 0.4s;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border: 1px dashed #000;
+  height: 70%;
+  width: 100%;
+  border-radius: 1vh;
+  gap: 2vh;
+}
+.instruction {
+  font-family: Jura;
+  font-size: 12px;
+  font-weight: 400;
+  color: #696969;
+}
+.titile_set {
+  font-family: Jura;
+  font-size: 24px;
+  font-weight: 700;
+  text-align: left;
+}
+.set_con {
+  margin-top: 2vh;
+  padding: 1vh 1vw;
   box-sizing: border-box;
+  height: 100%;
+  width: 100%;
+  background: #fff;
+  border-radius: 1vh;
+  display: flex;
+  justify-content: space-around;
+  flex-direction: column;
+}
+.input_add {
+  width: 100%;
+  margin-top: 1.4vh;
   font-family: Jura;
   font-size: 2.4vh;
   font-weight: 500;
-}
-.img_con {
-  width: 100%;
-  min-height: 14vh;
-  border-radius: 1vh;
-  background: #fff;
-  padding: 1vh;
+  padding: 0 0 0 1vw;
   box-sizing: border-box;
-}
-.drag_area {
+  height: 4vh;
+  outline: none;
   border-radius: 1vh;
-  border: 0.2vh dashed #696969;
-  width: 100%;
-  min-height: 100%;
+  display: block;
+  border: 0.1vh solid rgba(0,0,0,0.25);
+}
+.btn_group {
+  margin-top: 2vh;
+  gap: 1vw;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-.drag_area p {
-  margin: 1vh;
-  font-family: Jura;
-  font-size: 1.3vh;
-  font-weight: 400;
-}
-.drag_area label {
-  width: 9vw;
-  text-align: center;
-  font-family: Jura;
-  font-size: 1.6vh;
-  font-weight: 700;
-}
-.drag_area label span {
-  font-family: Jura;
-  font-size: 1.6vh;
-  font-weight: 700;
-}
-.image_preview {
   width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
+  align-items: flex-end;
+  justify-content: flex-end;
 }
-.cat_btn {
-  height: 6vh;
-  width: 10vw;
+.button_cat {
+  cursor: pointer;
   border: none;
-  border-radius: 1vh;
-  background: #85d4a9;
-  font-family: Jura;
-  font-size: 20px;
+  font-family: Inter;
+  font-size: 14px;
   font-weight: 700;
-  line-height: 23.66px;
+  line-height: 16.94px;
   text-align: center;
+  color: #fff;
+  padding: 1vh 1vw;
+  box-sizing: border-box;
+  border-radius: 1vh;
+}
+.cancel {
+  background: #9a9a9a;
+}
+.add {
+  background: #219653;
+}
+.uploaded_photo {
+  height: 70%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.uploaded_photo img {
+  height: 70%;
 }

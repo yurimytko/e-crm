@@ -6,6 +6,8 @@ import { useGetSectionsQuery } from "../../store";
 
 import { useAddProductMutation, useAddModelsMutation } from "../../store";
 import AddModel from "../AddModel/addModel";
+import AddCategory from "../AddCategory/addCat";
+import { AddSub } from "../AddSubSection/adSub";
 
 const generateRandomArticle = () => {
     return Math.floor(1000 + Math.random() * 9000).toString();
@@ -40,11 +42,14 @@ const AddProductMenu = forwardRef(function AddProductMenu(props, ref) {
     const [models, setModels] = useState([]);
     const [selectedOption, setSelectedOption] = useState('');
 
-    const [display, setDisplay] = useState(false)
+    const [display, setDisplay] = useState(1)
 
     const handleOptionChange = (event) => {
         setIsSingle(event.target.id === 'option1' ? 1 : 0);
     };
+
+
+
 
     const dialog2 = useRef()
 
@@ -120,7 +125,7 @@ const AddProductMenu = forwardRef(function AddProductMenu(props, ref) {
                 discount: value
             }))
         }
-        console.log(promotion.isActive)
+
     }
 
 
@@ -146,7 +151,7 @@ const AddProductMenu = forwardRef(function AddProductMenu(props, ref) {
         const ar = JSON.stringify(files)
         console.log(ar)
 
-        
+
     };
 
     const openModelsMenu = (e) => {
@@ -182,7 +187,7 @@ const AddProductMenu = forwardRef(function AddProductMenu(props, ref) {
             fd.append("isSingle", isSingle);
             console.log([...fd]);
             await addProduct(fd).unwrap();
-            console.log("Product added successfully");
+            console.log("Product added successfully", fd);
         } catch (e) {
             console.error(e);
         }
@@ -205,6 +210,10 @@ const AddProductMenu = forwardRef(function AddProductMenu(props, ref) {
                 fd.append("subSectionId", subCategoryId);
             }
 
+            if (display) {
+                fd.append("display", display);
+            }
+
             fd.append("isSingle", isSingle);
             console.log([...fd]);
 
@@ -217,23 +226,12 @@ const AddProductMenu = forwardRef(function AddProductMenu(props, ref) {
                 const formData = new FormData();
                 formData.append('id', productId);
 
-                models.forEach((model, index) => {
-                    formData.append(`models[${index}][modelName]`, model.modelName);
-                    formData.append(`models[${index}][price]`, model.price);
-                    formData.append(`models[${index}][quantity]`, model.quantity);
-                    formData.append(`models[${index}][description]`, model.description);
+                const model = {
+                    id: productId,
+                    models: models
+                }
 
-                    // Check if model.image is an array and append each image
-                    if (Array.isArray(model.image)) {
-                        model.image.forEach((img, imgIndex) => {
-                            if (img instanceof File) { // Ensure each item is a File object
-                                formData.append(`models[${index}][image][${imgIndex}]`, img); // Append as a nested array
-                            }
-                        });
-                    }
-                });
-
-                await addModel(formData).unwrap();
+                await addModel(model).unwrap();
 
             }
         } catch (e) {
@@ -248,6 +246,31 @@ const AddProductMenu = forwardRef(function AddProductMenu(props, ref) {
         else {
             await onSubmitModels(e)
         }
+    };
+
+
+    const openAddCategory = () => {
+        const menuElement = document.getElementById("add_category");
+        menuElement.style.display = "flex";
+        setTimeout(() => {
+            menuElement.style.opacity = "1";
+
+
+        }, 100);
+    }
+
+    function openAddCat() {
+        const menuElement = document.getElementById("add_sub");
+        menuElement.style.display = "flex";
+        setTimeout(() => {
+            menuElement.style.opacity = "1";
+        }, 100);
+    }
+
+
+
+    const handleRadioChange = (e) => {
+        setDisplay(e.target.id === 'option3' ? 1 : 0); // If "option3" (Так) is selected, set display to 1, otherwise set to 0
     };
 
 
@@ -335,7 +358,7 @@ const AddProductMenu = forwardRef(function AddProductMenu(props, ref) {
                                 ) : (
                                     <span>немає категорій</span>
                                 )}
-                                <span className="add_cat_in_add">Додати категорію</span>
+                                <span className="add_cat_in_add" onClick={openAddCategory}>Додати категорію</span>
                             </div>
                         </div>
                         <div onClick={openDropSub} className="drop_down_cat" style={{ display: isCategorySelected ? "flex" : "none" }}>
@@ -350,35 +373,13 @@ const AddProductMenu = forwardRef(function AddProductMenu(props, ref) {
                                 ) : (
                                     <span>немає категорій</span>
                                 )}
-                                <span className="add_cat_in_add">Додати категорію</span>
+                                <span className="add_cat_in_add" onClick={openAddCat}>Додати категорію</span>
                             </div>
                         </div>
 
 
 
                     </div>
-                    {/* <div className="img_con">
-                        <span className="setting_up">Добавити Зображення</span>
-                        <div className="upload_img_con">
-                            <label htmlFor="file_input">
-                                <span style={{ color: 'rgba(33, 150, 83, 1)', cursor: 'pointer' }}>Завантажте фото</span> або перетягніть файл
-                            </label>
-                            <p>Jpg, Png / Макс 8 мб / Мін 214px х 214px</p>
-
-                            <input
-                                name="image"
-                                id="file_input"
-                                type="file"
-                                accept=".jpg, .jpeg, .png"
-                                style={{ display: 'none' }}
-                                onChange={handleFileChange}
-                                multiple
-                            />
-                        </div>
-                    </div> */}
-
-                    {/*  */}
-
                     {isSingle === 0 && (
                         <div className="product_price_con">
                             <span className="setting_up">Фасування</span>
@@ -459,11 +460,12 @@ const AddProductMenu = forwardRef(function AddProductMenu(props, ref) {
                                         id="option3"
                                         name="radio-group_1"
                                         type="radio"
+                                        onChange={handleRadioChange}
+                                        checked={display === 1} 
                                     />
                                     <span className="radio-checkmark"></span>
                                 </label>
                                 <span className="radio-label">Так</span>
-
                             </div>
 
                             <div className="radio-wrapper">
@@ -472,14 +474,14 @@ const AddProductMenu = forwardRef(function AddProductMenu(props, ref) {
                                         id="option4"
                                         name="radio-group_1"
                                         type="radio"
+                                        onChange={handleRadioChange}
+                                        checked={display === 0}
                                     />
                                     <span className="radio-checkmark"></span>
                                 </label>
                                 <span className="radio-label">Ні</span>
-
                             </div>
                         </div>
-
                     </div>
                     <div className="product_price_con">
                         <span className="setting_up">Додати знижку</span>
@@ -495,6 +497,8 @@ const AddProductMenu = forwardRef(function AddProductMenu(props, ref) {
                 </div>
             </form>
             <AddModel setModels={setModels} ref={dialog2} />
+            <AddCategory />
+            <AddSub />
         </dialog>,
         document.getElementById("add_product")
     );

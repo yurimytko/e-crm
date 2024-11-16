@@ -24,11 +24,13 @@ export function CatalogCard(props){
 
     }
 
+    console.log(props.product.image)
+
 
     return(
         <NavLink to={`${props.product?._id}`}  className="catalog_card">
             <img onClick={Delete} className="delete_img_catalog" src="/img/Delete.svg" alt="" />
-            <img src={props.product?.image[0].imageUrl} className="catalog_img" alt="" />
+            <img src={props.product?.image[0]} className="catalog_img" alt="" />
             <p className="card_name">{props.product?.name}</p>
         </NavLink>
     )

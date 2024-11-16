@@ -29,7 +29,7 @@ export function SubCard(props){
     return(
         <NavLink to={`${props.product?._id}`}  className="catalog_card">
             <img onClick={Delete} className="delete_img_catalog" src="/img/Delete.svg" alt="" />
-            <img src={props.product.image[0].imageUrl} alt="" />
+            <img src={props.product.image[0]} alt="" />
             <p className="card_name">{props.product?.name}</p>
         </NavLink>
     )

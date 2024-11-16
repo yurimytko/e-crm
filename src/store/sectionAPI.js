@@ -24,7 +24,7 @@ export const sectionApi = createApi({
                     }),
                     getSection: build.query({
                         query: (body) => `/catalog?id=${body.id}`,
-                        invalidatesTags: ['Section']
+                        providesTags: ['Section']
                     }),
 
                     postSection: build.mutation({

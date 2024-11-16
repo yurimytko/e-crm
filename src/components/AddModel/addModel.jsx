@@ -1,20 +1,22 @@
-import { useRef, useImperativeHandle, forwardRef, useState } from "react";
+import { useRef, useImperativeHandle, forwardRef, useState, useEffect } from "react";
 
-import { useGetSectionsQuery } from "../../store";
+import { usePostImgMutation } from "../../store";
 
-import { useAddProductMutation } from "../../store";
 
-const generateRandomArticle = () => {
-    return Math.floor(1000 + Math.random() * 9000).toString();
-};
 
 const AddModel = forwardRef(function AddModel({setModels}, ref) {
+
+
+    const [addImg, {data: img, isLoading: loading, Error: error}] = usePostImgMutation()
 
 
     const [activeIndex, setActiveIndex] = useState(0);
 
     const [selectedFiles, setSelectedFiles] = useState([]);
 
+    const [imgId, setImgId] = useState([])
+
+    const [promotion, setPromotion] = useState({ isActive: false, discount: '' })
 
 
     const [description, setDescr] = useState()
@@ -49,12 +51,33 @@ const AddModel = forwardRef(function AddModel({setModels}, ref) {
     };
 
 
-    const handleFileChange = (e) => {
+    const handleFileChange = async (e) => {
         const files = Array.from(e.target.files);
         setSelectedFiles(files);
-
-        console.log(files)
+    
+        console.log(files);
+    
+        try {
+            const formData = new FormData();
+            files.forEach((file, index) => {
+                formData.append('image', file);
+            });
+    
+            const response = await addImg(formData).unwrap();
+            console.log(response);
+    
+            if (response) {
+                setImgId(response.images);
+            }
+        } catch (error) {
+            console.error('Error uploading images:', error);
+        }
     };
+
+
+    useEffect(()=> {
+        console.log(imgId)
+    },[imgId])
 
 
     const handleSave = (e) => {
@@ -66,15 +89,12 @@ const AddModel = forwardRef(function AddModel({setModels}, ref) {
           price: Number(price),
           quantity: Number(quantity),
           description,
-          image: selectedFiles
+          image: imgId,
+          promotion: promotion
         };
     
-        // Update the models state directly
         setModels((prevModels) => {
             const updatedModels = [...prevModels, newModel];
-            
-            // Update localStorage with the new state
-            localStorage.setItem('models', JSON.stringify(updatedModels));
             
             return updatedModels;
         });
@@ -85,6 +105,34 @@ const AddModel = forwardRef(function AddModel({setModels}, ref) {
         setQuantity('');
         setDescr('');
     };
+
+    const handelPromotion = (e) => {
+        const value = e.target.value;
+        
+
+        if (value === '') {
+            setPromotion(prevValues => ({
+                ...prevValues,
+                isActive: false,
+                discount: ''
+            }));
+        } else {
+            setPromotion(prevValues => ({
+                ...prevValues,
+                isActive: true,
+                discount: value
+            }));
+        }
+        
+
+        console.log(promotion); 
+    };
+
+
+    useEffect(() => {
+        console.log(promotion)
+
+    },[promotion])
 
 
     return(
@@ -159,6 +207,10 @@ const AddModel = forwardRef(function AddModel({setModels}, ref) {
                     <div className="product_price_con">
                         <span className="setting_up">Кількість на складі</span>
                         <input name="quantity" value={quantity} onChange={(e) => {setQuantity(e.target.value)}} type="number" placeholder="xx шт" className="input" />
+                    </div>
+                    <div className="product_price_con">
+                        <span className="setting_up">Додати знижку</span>
+                        <input value={promotion.discount} onChange={handelPromotion} type="text" placeholder="xx %" className="input" />
                     </div>
 
                     <div className="add_btn_con">
