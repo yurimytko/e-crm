@@ -128,7 +128,7 @@ export function Update() {
     };
 
 
-    const dateStr = product.createdAt;
+    const dateStr = product?.createdAt;
     const date = new Date(dateStr);
 
     const formattedDate = date.toLocaleDateString();
