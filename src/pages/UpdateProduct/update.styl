@@ -1,148 +1,123 @@
 .update_page
-    display: flex
     background: rgba(243, 243, 243, 1)
+    width 100%
+    height: 100vh
+    display: flex
+
 .update_field
     display: flex
-    padding: 5vh 0 0 2vw
+    padding: 4vh
+    width 100%
+    justify-content: space-around
     box-sizing: border-box
-    gap 13vh
-.carusel_view
-    background: white
-    width 20vw
-    height: 50vh
-    display: flex
-    transition: 0.5vh
-    overflow: hidden
 
-.carusel_con
-    display: flex
-    transition: 0.3s
-    transform: translateX(0)
-
-.carusel_block
-    width 20vw
-.car_controls
-    display: flex
-    justify-content: space-around
-
-.img_group
-    display: flex
-    height: 3vh
-    width 60%
-    justify-content: space-around
-.img_group img
-    height: 100%
-
-.img_block
-    min-width 20vw
-    height 100%
-    display: flex
-    justify-content: center
-    align-items: center
-.top_part
-    display: flex
-    width 40vw
-    align-items: center
-    justify-content: space-between
-    margin 0 0 3vh 0
-.top_left
+.left_up_model
+    width 30vw
+    height: 90vh
     display: flex
     flex-direction: column
-.top_part span
-    font-family: Rubik;
-    font-size: 1.6vh;
-    font-weight: 300;
 
-.coments_btn
-    cursor pointer
-
-    border-radius: 1vh
-    width 7vw
-    height: 5vh
-    background: white
-    display: flex
-    justify-content: space-around
-    align-items: center
-.coments_btn span
-    font-family: Inter;
-    font-size: 1.6vh;
-    font-weight: 500;
-.up_input
-    display: block
-    margin-top 1vh
-    border none
-    outline: none
-    box-shadow: inset 0px 0px 0.6vh 0px rgba(0, 0, 0, 0.308);
-    width 100%
-    height: 6vh
-    border-radius: 1vh
-    padding: 0 0 0 1vw
+.img_preview
+    padding 1vh 1vw
     box-sizing: border-box
-    font-family: Jura;
-    font-size: 2.4vh;
-    font-weight: 500;
-.point_choose
-    margin-top 4vh
-    overflow: hidden
     border-radius: 1vh
-    width 100%
-    height: 6vh
-    background: rgba(229, 252, 240, 1)
-    display: flex
-.point
-    transition: 0.3s
-    cursor pointer
-    width 100%
-    height: 100%
-    display: flex
-    justify-content: center
-    align-items: center
-    font-family: Jura;
-    font-size: 2vh;
-    font-weight: 400;
-.point:hover
-    background: rgba(133, 212, 169, 1)
-.active 
-    background: rgba(133, 212, 169, 1);
-.text_area_up
-  margin-top 2vh
-  width 100%
-  height: 30vh
-  resize: none;
-  font-family: Jura;
-  font-size: 2.6vh;
-  font-weight: 500;
-  outline: none
-  border: none
-  box-shadow: inset 0px 0px 0.6vh 0px rgba(0, 0, 0, 0.308);
-  border-radius: 1vh
-  padding 1vh 1vw
-  box-sizing: border-box
-.up_control_con
-    width 100%
-    display: flex
-    justify-content: flex-end
-    align-items: center
-    font-family: Jura;
-    font-size: 2vh;
-    font-weight: 700;
-    gap 1vw
-    margin-top 2vh
-.delete_btn
-    height: 6vh
-    width 7vw
+    width 30vw
+    height: 45vh
     background: white
+
+.img_wrapper {
+    margin-top 1vh
+    width: 100%;
+    height: 26.5vh;
+    border-radius: 1vh;
+    border: 1px dashed rgba(105, 105, 105, 1);
+    padding: 2vh; /* Ensure padding is applied */
+    box-sizing: border-box; /* Include padding and border in size calculations */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+
+    .preview_img {
+        width: 100%; /* Fit the image to the wrapper's width */
+        height: 100%; /* Fit the image to the wrapper's height */
+        object-fit: contain; /* Ensure the image scales while maintaining aspect ratio */
+    }
+}
+.section_set
+    padding 1vh
+    box-sizing: border-box
+    margin-top 2vh
     border-radius: 1vh
-    cursor: pointer
+    width 30vw
+    height: 10vh
+    background: white
+.sec
+    width 30vw
+
+
+.weight
+    padding 1vh
+    box-sizing: border-box
+    margin-top 2vh
+    border-radius: 1vh
+    width 30vw
+    height: 18vh
+    background: white
+.models_con
+    margin-top 1vh
     display: flex
-    justify-content: center
-    align-items: center
-.update_btn
-    height: 6vh
-    width 10.9vw
+    gap 0.3vw
+    flex-wrap: wrap
+.model_name
+    color: black
+    cursor pointer
+    border-radius: 1vh
+    padding: 0.5vh
+    font-family: Inter;
+    font-size: 1.5vh;
+    font-weight: 400;
     background: rgba(133, 212, 169, 1)
+    transition: 0.2s
+.active_model
+    transition: 0.2s
+
+    cursor default
     border-radius: 1vh
-    cursor: pointer
+    padding: 0.5vh
+    font-family: Inter;
+    font-size: 1.5vh;
+    font-weight: 400;
+    color: white
+    background: rgba(33, 150, 83, 1)
+.date_review
+    margin-top 3vh
+    display: flex
+    justify-content: space-between
+    width 30vw
+.reviews_btn
+    cursor pointer
     display: flex
     justify-content: center
     align-items: center
+    border-radius: 1vh
+    border none
+    background: white
+    padding: 1vh
+    gap 0.4vw
+    font-family: Inter;
+    font-size: 15px;
+    font-weight: 400;
+.left_block
+    display: flex
+    gap 0.4vw
+.article_and_date
+    display: flex
+    flex-direction: column
+    justify-content: center
+    font-family: Rubik;
+    font-size: 14px;
+    font-weight: 300;
+.right_bloc
+    display: flex
+    gap 1vw

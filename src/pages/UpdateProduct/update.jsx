@@ -11,359 +11,290 @@ import AddCategory from '../../components/AddCategory/addCat';
 import { Loader } from '../../components/Loader/loader';
 
 export function Update() {
-    const { id } = useParams();
-    const navigate = useNavigate(); // Initialize navigate
+    const navigate = useNavigate()
+    const [activeModel, setActiveModel] = useState(0)
+    const [name, setName] = useState(null)
+    const [quantity, setQuantity] = useState(null)
+    const [price, setPrice] = useState(null)
 
-    // Fetching product data
+
+
+    const [category, setCategory] = useState("Категорія")
+    const [subCategory, setSubCategory] = useState("Під категорія")
+
+    const [isCategoryOpen, setIsCatOpen] = useState(false)
+    const [isSubOpen, setIsSubOpen] = useState(false)
+    const [isCategorySelected, setIsCategorySelected] = useState(false)
+    const [categoryId, setCategoryId] = useState()
+    const [subsetcions, setSubsections] = useState([])
+    const [subCategoryId, setSubCategoryId] = useState()
+
+    const [display, setDisplay] = useState(1)
+
+
+    const { id } = useParams();
     const {
-        data: productData,
-        error: productError,
+        data: { product } = {},
+        error: error,
         isLoading: productLoading,
         refetch: refetchProduct
     } = useGetProductQuery(id);
 
-    // Fetching sections
     const {
-        data: sectionsData = [],
+        data: { sections } = {},
         isLoading: sectionsLoading
     } = useGetSectionsQuery();
-
-    // Fetching sub-sections
-    const [name, setName] = useState('');
-    const [price, setPrice] = useState('');
-    const [quantity, setQuantity] = useState('');
-    const [description, setDescr] = useState('');
-    const [video, setVideo] = useState('');
-    const [activeIndex, setActiveIndex] = useState(0);
-
-    const [putProduct, { isLoading: isUpdating }] = usePutProductMutation();
-
-    const [selectedCategory, setSelectedCategory] = useState('');
-    const [selectedSubCategory, setSelectedSubCategory] = useState('');
-    const [isCategoryOpen, setIsCategoryOpen] = useState(false);
-    const [isSubCategoryOpen, setIsSubCategoryOpen] = useState(false);
-    const [categoryId, setCategoryId] = useState('')
-    const [subCategoryId, setSubCategoryId] = useState('')
-
 
     useEffect(() => {
         refetchProduct();
     }, [refetchProduct]);
 
     useEffect(() => {
-        if (productData?.product) {
-            setName(productData.product.name || '');
-            setPrice(productData.product.price || '');
-            setDescr(productData.product.description || '');
-            setQuantity(productData.product.quantity || '');
-            setVideo(productData.product.video || '');
+        console.log(sections);
+        setName(product?.name)
+        setQuantity(product?.models[activeModel].quantity)
+        setPrice(product?.models[activeModel].price)
 
-            // Check if section and section.name exist before accessing them
-            const sectionName = productData.product.section?.section?.name || '';
-            const sectionId = productData.product.section?.section?._id || '';
-            const subSections = productData.product.section?.subSection?.name || [];
-
-            setSelectedCategory(sectionName);
-            setCategoryId(sectionId);
-            setSubCategoryId(subSections);
-        }
-    }, [productData]);
-
-    if (productError) return <div>Failed to load product.</div>;
-
-    const formattedDate = new Date(productData?.product?.createdAt).toLocaleDateString('uk-UA', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric'
-    });
-
-    const handleClick = (index) => {
-        if (index === 3) { // Assuming the "Відгуки" tab is at index 3
-            navigate('reviews'); // Navigate to the reviews page
-        } else {
-            setActiveIndex(index);
-        }
-    };
-    const points = ['Опис', 'Характеристика', 'Застосування', "Відгуки"];
-
-    const handleUpdate = async () => {
-        try {
-            const updatedProduct = {
-                id,
-                name,
-                price,
-                description,
-                quantity: quantity,
-                section: categoryId
-
-            };
-            await putProduct(updatedProduct);
-        } catch (err) {
-            console.error('Failed to update product: ', err);
-        }
-    };
-
-    const handleChangeQuantity = (e) => {
-        setQuantity(e.target.value);
-    };
-
-    const handleKeyPressQuantity = (e) => {
-        if (e.key === 'Enter') {
-            try {
-                const result = eval(quantity);
-                setQuantity(result.toString());
-            } catch (error) {
-                console.error('Невірний вираз', error);
-            }
-        }
-    };
-
-    const toggleCategoryDropdown = () => {
-        setIsCategoryOpen((prev) => !prev);
-    };
-
-    const toggleSubCategoryDropdown = () => {
-        setIsSubCategoryOpen((prev) => !prev);
-    };
-
-    const handleSectionSelect = (id, name) => {
-        setCategoryId(id)
-        setSelectedCategory(name);
-        setIsCategoryOpen(false);
-
-        console.log(id)
-    };
-
-    const handleSubSectionSelect = (id, name) => {
-        setCategoryId(id)
-        setSelectedSubCategory(name);
-        setIsSubCategoryOpen(false);
-    };
-
-    const rejectBtn = () => {
-        if (productData?.product) {
-            setName(productData.product.name);
-            setPrice(productData.product.price);
-            setDescr(productData.product.description);
-            setQuantity(productData.product.quantity);
-            setVideo(productData.product.video);
-        }
-    };
+    }, [product, sections]);
 
 
-    const openAddMenu = () => {
-        document.getElementById("add_category").style.display = "flex"
+    function goBack() {
+        navigate(-1)
+    }
+
+    function handleModelChange(index) {
+        setActiveModel(index);
+        setQuantity(product?.models[index].quantity)
+        setPrice(product?.models[index].price)
+    }
+
+    function handleNavigate() {
+        navigate("reviews")
+    }
+
+    function openDrop() {
+        setIsCatOpen(!isCategoryOpen)
+        setIsSubOpen(false)
+    }
+
+    function openDropSub() {
+        setIsCatOpen(false)
+
+        setIsSubOpen(!isSubOpen)
+    }
+
+    const resetCat = () => {
+        setCategory("Категорія")
+        setIsCategorySelected(false)
+    }
+
+    const resetSub = () => {
+        setSubCategory("Під категорія")
+    }
 
 
+    const chooseCat = (title) => {
+        setCategory(title.name)
+        setCategoryId(title._id)
+        setIsCategorySelected(true)
+        setSubsections(title.subSections)
+        setSubCategory("Під категорія")
+
+        console.log(title)
+
+    }
+
+    const chooseSub = (title) => {
+        setSubCategory(title.name)
+        setSubCategoryId(title._id)
+        setCategoryId(null)
+
+        console.log(title)
+
+    }
+
+    const openAddCategory = () => {
+        const menuElement = document.getElementById("add_category");
+        menuElement.style.display = "flex";
         setTimeout(() => {
-
-            document.getElementById("add_category").style.opacity = "1"
-
+            menuElement.style.opacity = "1";
 
 
         }, 100);
     }
 
+    const handleRadioChange = (e) => {
+        setDisplay(e.target.id === 'option3' ? 1 : 0); // If "option3" (Так) is selected, set display to 1, otherwise set to 0
+    };
 
-    const filteredSubSections = selectedCategory && sectionsData?.sections
-        ? sectionsData.sections.find(section => section?.name === selectedCategory)?.subSections || []
-        : [];
+
+    const dateStr = product.createdAt;
+    const date = new Date(dateStr);
+
+    const formattedDate = date.toLocaleDateString();
+
 
     return (
         <div className="update_page">
             <NavBar />
-            {productLoading&&<Loader/>}
+            {productLoading && <Loader />}
             <div className="update_field">
-                <div className="left_update">
-                    <div className="carusel_block">
-                        <div className="carusel_view">
-                            <div className="carusel_con">
-                                <div className="img_block"><img src="/img/semena.png" alt="" /></div>
-                                <div className="img_block"><img src="/img/semena.png" alt="" /></div>
-                            </div>
+                <div className="left_up_model">
+                    <div className="img_preview">
+                        <span className="setting_up">Редагувати Зображення</span>
+
+                        <div className="img_wrapper">
+                            <img className='preview_img' src={product?.models[activeModel].image} alt="" />
+
                         </div>
-                        <div className="car_controls">
-                            <img src="/img/Group 127.svg" alt="" />
-                            <div className="img_group">
-                                <div><img src="/img/semena.png" alt="" /></div>
-                                <div><img src="/img/semena.png" alt="" /></div>
-                            </div>
-                            <img src="/img/Group 67.svg" alt="" />
-                        </div>
-
-                        <p className="setting_up">Категорія</p>
-                        <div className="drop_down" onClick={toggleCategoryDropdown}>
-                            {selectedCategory || 'Виберіть категорію'}
-                            <img src="./img/Group 22.svg" alt="" />
-                            <div className={`drop ${isCategoryOpen ? 'open' : ''}`}>
-                                {/* Empty item to reset selected category */}
-                                <span
-                                    key="none"
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        setSelectedCategory(''); // Reset selected category
-                                        setSelectedSubCategory(''); // Reset selected subcategory
-                                        setIsSubCategoryOpen(false);
-                                        setIsCategoryOpen(false); // Close subcategory dropdown
-                                    }}
-                                >
-                                    ...
-                                </span>
-
-                                {sectionsLoading
-                                    ? 'Loading...'
-                                    : sectionsData?.sections?.length > 0
-                                        ? sectionsData.sections.map((section) => (
-                                            <span
-                                                key={section._id}
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    handleSectionSelect(section._id, section?.name);
-                                                }}
-                                            >
-                                                {section?.name}
-                                            </span>
-                                        ))
-                                        : 'Немає доступних категорій'}
-
-                                <span className="add_category_input" onClick={openAddMenu}>
-                                    Додати категорію
-                                </span>
-                            </div>
-                        </div>
-
-                        {selectedCategory && (
-                            <>
-                                <p className="setting_up">Під категорія</p>
-                                <div className="drop_down" onClick={toggleSubCategoryDropdown}>
-                                    {subCategoryId || 'Виберіть підкатегорію'}
-                                    <img src="./img/Group 22.svg" alt="" />
-                                    <div className={`drop ${isSubCategoryOpen ? 'open' : ''}`}>
-                                        {filteredSubSections?.length > 0
-                                            ? filteredSubSections.map((subsection) => (
-                                                <span
-                                                    key={subsection._id}
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        handleSubSectionSelect(subsection._id, subsection.name);
-                                                    }}
-                                                >
-                                                    {subsection.name}
-                                                </span>
-                                            ))
-                                            : 'Немає доступних підкатегорій'}
-                                        <span className="add_category_input" onClick={() => { /* Open add menu logic */ }}>
-                                            Додати підкатегорію
-                                        </span>
-                                    </div>
-                                </div>
-                            </>
-                        )}
                     </div>
+
+
+                    <div className="product_price_con sec">
+                        <span className="setting_up">Категорія</span>
+                        <div onClick={openDrop} className="drop_down_cat">
+                            <div className="catigory">{category}</div>
+                            <img src="/img/Group 22.svg" alt="" />
+                            <div className="dropdown_cat" style={{ height: isCategoryOpen ? "auto" : "0" }}>
+                                <span onClick={resetCat}>...</span>
+                                {sections && sections.length > 0 ? (
+                                    sections.map(section => (
+                                        <span onClick={() => chooseCat(section)} className="category_on_add" key={section._id}>{section.name}</span>
+                                    ))
+                                ) : (
+                                    <span>немає категорій</span>
+                                )}
+                                <span className="add_cat_in_add" onClick={openAddCategory}>Додати категорію</span>
+                            </div>
+                        </div>
+                        <div onClick={openDropSub} className="drop_down_cat" style={{ display: isCategorySelected ? "flex" : "none" }}>
+                            <div className="catigory">{subCategory}</div>
+                            <img src="/img/Group 22.svg" alt="" />
+                            <div className="dropdown_cat" style={{ height: isSubOpen ? "auto" : "0" }}>
+                                <span onClick={resetSub}>...</span>
+                                {subsetcions && subsetcions.length > 0 ? (
+                                    subsetcions.map(section => (
+                                        <span onClick={() => chooseSub(section)} className="category_on_add" key={section._id}>{section.name}</span>
+                                    ))
+                                ) : (
+                                    <span>немає категорій</span>
+                                )}
+                                <span className="add_cat_in_add" >Додати категорію</span>
+                            </div>
+                        </div>
+
+
+
+                    </div>
+
+                    <div className="section_set">
+                        <span className="setting_up">Кількість</span>
+                        <input name="price" type="text" value={quantity} onChange={(e) => { setQuantity(e.target.value) }} placeholder="Назва..." className="input" />
+
+                    </div>
+
+
+
+                    <div className="product_price_con sec">
+                        <span className="setting_up">Показувати товар</span>
+                        <div className="radio-container">
+                            <div className="radio-wrapper">
+                                <label className="radio-button">
+                                    <input
+                                        id="option3"
+                                        name="radio-group_1"
+                                        type="radio"
+                                        onChange={handleRadioChange}
+                                        checked={display === 1}
+                                    />
+                                    <span className="radio-checkmark"></span>
+                                </label>
+                                <span className="radio-label">Так</span>
+                            </div>
+
+                            <div className="radio-wrapper">
+                                <label className="radio-button">
+                                    <input
+                                        id="option4"
+                                        name="radio-group_1"
+                                        type="radio"
+                                        onChange={handleRadioChange}
+                                        checked={display === 0}
+                                    />
+                                    <span className="radio-checkmark"></span>
+                                </label>
+                                <span className="radio-label">Ні</span>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+
                 </div>
-                <div className="right_update">
-                    <div className="top_part">
-                        <div className="top_left">
-                            <span>Артикул: {productData?.product.article}</span>
-                            <span>Створено: {formattedDate}</span>
-                        </div>
-                        <div className="coments_btn">
-                            <img src="./img/Chat Bubble.svg" alt="" />
-                            <span>Коментарі</span>
+                <div className="left_up_model">
+                    <div className="section_set">
+                        <span className="setting_up">Назва товару</span>
+                        <input name="price" type="text" value={name} onChange={(e) => { setName(e.target.value) }} placeholder="Назва..." className="input" />
+                    </div>
+
+                    <div className="weight">
+                        <span className="setting_up">Фасування</span>
+                        <button className="add_model">Додати</button>
+                        <div className="models_con">
+                            {product?.models.map((model, index) => (
+                                <span
+                                    onClick={() => handleModelChange(index)}
+                                    className={activeModel === index ? "active_model" : "model_name"}
+                                    key={model._id}
+                                >
+                                    {product.name} {model.modelName}
+                                </span>
+                            ))}
                         </div>
                     </div>
-                    <p className="setting_up">Назва</p>
 
-                    <input
-                        className="up_input"
-                        type="text"
-                        placeholder="Назва товару..."
-                        name="name"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                    />
-                    <p className="setting_up">Ціна</p>
 
-                    <input
-                        className="up_input"
-                        type="text"
-                        placeholder="Ціна"
-                        name="name"
-                        value={price}
-                        onChange={(e) => setPrice(e.target.value)}
-                    />
-                    <p className="setting_up">Кількість</p>
+                    <div className="section_set">
+                        <span className="setting_up">Ціна</span>
+                        <input name="price" type="text" value={price} onChange={(e) => { setPrice(e.target.value) }} placeholder="Назва..." className="input" />
 
-                    <input
-                        className="up_input"
-                        type="text"
-                        placeholder="Кількість"
-                        name="name"
-                        value={quantity}
-                        onChange={handleChangeQuantity}
-                        onKeyDown={handleKeyPressQuantity}
-                    />
-                    <div className="point_choose">
-                        {points.map((point, index) => (
-                            <span
-                                key={index}
-                                className={`point ${activeIndex === index ? 'active' : ''}`}
-                                onClick={() => handleClick(index)}
-                            >
-                                {point}
-                            </span>
-                        ))}
                     </div>
-                    {/* <textarea
-                        className="text_area_up"
-                        placeholder="Опис товару..."
-                        name="description"
-                        value={description}
-                        onChange={(e) => setDescr(e.target.value)}
-                    ></textarea> */}
 
-                    {activeIndex === 0 && (
-                        <div className="edit_block">
-                            <textarea
-                                className="text_area_up"
-                                placeholder="Опис товару..."
-                                name="description"
-                                value={description}
-                                onChange={(e) => setDescr(e.target.value)}
-                            ></textarea>
-                        </div>
-                    )}
-                    {activeIndex === 1 && (
-                        <div className="edit_block">
-                            <textarea
-                                className="text_area_up"
-                                placeholder="Характеристика товару..."
-                                name="description"
-                                value={description}
-                                onChange={(e) => setDescr(e.target.value)}
-                            ></textarea>
-                        </div>
-                    )}
-                    {activeIndex === 2 && (
-                        <div className="edit_block">
-                            <input
-                                className="up_input"
-                                type="text"
-                                placeholder="Посилання на відео..."
-                                name="name"
-                                value={video}
-                                onChange={(e) => setVideo(e.target.value)}
-                            />
-                        </div>
-                    )}
-                    <div className="up_control_con">
-                        <div className="delete_btn" onClick={rejectBtn}>Скасувати</div>
-                        <div className="update_btn" onClick={handleUpdate}>{isUpdating ? 'Зберігається...' : 'Зберегти зміни'}</div>
+                    <div className="section_set">
+                        <span className="setting_up">Категорія</span>
                     </div>
+
+                    <div className="section_set">
+                        <span className="setting_up">Додати знижку</span>
+
+                    </div>
+                    <div className="date_review">
+                        <div className="left_block">
+                            <button className='reviews_btn' onClick={handleNavigate}>
+                                <img src="./img/Chat Bubble.svg" alt="" />
+                                <span>Коментарі</span>
+                            </button>
+                            <div className="article_and_date">
+                                <span>Артикул: {product?.article}</span>
+                                <span>Артикул: {formattedDate}</span>
+
+                            </div>
+                        </div>
+                        <div className="right_bloc">
+                            <button type="button" onClick={goBack} className="cancel_add">Скасувати</button>
+
+                            <button type="submit" className="add_product_btn">Додати</button>
+                        </div>
+
+                    </div>
+
                 </div>
 
 
             </div>
+
             <AddCategory />
 
         </div>

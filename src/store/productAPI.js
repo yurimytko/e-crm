@@ -26,7 +26,7 @@ export const productApi = createApi({
         }),
         getProduct: build.query({
             query: (id) => ({
-                url: `products/?id=${id}`,
+                url: `admin/products/?id=${id}`,
                 method: "GET",
             }),
         }),

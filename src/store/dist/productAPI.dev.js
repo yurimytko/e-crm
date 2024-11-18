@@ -33,7 +33,7 @@ var productApi = (0, _react.createApi)({
       getProduct: build.query({
         query: function query(id) {
           return {
-            url: "products/?id=".concat(id),
+            url: "admin/products/?id=".concat(id),
             method: "GET"
           };
         }
