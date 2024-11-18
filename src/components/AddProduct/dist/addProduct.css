@@ -28,6 +28,7 @@ dialog form {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  background: #fff;
 }
 .product_price_con {
   width: 25vw;
@@ -279,4 +280,30 @@ textarea {
   font-weight: 400;
   line-height: 24.2px;
   text-align: center;
+}
+.uploaded_photo_p {
+  padding: 1vh;
+  box-sizing: border-box;
+  gap: 2vh;
+  margin-top: 1.4vh;
+  border-radius: 1vh;
+  border: 0.2vh dashed #696969;
+  height: 20vh;
+  display: flex;
+  align-items: center;
+  background: #fff;
+  display: flex;
+  width: 100%;
+  overflow: hidden;
+}
+.img_wrapper {
+  position: relative;
+}
+.preview_image_p {
+  border-radius: 1vh;
+  border: 2px solid #219653;
+  height: 14vh;
+}
+.y {
+  margin: 0;
 }

@@ -20,8 +20,8 @@ export const ProductCard = ({ product, index, handleCheckboxChange, isSelected }
 
     const [article, setArticle] = useState(product.article);
     const [name, setProductName] = useState(product.name);
-    const [price, setPrice] = useState(product.price);
-    const [quantity, setQuantity] = useState(product.quantity);
+    const [price, setPrice] = useState(product.models[0]?.price);
+    const [quantity, setQuantity] = useState(product.models[0]?.quantity);
 
 
     const [drop, setDrop] = useState(false)

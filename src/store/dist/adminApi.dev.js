@@ -15,9 +15,8 @@ var adminApi = (0, _react.createApi)({
       var authToken = localStorage.getItem('token');
       var scrf = localStorage.getItem('csrfToken');
 
-      if (authToken && scrf) {
+      if (authToken) {
         headers.set('Authorization', "accessToken=".concat(authToken));
-        headers.set("CSRF-Token", scrf);
       }
 
       headers.set('Content-Type', 'application/json');

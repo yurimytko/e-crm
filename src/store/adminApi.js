@@ -15,9 +15,8 @@ export const adminApi = createApi({
             const scrf = localStorage.getItem('csrfToken')
 
 
-            if (authToken && scrf) {
+            if (authToken) {
                 headers.set('Authorization', `accessToken=${authToken}`);
-                headers.set("CSRF-Token", scrf)
 
             }
             

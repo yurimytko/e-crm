@@ -15,6 +15,8 @@ const generateRandomArticle = () => {
 
 const AddProductMenu = forwardRef(function AddProductMenu(props, ref) {
 
+    const input = useRef()
+    const [dragActive, setDragActive] = useState(false);
 
     const [addProduct, { data, isLoading: isloading, Error: Error }] = useAddProductMutation()
 
@@ -188,6 +190,8 @@ const AddProductMenu = forwardRef(function AddProductMenu(props, ref) {
             console.log([...fd]);
             await addProduct(fd).unwrap();
             console.log("Product added successfully", fd);
+            closeModal()
+
         } catch (e) {
             console.error(e);
         }
@@ -232,6 +236,8 @@ const AddProductMenu = forwardRef(function AddProductMenu(props, ref) {
                 }
 
                 await addModel(model).unwrap();
+                closeModal()
+
 
             }
         } catch (e) {
@@ -245,6 +251,7 @@ const AddProductMenu = forwardRef(function AddProductMenu(props, ref) {
         }
         else {
             await onSubmitModels(e)
+
         }
     };
 
@@ -271,6 +278,41 @@ const AddProductMenu = forwardRef(function AddProductMenu(props, ref) {
 
     const handleRadioChange = (e) => {
         setDisplay(e.target.id === 'option3' ? 1 : 0); // If "option3" (Так) is selected, set display to 1, otherwise set to 0
+    };
+
+
+
+    const handleDragOver = (e) => {
+        e.preventDefault();
+        setDragActive(true);
+    };
+
+    const handleDragLeave = () => {
+        setDragActive(false);
+    };
+
+    const handleDrop = (e) => {
+        e.preventDefault();
+        setDragActive(false);
+
+        const files = Array.from(e.dataTransfer.files).filter(file =>
+            file.type === 'image/png' || file.type === 'image/jpeg'
+        );
+
+        if (files.length > 0) {
+            setSelectedFiles(prevFiles => [...prevFiles, ...files]);
+        } else {
+            alert('Only PNG and JPG images are allowed');
+        }
+    };
+
+    const handleInput = () => {
+        input.current.click();
+    };
+
+
+    const handleImageClick = (indexToRemove) => {
+        setSelectedFiles(prevFiles => prevFiles.filter((_, index) => index !== indexToRemove));
     };
 
 
@@ -315,24 +357,61 @@ const AddProductMenu = forwardRef(function AddProductMenu(props, ref) {
                     </div>
                     {isSingle === 1 && (
                         <div className="img_con">
-                            <span className="setting_up">Добавити Зображення</span>
-                            <div className="upload_img_con">
-                                <label htmlFor="file_input">
-                                    <span style={{ color: 'rgba(33, 150, 83, 1)', cursor: 'pointer' }}>Завантажте фото</span> або перетягніть файл
-                                </label>
-                                <p>Jpg, Png / Макс 8 мб / Мін 214px х 214px</p>
+                        <span className="setting_up y">Добавити Зображення</span>
+
+                        {selectedFiles.length === 0 ? (
+                            <div
+                                className={`upload_img_con ${dragActive ? 'drag_active' : ''}`}
+                                onDragOver={handleDragOver}
+                                onDragLeave={handleDragLeave}
+                                onDrop={handleDrop}
+                            >
+                                <span className='input_click' onClick={handleInput}>
+                                    Завантажте фото
+                                    <span className='normal_text' onClick={(e) => { e.stopPropagation(); }}>
+                                        {' '}або перетягніть файл
+                                    </span>
+                                </span>
+                                <span className='instruction'>Jpg, Png / Макс 8 мб / Мін 214px х 214px</span>
 
                                 <input
-                                    name="image"
-                                    id="file_input"
+                                    ref={input}
+                                    style={{ display: "none" }}
                                     type="file"
-                                    accept=".jpg, .jpeg, .png"
-                                    style={{ display: 'none' }}
-                                    onChange={handleFileChange}
+                                    accept=".png, .jpeg, .jpg"
                                     multiple
+                                    onChange={(e) => {
+                                        const files = Array.from(e.target.files);
+                                        const validFiles = files.filter(file => file.type === 'image/png' || file.type === 'image/jpeg');
+
+                                        if (validFiles.length > 0) {
+                                            setSelectedFiles(prevFiles => [...prevFiles, ...validFiles]);
+                                        } else {
+                                            alert('Only PNG and JPG images are allowed');
+                                        }
+                                    }}
                                 />
                             </div>
-                        </div>
+                        ) : (
+                            <div
+                                onDragOver={handleDragOver}
+                                onDragLeave={handleDragLeave}
+                                onDrop={handleDrop}
+                                className={`uploaded_photo_p ${dragActive ? 'drag_active' : ''}`}
+                            >
+                                {selectedFiles.map((file, index) => (
+                                    <div className="img_wrapper" key={index}>
+                                        <img
+                                            src={URL.createObjectURL(file)}
+                                            alt={`Uploaded ${index}`}
+                                            className="preview_image_p"
+                                            onClick={() => handleImageClick(index)}
+                                        />
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
                     )}
                     <div className="product_price_con">
                         <span className="setting_up">Назва товару</span>
@@ -498,7 +577,7 @@ const AddProductMenu = forwardRef(function AddProductMenu(props, ref) {
             </form>
             <AddModel setModels={setModels} ref={dialog2} />
             <AddCategory />
-            <AddSub />
+            <AddSub id = {categoryId}/>
         </dialog>,
         document.getElementById("add_product")
     );
