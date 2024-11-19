@@ -83,13 +83,15 @@ export function Update() {
     useEffect(() => {
         if (carouselRef.current && images?.length > 0) {
             const activeImage = carouselRef.current.children[activeImg];
+
+            if (!activeImage) return;
+
             const containerWidth = carouselRef.current.offsetWidth;
             const imageWidth = activeImage.offsetWidth;
 
-            // Scroll the container to center the active image
             carouselRef.current.scrollLeft = activeImage.offsetLeft - (containerWidth - imageWidth) / 2;
         }
-    }, [activeImg, images?.length]);
+    }, [activeImg, images?.length]); 
 
 
     function goBack() {
