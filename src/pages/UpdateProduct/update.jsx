@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom'; // Import useNavigate
 import { NavBar } from '../../components/NavBar/nav';
 import {
@@ -11,12 +11,23 @@ import AddCategory from '../../components/AddCategory/addCat';
 import { Loader } from '../../components/Loader/loader';
 
 export function Update() {
+
+    const input = useRef()
+
+    const carouselRef = useRef(null);
+
+
     const navigate = useNavigate()
     const [activeModel, setActiveModel] = useState(0)
+    const [activeImg, setActiveImg] = useState(0)
     const [name, setName] = useState(null)
     const [quantity, setQuantity] = useState(null)
     const [price, setPrice] = useState(null)
-
+    const [activeIndex, setActiveIndex] = useState(0);
+    const points = ['Опис', 'Характеристика', 'Застосування'];
+    const [description, setDescr] = useState(null)
+    const [video, setVideo] = useState(null)
+    const [images, setImages] = useState(null)
 
 
     const [category, setCategory] = useState("Категорія")
@@ -50,12 +61,35 @@ export function Update() {
     }, [refetchProduct]);
 
     useEffect(() => {
-        console.log(sections);
-        setName(product?.name)
-        setQuantity(product?.models[activeModel].quantity)
-        setPrice(product?.models[activeModel].price)
 
-    }, [product, sections]);
+        setName(product?.name);
+        setQuantity(product?.models?.[activeModel]?.quantity || 0);
+        setPrice(product?.models?.[activeModel]?.price || 0);
+        setDescr(product?.models?.[activeModel]?.description)
+        setVideo(product?.video)
+        setImages(product?.models?.[activeModel]?.image)
+        console.log(video);
+
+        if (
+            product?.section?.section && // Ensure product.section.section exists
+            sections?.some(section => section._id === product.section.section._id)
+        ) {
+            setCategoryId(product.section.section._id);
+            setCategory(product.section.section.name);
+            setIsCategorySelected(true);
+        }
+    }, [product, sections, activeModel]);
+
+    useEffect(() => {
+        if (carouselRef.current && images?.length > 0) {
+            const activeImage = carouselRef.current.children[activeImg];
+            const containerWidth = carouselRef.current.offsetWidth;
+            const imageWidth = activeImage.offsetWidth;
+
+            // Scroll the container to center the active image
+            carouselRef.current.scrollLeft = activeImage.offsetLeft - (containerWidth - imageWidth) / 2;
+        }
+    }, [activeImg, images?.length]);
 
 
     function goBack() {
@@ -134,6 +168,47 @@ export function Update() {
     const formattedDate = date.toLocaleDateString();
 
 
+    const handleChangePhoto = (index) => {
+        setActiveImg(index)
+    }
+    const handlePhotoForward = () => {
+        if (activeImg >= images.length - 1) {
+            setActiveImg(0);
+        } else {
+            setActiveImg(activeImg + 1); // Move to the next image
+        }
+    };
+
+    const handlePhotoBackward = () => {
+        if (activeImg <= 0) {
+            setActiveImg(images.length - 1);
+        } else {
+            setActiveImg(activeImg - 1);
+        }
+    };
+
+    const handleClick = (index) => {
+        setActiveIndex(index);
+    };
+    const handleInput = () => {
+        input.current.click();
+    };
+
+    const handleFileChange = async (e) => {
+        const files = Array.from(e.target.files);
+        const validFiles = files.filter(file => file.type === 'image/png' || file.type === 'image/jpeg');
+
+        if (validFiles.length > 0) {
+            setImages(prevFiles => [...prevFiles, ...validFiles]);
+        } else {
+            alert('Only PNG and JPG images are allowed');
+        }
+
+        console.log(files);
+
+    };
+
+
     return (
         <div className="update_page">
             <NavBar />
@@ -144,11 +219,54 @@ export function Update() {
                         <span className="setting_up">Редагувати Зображення</span>
 
                         <div className="img_wrapper">
-                            <img className='preview_img' src={product?.models[activeModel].image[0]} alt="" />
+                            {images?.[activeImg] && (
+                                <img
+                                    className="preview_img"
+                                    src={
+                                        typeof images[activeImg] === "string"
+                                            ? images[activeImg] // Use the URL directly
+                                            : URL.createObjectURL(images[activeImg]) // Create a URL for the File object
+                                    }
+                                    alt="Preview"
+                                />
+                            )}
+                        </div>
+
+                        <div className="carusel_block">
+                            <img onClick={handlePhotoBackward} style={{ transform: "rotate(180deg)", cursor: "pointer" }} src="/img/Group 67 (1).svg" alt="" />
+
+                            <div className="img_carousel" ref={carouselRef}>
+                                {images?.map((img, index) => {
+                                    const src = typeof img === "string" ? img : URL.createObjectURL(img);
+
+                                    return (
+                                        <div
+                                            key={index}
+                                            onClick={() => setActiveImg(index)}
+                                            className={activeImg === index ? "img_c_active" : "img_c_container"}
+                                        >
+                                            <img className="img_c" src={src} alt={`Image ${index}`} />
+                                        </div>
+                                    );
+
+
+                                })}
+                                <div
+
+                                    className={"img_c_container"}
+                                >
+                                    <img className="img_c" onClick={handleInput} src="/img/додати.svg" />
+                                </div>
+                            </div>
+                            <img onClick={handlePhotoForward} style={{ cursor: "pointer" }} src="/img/Group 67 (1).svg" alt="" />
 
                         </div>
                     </div>
 
+                    <div className="section_set">
+                        <span className="setting_up">Назва товару</span>
+                        <input name="price" type="text" value={name} onChange={(e) => { setName(e.target.value) }} placeholder="Назва..." className="input" />
+                    </div>
 
                     <div className="product_price_con sec">
                         <span className="setting_up">Категорія</span>
@@ -187,11 +305,8 @@ export function Update() {
 
                     </div>
 
-                    <div className="section_set">
-                        <span className="setting_up">Кількість</span>
-                        <input name="price" type="text" value={quantity} onChange={(e) => { setQuantity(e.target.value) }} placeholder="Назва..." className="input" />
 
-                    </div>
+
 
 
 
@@ -234,12 +349,9 @@ export function Update() {
 
                 </div>
                 <div className="left_up_model">
-                    <div className="section_set">
-                        <span className="setting_up">Назва товару</span>
-                        <input name="price" type="text" value={name} onChange={(e) => { setName(e.target.value) }} placeholder="Назва..." className="input" />
-                    </div>
 
-                    <div className="weight">
+
+                    <div className="weight pt">
                         <span className="setting_up">Фасування</span>
                         <button className="add_model">Додати</button>
                         <div className="models_con">
@@ -254,6 +366,11 @@ export function Update() {
                             ))}
                         </div>
                     </div>
+                    <div className="section_set">
+                        <span className="setting_up">Кількість</span>
+                        <input name="price" type="text" value={quantity} onChange={(e) => { setQuantity(e.target.value) }} placeholder="Кількість..." className="input" />
+
+                    </div>
 
 
                     <div className="section_set">
@@ -262,14 +379,49 @@ export function Update() {
 
                     </div>
 
-                    <div className="section_set">
-                        <span className="setting_up">Категорія</span>
-                    </div>
 
                     <div className="section_set">
                         <span className="setting_up">Додати знижку</span>
+                        <input name="price" type="text" placeholder="%" className="input" />
+
 
                     </div>
+
+
+                    <div className="section_set_b">
+                        <div className="point_choose_add_menu">
+                            {points.map((point, index) => (
+                                <span
+                                    key={index}
+                                    className={`point_add ${activeIndex === index ? 'active_add' : ''}`}
+                                    onClick={() => handleClick(index)}
+                                >
+                                    {point}
+                                </span>
+                            ))}
+                        </div>
+                        {activeIndex === 0 && (
+                            <div className="product_price_con">
+                                <span className="setting_up">Опис</span>
+                                <textarea value={description} name="description" id="" placeholder="Опис..." />
+                            </div>
+                        )}
+                        {activeIndex === 1 && (
+                            <div className="product_price_con">
+                                <span className="setting_up">Опис</span>
+                                <input type="number" placeholder="xx шт" className="input" />
+                            </div>
+                        )}
+                        {activeIndex === 2 && (
+                            <div className="product_price_con">
+                                <span className="setting_up">Посилання на відео</span>
+                                <input type="text" placeholder="Посилання..." value={video} className="input" name="video" />
+                            </div>
+                        )}
+
+
+                    </div>
+
                     <div className="date_review">
                         <div className="left_block">
                             <button className='reviews_btn' onClick={handleNavigate}>
@@ -285,7 +437,7 @@ export function Update() {
                         <div className="right_bloc">
                             <button type="button" onClick={goBack} className="cancel_add">Скасувати</button>
 
-                            <button type="submit" className="add_product_btn">Додати</button>
+                            <button type="submit" className="add_product_btn">Зберегти</button>
                         </div>
 
                     </div>
@@ -294,6 +446,14 @@ export function Update() {
 
 
             </div>
+            <input
+                ref={input}
+                style={{ display: "none" }}
+                type="file"
+                accept=".png, .jpeg, .jpg"
+                multiple
+                onChange={handleFileChange}
+            />
 
             <AddCategory />
 

@@ -417,12 +417,6 @@ const AddProductMenu = forwardRef(function AddProductMenu(props, ref) {
                         <span className="setting_up">Назва товару</span>
                         <input name="name" value={name} onChange={(e) => { setName(e.target.value) }} type="text" placeholder="Назва..." className="input" />
                     </div>
-                    {isSingle === 1 && (
-                        <div className="product_price_con">
-                            <span className="setting_up">Ціна</span>
-                            <input name="price" type="number" placeholder="Ціна..." className="input" />
-                        </div>
-                    )}
                     <div className="product_price_con">
                         <span className="setting_up">Категорія</span>
                         <div onClick={openDrop} className="drop_down_cat">
@@ -459,6 +453,13 @@ const AddProductMenu = forwardRef(function AddProductMenu(props, ref) {
 
 
                     </div>
+                    {isSingle === 1 && (
+                        <div className="product_price_con">
+                            <span className="setting_up">Ціна</span>
+                            <input name="price" type="number" placeholder="Ціна..." className="input" />
+                        </div>
+                    )}
+                    
                     {isSingle === 0 && (
                         <div className="product_price_con">
                             <span className="setting_up">Фасування</span>

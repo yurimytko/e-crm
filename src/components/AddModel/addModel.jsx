@@ -42,6 +42,7 @@ const AddModel = forwardRef(function AddModel({ setModels }, ref) {
     const closeModal = () => {
         dialog.current.close();
         dialog.current.style.display = "none";
+        setSelectedFiles([])
     };
 
 
@@ -112,6 +113,8 @@ const AddModel = forwardRef(function AddModel({ setModels }, ref) {
         setPrice('');
         setQuantity('');
         setDescr('');
+        setSelectedFiles([])
+        closeModal()
     };
 
     const handelPromotion = (e) => {

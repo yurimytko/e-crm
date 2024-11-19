@@ -17,6 +17,7 @@
     display: flex
     flex-direction: column
 
+
 .img_preview
     padding 1vh 1vw
     box-sizing: border-box
@@ -59,7 +60,6 @@
 .weight
     padding 1vh
     box-sizing: border-box
-    margin-top 2vh
     border-radius: 1vh
     width 30vw
     height: 18vh
@@ -121,3 +121,58 @@
 .right_bloc
     display: flex
     gap 1vw
+.carusel_block
+    margin-top 3vh
+    width 100%
+    display: flex
+    justify-content: space-around
+    align-items: center
+
+.img_carousel {
+    transition: 0.2s
+    padding: 0 1vw;
+    box-sizing: border-box;
+    display: flex;
+    max-width: 80%;
+    overflow: hidden;
+    gap: 1vw;
+    height: 9vh;
+    align-items: center;
+    position: relative; /* Ensure container has relative positioning */
+}
+
+.img_c_container,
+.img_c_active {
+    transition: 0.2s
+
+    display: flex;
+    min-width: 8vh;
+    height: 8vh;
+    border-radius: 1vh;
+    cursor: pointer;
+    padding: 1vh;
+    box-sizing: border-box;
+    border: 1px solid rgba(105, 105, 105, 1);
+    transition: 0.2s;
+}
+
+.img_c_active {
+
+    transform: scale(1.1);
+    display: flex;
+    transition: 0.2s;
+    border: 1px solid rgba(33, 150, 83, 1);
+}
+
+.img_c {
+    width: 100%;
+    object-fit: contain;
+}
+
+.section_set_b
+    padding 1vh
+    box-sizing: border-box
+    margin-top 2vh
+    border-radius: 1vh
+    width 30vw
+    background: white
