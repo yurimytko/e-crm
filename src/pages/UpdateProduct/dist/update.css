@@ -18,6 +18,7 @@
   flex-direction: column;
 }
 .img_preview {
+  user-select: none;
   padding: 1vh 1vw;
   box-sizing: border-box;
   border-radius: 1vh;
@@ -128,6 +129,7 @@
   gap: 1vw;
 }
 .carusel_block {
+  user-select: none;
   margin-top: 3vh;
   width: 100%;
   display: flex;
@@ -135,6 +137,7 @@
   align-items: center;
 }
 .img_carousel {
+  scroll-behavior: smooth;
   transition: 0.2s;
   padding: 0 1vw;
   box-sizing: border-box;
