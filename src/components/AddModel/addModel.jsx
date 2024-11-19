@@ -55,7 +55,13 @@ const AddModel = forwardRef(function AddModel({ setModels }, ref) {
 
     const handleFileChange = async (e) => {
         const files = Array.from(e.target.files);
-        setSelectedFiles(files);
+        const validFiles = files.filter(file => file.type === 'image/png' || file.type === 'image/jpeg');
+
+        if (validFiles.length > 0) {
+            setSelectedFiles(prevFiles => [...prevFiles, ...validFiles]);
+        } else {
+            alert('Only PNG and JPG images are allowed');
+        }
 
         console.log(files);
 
@@ -101,7 +107,7 @@ const AddModel = forwardRef(function AddModel({ setModels }, ref) {
             return updatedModels;
         });
 
-        // Reset form fields
+
         setModelName('');
         setPrice('');
         setQuantity('');
@@ -146,7 +152,7 @@ const AddModel = forwardRef(function AddModel({ setModels }, ref) {
         setDragActive(false);
     };
 
-    const handleDrop = (e) => {
+    const handleDrop = async(e) => {
         e.preventDefault();
         setDragActive(false);
 
@@ -158,6 +164,22 @@ const AddModel = forwardRef(function AddModel({ setModels }, ref) {
             setSelectedFiles(prevFiles => [...prevFiles, ...files]);
         } else {
             alert('Only PNG and JPG images are allowed');
+        }
+
+        try {
+            const formData = new FormData();
+            files.forEach((file, index) => {
+                formData.append('image', file);
+            });
+
+            const response = await addImg(formData).unwrap();
+            console.log(response);
+
+            if (response) {
+                setImgId(response.images);
+            }
+        } catch (error) {
+            console.error('Error uploading images:', error);
         }
     };
 
@@ -199,16 +221,7 @@ const AddModel = forwardRef(function AddModel({ setModels }, ref) {
                                     type="file"
                                     accept=".png, .jpeg, .jpg"
                                     multiple
-                                    onChange={(e) => {
-                                        const files = Array.from(e.target.files);
-                                        const validFiles = files.filter(file => file.type === 'image/png' || file.type === 'image/jpeg');
-
-                                        if (validFiles.length > 0) {
-                                            setSelectedFiles(prevFiles => [...prevFiles, ...validFiles]);
-                                        } else {
-                                            alert('Only PNG and JPG images are allowed');
-                                        }
-                                    }}
+                                    onChange={handleFileChange}
                                 />
                             </div>
                         ) : (

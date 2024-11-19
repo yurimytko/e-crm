@@ -144,7 +144,7 @@ export function Update() {
                         <span className="setting_up">Редагувати Зображення</span>
 
                         <div className="img_wrapper">
-                            <img className='preview_img' src={product?.models[activeModel].image} alt="" />
+                            <img className='preview_img' src={product?.models[activeModel].image[0]} alt="" />
 
                         </div>
                     </div>
