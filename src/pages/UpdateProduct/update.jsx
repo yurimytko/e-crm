@@ -402,38 +402,7 @@ export function Update() {
 
 
 
-                    <div className="product_price_con sec">
-                        <span className="setting_up">Показувати товар</span>
-                        <div className="radio-container">
-                            <div className="radio-wrapper">
-                                <label className="radio-button">
-                                    <input
-                                        id="option3"
-                                        name="radio-group_1"
-                                        type="radio"
-                                        onChange={handleRadioChange}
-                                        checked={display === 1}
-                                    />
-                                    <span className="radio-checkmark"></span>
-                                </label>
-                                <span className="radio-label">Так</span>
-                            </div>
-
-                            <div className="radio-wrapper">
-                                <label className="radio-button">
-                                    <input
-                                        id="option4"
-                                        name="radio-group_1"
-                                        type="radio"
-                                        onChange={handleRadioChange}
-                                        checked={display === 0}
-                                    />
-                                    <span className="radio-checkmark"></span>
-                                </label>
-                                <span className="radio-label">Ні</span>
-                            </div>
-                        </div>
-                    </div>
+                   
 
 
 
