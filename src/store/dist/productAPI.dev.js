@@ -36,7 +36,8 @@ var productApi = (0, _react.createApi)({
             url: "admin/products/?id=".concat(id),
             method: "GET"
           };
-        }
+        },
+        providesTags: ['Product']
       }),
       addProduct: build.mutation({
         query: function query(body) {
@@ -63,7 +64,8 @@ var productApi = (0, _react.createApi)({
             method: "PUT",
             body: body
           };
-        }
+        },
+        invalidatesTags: ['Product']
       }),
       addModels: build.mutation({
         query: function query(body) {

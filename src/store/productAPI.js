@@ -1,4 +1,7 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import {
+    createApi,
+    fetchBaseQuery
+} from "@reduxjs/toolkit/query/react";
 
 export const productApi = createApi({
 
@@ -9,15 +12,15 @@ export const productApi = createApi({
     baseQuery: fetchBaseQuery({
         baseUrl: 'https://superogshmal.pp.ua/',
         prepareHeaders: (headers) => {
-          const authToken = localStorage.getItem('token');
-          
-          if (authToken) {
-            headers.set('Authorization', `accessToken=${authToken}`);
-          }
-          
-          return headers;
+            const authToken = localStorage.getItem('token');
+
+            if (authToken) {
+                headers.set('Authorization', `accessToken=${authToken}`);
+            }
+
+            return headers;
         }
-      }),
+    }),
     tagTypes: ['Product'],
     endpoints: (build) => ({
         getProducts: build.query({
@@ -29,6 +32,8 @@ export const productApi = createApi({
                 url: `admin/products/?id=${id}`,
                 method: "GET",
             }),
+            providesTags: ['Product'],
+
         }),
         addProduct: build.mutation({
             query: (body) => ({
@@ -41,7 +46,7 @@ export const productApi = createApi({
         deleteProduct: build.mutation({
             query: (id) => ({
                 url: `admin/products?id=${id}`,
-                method: "DELETE",        
+                method: "DELETE",
             }),
         }),
         putProduct: build.mutation({
@@ -50,24 +55,26 @@ export const productApi = createApi({
                 method: "PUT",
                 body,
             }),
+            invalidatesTags: ['Product'],
+
         }),
 
-addModels: build.mutation({
-    query: (body) => {
-        console.log('Request body:', body);
-        
+        addModels: build.mutation({
+            query: (body) => {
+                console.log('Request body:', body);
 
-        return {
-            url: `admin/products/?id=${body.id}&modelId=new`, 
-            method: "PUT",
-            body,
-        };
-    },
-}),
+
+                return {
+                    url: `admin/products/?id=${body.id}&modelId=new`,
+                    method: "PUT",
+                    body,
+                };
+            },
+        }),
         deleteProducts: build.mutation({
             query: (ids) => ({
                 url: `admin/products?id=${ids}`,
-                method: "DELETE",        
+                method: "DELETE",
             }),
         }),
 
@@ -81,4 +88,13 @@ addModels: build.mutation({
     }),
 });
 
-export const { useGetProductsQuery, useAddProductMutation,useDeleteProductMutation,useGetProductQuery,usePutProductMutation, useDeleteProductsMutation, useAddModelsMutation, usePostImgMutation } = productApi;
+export const {
+    useGetProductsQuery,
+    useAddProductMutation,
+    useDeleteProductMutation,
+    useGetProductQuery,
+    usePutProductMutation,
+    useDeleteProductsMutation,
+    useAddModelsMutation,
+    usePostImgMutation
+} = productApi;

@@ -56,27 +56,45 @@ export function Update() {
         isLoading: sectionsLoading
     } = useGetSectionsQuery();
 
+    const [putProduct, { data, isLoading: p, Error }] = usePutProductMutation()
+
     useEffect(() => {
         refetchProduct();
     }, [refetchProduct]);
 
     useEffect(() => {
-
         setName(product?.name);
         setQuantity(product?.models?.[activeModel]?.quantity || 0);
         setPrice(product?.models?.[activeModel]?.price || 0);
         setDescr(product?.models?.[activeModel]?.description)
         setVideo(product?.video)
         setImages(product?.models?.[activeModel]?.image)
-        console.log(video);
 
         if (
             product?.section?.section && // Ensure product.section.section exists
             sections?.some(section => section._id === product.section.section._id)
         ) {
-            setCategoryId(product.section.section._id);
-            setCategory(product.section.section.name);
+            const matchedSection = sections.find(section => section._id === product.section.section._id);
+
+            setCategoryId(matchedSection._id);
+            setCategory(matchedSection.name);
             setIsCategorySelected(true);
+
+            if (matchedSection.subSections) {
+                setSubsections(matchedSection.subSections); 
+            } else {
+                setSubsections([]);
+            }
+            if (
+                product?.section?.subSection && // Ensure product.section.subSection exists
+                matchedSection?.subSections?.some(subSection => subSection._id === product.section.subSection._id)
+              ) {
+                const matchedSubSection = matchedSection.subSections.find(
+                  subSection => subSection._id === product.section.subSection._id
+                );
+                setSubCategory(matchedSubSection.name); 
+                setSubCategoryId(matchedSubSection._id)
+              }
         }
     }, [product, sections, activeModel]);
 
@@ -91,7 +109,7 @@ export function Update() {
 
             carouselRef.current.scrollLeft = activeImage.offsetLeft - (containerWidth - imageWidth) / 2;
         }
-    }, [activeImg, images?.length]); 
+    }, [activeImg, images?.length]);
 
 
     function goBack() {
@@ -173,11 +191,13 @@ export function Update() {
     const handleChangePhoto = (index) => {
         setActiveImg(index)
     }
+
+
     const handlePhotoForward = () => {
         if (activeImg >= images.length - 1) {
             setActiveImg(0);
         } else {
-            setActiveImg(activeImg + 1); // Move to the next image
+            setActiveImg(activeImg + 1);
         }
     };
 
@@ -202,13 +222,27 @@ export function Update() {
 
         if (validFiles.length > 0) {
             setImages(prevFiles => [...prevFiles, ...validFiles]);
-        } else {
-            alert('Only PNG and JPG images are allowed');
         }
 
         console.log(files);
 
     };
+
+
+    const productUpdate = async () => {
+        try {
+            const product = {
+                id: id,
+                name: name,
+                video: video,
+                section: subCategoryId ? subCategoryId : categoryId
+            };
+
+            await putProduct(product)
+        } catch (e) {
+            console.error(e)
+        }
+    }
 
 
     return (
@@ -417,7 +451,7 @@ export function Update() {
                         {activeIndex === 2 && (
                             <div className="product_price_con">
                                 <span className="setting_up">Посилання на відео</span>
-                                <input type="text" placeholder="Посилання..." value={video} className="input" name="video" />
+                                <input type="text" placeholder="Посилання..." value={video} onChange={(e) => { setVideo(e.target.value) }} className="input" name="video" />
                             </div>
                         )}
 
@@ -439,7 +473,7 @@ export function Update() {
                         <div className="right_bloc">
                             <button type="button" onClick={goBack} className="cancel_add">Скасувати</button>
 
-                            <button type="submit" className="add_product_btn">Зберегти</button>
+                            <button type="submit" onClick={productUpdate} className="add_product_btn">{p === false ? "Зберегти" : "Збереження"}</button>
                         </div>
 
                     </div>
