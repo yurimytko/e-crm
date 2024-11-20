@@ -4,6 +4,7 @@ import { NavBar } from '../../components/NavBar/nav';
 import {
     useGetProductQuery,
     usePutProductMutation,
+    usePutProductModelsMutation,
     useGetSectionsQuery,
 } from '../../store';
 import './dist/update.css';
@@ -61,6 +62,9 @@ export function Update() {
     } = useGetSectionsQuery();
 
     const [putProduct, { data, isLoading: p, Error }] = usePutProductMutation()
+    const [putProductModels, { data: d, isLoading: putLOading, Error: e }] = usePutProductModelsMutation()
+
+
 
     const [addImg, { data: img, isLoading: loading, Error: irror }] = usePostImgMutation()
 
@@ -270,7 +274,7 @@ export function Update() {
                         images: response.images
                     };
         
-                    await putProduct(product)
+                    await putProductModels(product)
                 } catch (e) {
                     console.error(e)
                 }
@@ -285,16 +289,22 @@ export function Update() {
         try {
             const product = {
                 id: id,
-                model: modelId,
                 name: name,
                 video: video,
                 section: subCategoryId ? subCategoryId : categoryId,
+                
+            };
+            const models = {
+                id: id,
+                model: modelId,
                 price: price,
                 quantity: quantity,
                 description: description
             };
 
+
             await putProduct(product)
+            await putProductModels(models)
         } catch (e) {
             console.error(e)
         }

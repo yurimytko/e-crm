@@ -51,6 +51,15 @@ export const productApi = createApi({
         }),
         putProduct: build.mutation({
             query: (body) => ({
+                url: `admin/products/?id=${body.id}`,
+                method: "PUT",
+                body,
+            }),
+            invalidatesTags: ['Product'],
+
+        }),
+        putProductModels: build.mutation({
+            query: (body) => ({
                 url: `admin/products/?id=${body.id}&modelId=${body.model}`,
                 method: "PUT",
                 body,
@@ -96,5 +105,6 @@ export const {
     usePutProductMutation,
     useDeleteProductsMutation,
     useAddModelsMutation,
-    usePostImgMutation
+    usePostImgMutation,
+    usePutProductModelsMutation
 } = productApi;
