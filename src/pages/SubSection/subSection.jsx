@@ -37,7 +37,7 @@ export function SubSection() {
             <NavBar />
             <div className="sub_con">
                 <div>
-                    <div className="page_title"><span style={{cursor: "pointer"}} onClick={() => {navigator(-1)}}>Назад</span> | Підкатегорія</div>
+                    <div className="page_title"><span style={{ cursor: "pointer" }} onClick={() => { navigator(-1) }}> <img src="/img/Group 53.svg" alt="" /> Назад</span> |Підкатегорія</div>
                 </div>
 
                 <div className="sub_section_con">

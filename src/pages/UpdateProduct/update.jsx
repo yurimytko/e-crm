@@ -316,8 +316,8 @@ export function Update() {
                                     className="preview_img"
                                     src={
                                         typeof images[activeImg] === "string"
-                                            ? images[activeImg] // Use the URL directly
-                                            : URL.createObjectURL(images[activeImg]) // Create a URL for the File object
+                                            ? images[activeImg] 
+                                            : URL.createObjectURL(images[activeImg])
                                     }
                                     alt="Preview"
                                 />
@@ -396,17 +396,6 @@ export function Update() {
 
 
                     </div>
-
-
-
-
-
-
-                   
-
-
-
-
 
                 </div>
                 <div className="left_up_model">
