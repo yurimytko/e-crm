@@ -39,7 +39,7 @@ export function BlogCard({post}){
 
     return(
         <div className="blog_card"> 
-            <img src={post.image[0].imageUrl} alt="" />
+            <img src={post.image[0]} alt="" />
             <div className="text_blog">
                 <div className="blog">
                     <div className="blog_title">{post.title}</div>

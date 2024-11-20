@@ -9,6 +9,7 @@ import {
 import './dist/update.css';
 import AddCategory from '../../components/AddCategory/addCat';
 import { Loader } from '../../components/Loader/loader';
+import { AddSub } from '../../components/AddSubSection/adSub';
 
 export function Update() {
 
@@ -28,7 +29,7 @@ export function Update() {
     const [description, setDescr] = useState(null)
     const [video, setVideo] = useState(null)
     const [images, setImages] = useState(null)
-
+    const [modelId, setModelId] = useState(null)
 
     const [category, setCategory] = useState("Категорія")
     const [subCategory, setSubCategory] = useState("Під категорія")
@@ -69,6 +70,7 @@ export function Update() {
         setDescr(product?.models?.[activeModel]?.description)
         setVideo(product?.video)
         setImages(product?.models?.[activeModel]?.image)
+        setModelId(product?.models[0]._id)
 
         if (
             product?.section?.section && // Ensure product.section.section exists
@@ -174,6 +176,13 @@ export function Update() {
             menuElement.style.opacity = "1";
 
 
+        }, 100);
+    }
+    function openAddCat() {
+        const menuElement = document.getElementById("add_sub");
+        menuElement.style.display = "flex";
+        setTimeout(() => {
+            menuElement.style.opacity = "1";
         }, 100);
     }
 
@@ -333,7 +342,7 @@ export function Update() {
                                 ) : (
                                     <span>немає категорій</span>
                                 )}
-                                <span className="add_cat_in_add" >Додати категорію</span>
+                                <span className="add_cat_in_add" onClick={openAddCat}>Додати категорію</span>
                             </div>
                         </div>
 
@@ -492,6 +501,7 @@ export function Update() {
             />
 
             <AddCategory />
+            <AddSub/>
 
         </div>
     );
