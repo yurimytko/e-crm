@@ -60,7 +60,7 @@ var productApi = (0, _react.createApi)({
       putProduct: build.mutation({
         query: function query(body) {
           return {
-            url: "admin/products/?id=".concat(body.id),
+            url: "admin/products/?id=".concat(body.id, "&modelId=").concat(body.model),
             method: "PUT",
             body: body
           };

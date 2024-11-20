@@ -10,6 +10,7 @@ import './dist/update.css';
 import AddCategory from '../../components/AddCategory/addCat';
 import { Loader } from '../../components/Loader/loader';
 import { AddSub } from '../../components/AddSubSection/adSub';
+import { usePostImgMutation } from '../../store';
 
 export function Update() {
 
@@ -30,6 +31,8 @@ export function Update() {
     const [video, setVideo] = useState(null)
     const [images, setImages] = useState(null)
     const [modelId, setModelId] = useState(null)
+    const [imgId, setImgId] = useState([])
+
 
     const [category, setCategory] = useState("Категорія")
     const [subCategory, setSubCategory] = useState("Під категорія")
@@ -59,6 +62,8 @@ export function Update() {
 
     const [putProduct, { data, isLoading: p, Error }] = usePutProductMutation()
 
+    const [addImg, { data: img, isLoading: loading, Error: irror }] = usePostImgMutation()
+
     useEffect(() => {
         refetchProduct();
     }, [refetchProduct]);
@@ -70,7 +75,9 @@ export function Update() {
         setDescr(product?.models?.[activeModel]?.description)
         setVideo(product?.video)
         setImages(product?.models?.[activeModel]?.image)
-        setModelId(product?.models[0]._id)
+        setModelId(product?.models[activeModel]._id)
+
+        console.log(modelId)
 
         if (
             product?.section?.section && // Ensure product.section.section exists
@@ -118,10 +125,11 @@ export function Update() {
         navigate(-1)
     }
 
-    function handleModelChange(index) {
+    function handleModelChange(model, index) {
         setActiveModel(index);
         setQuantity(product?.models[index].quantity)
         setPrice(product?.models[index].price)
+        setModelId(model)
     }
 
     function handleNavigate() {
@@ -197,9 +205,7 @@ export function Update() {
     const formattedDate = date.toLocaleDateString();
 
 
-    const handleChangePhoto = (index) => {
-        setActiveImg(index)
-    }
+
 
 
     const handlePhotoForward = () => {
@@ -225,6 +231,18 @@ export function Update() {
         input.current.click();
     };
 
+    // const handleFileChange = async (e) => {
+    //     const files = Array.from(e.target.files);
+    //     const validFiles = files.filter(file => file.type === 'image/png' || file.type === 'image/jpeg');
+
+    //     if (validFiles.length > 0) {
+    //         setImages(prevFiles => [...prevFiles, ...validFiles]);
+    //     }
+
+    //     console.log(files);
+
+    // };
+
     const handleFileChange = async (e) => {
         const files = Array.from(e.target.files);
         const validFiles = files.filter(file => file.type === 'image/png' || file.type === 'image/jpeg');
@@ -232,9 +250,34 @@ export function Update() {
         if (validFiles.length > 0) {
             setImages(prevFiles => [...prevFiles, ...validFiles]);
         }
-
         console.log(files);
 
+        try {
+            const formData = new FormData();
+            files.forEach((file, index) => {
+                formData.append('image', file);
+            });
+
+            const response = await addImg(formData).unwrap();
+            console.log(response);
+
+            if (response) {
+                setImgId(response.images);
+                try {
+                    const product = {
+                        id: id,
+                        model: modelId,
+                        images: response.images
+                    };
+        
+                    await putProduct(product)
+                } catch (e) {
+                    console.error(e)
+                }
+            }
+        } catch (error) {
+            console.error('Error uploading images:', error);
+        }
     };
 
 
@@ -242,9 +285,13 @@ export function Update() {
         try {
             const product = {
                 id: id,
+                model: modelId,
                 name: name,
                 video: video,
-                section: subCategoryId ? subCategoryId : categoryId
+                section: subCategoryId ? subCategoryId : categoryId,
+                price: price,
+                quantity: quantity,
+                description: description
             };
 
             await putProduct(product)
@@ -402,7 +449,7 @@ export function Update() {
                         <div className="models_con">
                             {product?.models.map((model, index) => (
                                 <span
-                                    onClick={() => handleModelChange(index)}
+                                    onClick={() => handleModelChange(model._id, index)}
                                     className={activeModel === index ? "active_model" : "model_name"}
                                     key={model._id}
                                 >
@@ -448,7 +495,7 @@ export function Update() {
                         {activeIndex === 0 && (
                             <div className="product_price_con">
                                 <span className="setting_up">Опис</span>
-                                <textarea value={description} name="description" id="" placeholder="Опис..." />
+                                <textarea value={description} onChange={(e) => {setDescr(e.target.value)}} name="description" id="" placeholder="Опис..." />
                             </div>
                         )}
                         {activeIndex === 1 && (

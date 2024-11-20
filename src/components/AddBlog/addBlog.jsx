@@ -1,8 +1,12 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import "./dist/addBlog.css";
 import { useCreatePostMutation } from "../../store/blogApi";
 
 export function AddBlog() {
+
+  const input = useRef()
+
+
   const [createPost, { data, isLoading, error }] = useCreatePostMutation();
   const [blogTitle, setTitle] = useState("");
   const [blogText, setText] = useState("");
@@ -10,6 +14,11 @@ export function AddBlog() {
   const [formData, setFormData] = useState({ display: true });
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
+
+  const [photo, setPhoto] = useState([]);
+  const [dragActive, setDragActive] = useState(false);
+
+
 
   const create = async () => {
     try {
@@ -29,9 +38,6 @@ export function AddBlog() {
     }
   };
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, display: e.target.value === "true" });
-  };
 
   const closeAddMenu = () => {
     const menuElement = document.getElementById("add_blog_component");
@@ -47,39 +53,88 @@ export function AddBlog() {
     }, 300);
   };
 
-  const handleDragEnter = (e) => {
+
+
+
+  const handleDragOver = (e) => {
     e.preventDefault();
+    setDragActive(true);
   };
 
-  const handleDragLeave = (e) => {
-    e.preventDefault();
+  const handleDragLeave = () => {
+    setDragActive(false);
   };
 
   const handleDrop = (e) => {
     e.preventDefault();
+    setDragActive(false);
     const file = e.dataTransfer.files[0];
-    if (file && file.type.startsWith("image/")) {
-      setImageFile(file);
-      setImagePreview(URL.createObjectURL(file)); // Create a preview URL
+    if (file && (file.type === 'image/png' || file.type === 'image/jpeg')) {
+      setPhoto(file);
     } else {
-      setImagePreview(null);
+      alert('Only PNG and JPG images are allowed');
     }
   };
 
-  const handleFileSelect = (e) => {
-    const file = e.target.files[0];
-    if (file && file.type.startsWith("image/")) {
-      setImageFile(file);
-      setImagePreview(URL.createObjectURL(file)); // Create a preview URL
-    } else {
-      setImagePreview(null);
-    }
+
+  const handleInput = () => {
+    input.current.click();
   };
 
   return (
     <div id="add_blog_component" className="add_blog_component">
       <div className="blog_modal">
-        <span className="blog_title">Додати Зображення</span>
+
+        <img
+          onClick={closeAddMenu}
+          className="blog_close"
+          src="/img/close_menu.svg"
+          alt="Close"
+        />
+
+        <div className="img_con ty">
+          <span className="titile_set">Добавити Зображення</span>
+          {photo.length === 0 ? (
+            <div
+              className={`drag_and_drop ${dragActive ? 'drag_active' : ''}`}
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+            >
+              <span className='input_click' onClick={handleInput}>
+                Завантажте фото
+                <span className='normal_text' onClick={(e) => { e.stopPropagation(); }}>
+                  {' '}або перетягніть файл
+                </span>
+              </span>
+              <span className='instruction'>Jpg, Png / Макс 8 мб / Мін 214px х 214px</span>
+
+              <input
+                ref={input}
+                style={{ display: "none" }}
+                type="file"
+                accept=".png, .jpeg, .jpg"
+                onChange={(e) => {
+                  const file = e.target.files[0];
+                  if (file && (file.type === 'image/png' || file.type === 'image/jpeg')) {
+                    setPhoto(file);
+                  }
+                }}
+              />
+            </div>
+          ) : (
+            <div
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+              className={`uploaded_photo ${dragActive ? 'drag_active' : ''}`}
+            >
+              <img src={URL.createObjectURL(photo)} alt="Uploaded" className="preview_image" />
+            </div>
+          )}
+
+        </div>
+        {/* <span className="blog_title">Додати Зображення</span>
 
         <div className="img_field_blog">
           <div
@@ -180,7 +235,7 @@ export function AddBlog() {
           <button className="blog_c_btn" onClick={create}>
             Створити
           </button>
-        </div>
+        </div> */}
       </div>
     </div>
   );

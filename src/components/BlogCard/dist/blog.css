@@ -49,13 +49,14 @@
   font-family: Jura;
   font-size: 1.8vh;
   font-weight: 500;
-  background: #85d4a9;
+  background: #219653;
   border-radius: 1vh;
   height: 5vh;
   width: 8vw;
   display: flex;
   justify-content: center;
   align-items: center;
+  color: #fff;
 }
 .blog_date {
   display: flex;

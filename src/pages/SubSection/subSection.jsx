@@ -2,12 +2,13 @@ import { useParams } from "react-router-dom";
 import { AddSub } from "../../components/AddSubSection/adSub";
 import { NavBar } from "../../components/NavBar/nav"
 import "./dist/subSection.css"
-
+import { useNavigate } from "react-router-dom";
 import { useGetSectionQuery } from "../../store";
 
 import { SubCard } from "../../components/SubSectionCard/subCard";
 
 export function SubSection() {
+    const navigator = useNavigate()
 
     const { catalogId } = useParams()
 
@@ -35,7 +36,9 @@ export function SubSection() {
         <div className="sub_section_page">
             <NavBar />
             <div className="sub_con">
-                <div className="page_title">Підкатегорія</div>
+                <div>
+                    <div className="page_title"><span style={{cursor: "pointer"}} onClick={() => {navigator(-1)}}>Назад</span> | Підкатегорія</div>
+                </div>
 
                 <div className="sub_section_con">
                     <div onClick={openAddMenu} className="add_catalog">

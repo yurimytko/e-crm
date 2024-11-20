@@ -29,6 +29,8 @@
   width: 100%;
   display: flex;
   justify-content: flex-end;
+  flex-direction: column;
+  align-items: flex-end;
 }
 .res_card {
   position: relative;
