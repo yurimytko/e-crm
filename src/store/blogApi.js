@@ -17,17 +17,19 @@ export const blogApi = createApi({
             return headers;
           }
     }),
-
+    tagTypes: ["Blogs"],
     endpoints: (build) => ({
         getPosts: build.query({
-            query: () => 'admin/posts'
+            query: () => 'admin/posts',
+            providesTags: ["Blogs"],
         }),
         createPost: build.mutation({
             query: (body)=> ({
                 url: 'admin/posts',
                 method: 'POST',
                 body
-            })
+            }),
+            invalidatesTags: ['Blogs'],
         }),
         getPostsById: build.query({
             query: (id) => `posts?id=${id}`
@@ -43,7 +45,9 @@ export const blogApi = createApi({
             query: (id)=> ({
                 url: `admin/posts?id=${id}`,
                 method: 'DELETE',
-            })
+            }),
+            invalidatesTags: ['Blogs'],
+
         }),
     })
 

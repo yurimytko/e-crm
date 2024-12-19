@@ -20,6 +20,7 @@ export function Blog() {
     return (
         <div className="blog_page_p">
             <NavBar />
+            {isLoading && <Loader/>}
             <div className="blog_con">
                 <div className="page_title">Сторінки блогу</div>
 
@@ -28,17 +29,8 @@ export function Blog() {
                     <div className="add_blog" onClick={openAddMenu}>
                         <img src="./img/додати.svg" alt="" />
                     </div>
-                    {isLoading ? (
-                        <Loader/>
-                    ) : error ? (
-                        <p>Error loading posts</p>
-                    ) : (
-                        data.posts?.map(post => <BlogCard key={post.id} post={post} />)
-                    )}
+                    {data?.posts?.map(post => <BlogCard key={post.id} post={post} />)}
                 </div>
-                {/* <div className="blog_section">
-                    
-                </div> */}
             </div>
             <AddBlog />
         </div>

@@ -21,12 +21,14 @@ var blogApi = (0, _react.createApi)({
       return headers;
     }
   }),
+  tagTypes: ["Blogs"],
   endpoints: function endpoints(build) {
     return {
       getPosts: build.query({
         query: function query() {
           return 'admin/posts';
-        }
+        },
+        providesTags: ["Blogs"]
       }),
       createPost: build.mutation({
         query: function query(body) {
@@ -35,7 +37,8 @@ var blogApi = (0, _react.createApi)({
             method: 'POST',
             body: body
           };
-        }
+        },
+        invalidatesTags: ['Blogs']
       }),
       getPostsById: build.query({
         query: function query(id) {
@@ -57,7 +60,8 @@ var blogApi = (0, _react.createApi)({
             url: "admin/posts?id=".concat(id),
             method: 'DELETE'
           };
-        }
+        },
+        invalidatesTags: ['Blogs']
       })
     };
   }
