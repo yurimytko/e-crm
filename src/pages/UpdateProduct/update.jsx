@@ -81,7 +81,8 @@ export function Update() {
         setImages(product?.models?.[activeModel]?.image)
         setModelId(product?.models[activeModel]._id)
 
-        console.log(modelId)
+        console.log(product)
+
 
         if (
             product?.section?.section && // Ensure product.section.section exists
@@ -94,20 +95,20 @@ export function Update() {
             setIsCategorySelected(true);
 
             if (matchedSection.subSections) {
-                setSubsections(matchedSection.subSections); 
+                setSubsections(matchedSection.subSections);
             } else {
                 setSubsections([]);
             }
             if (
                 product?.section?.subSection && // Ensure product.section.subSection exists
                 matchedSection?.subSections?.some(subSection => subSection._id === product.section.subSection._id)
-              ) {
+            ) {
                 const matchedSubSection = matchedSection.subSections.find(
-                  subSection => subSection._id === product.section.subSection._id
+                    subSection => subSection._id === product.section.subSection._id
                 );
-                setSubCategory(matchedSubSection.name); 
+                setSubCategory(matchedSubSection.name);
                 setSubCategoryId(matchedSubSection._id)
-              }
+            }
         }
     }, [product, sections, activeModel]);
 
@@ -273,7 +274,7 @@ export function Update() {
                         model: modelId,
                         images: response.images
                     };
-        
+
                     await putProductModels(product)
                 } catch (e) {
                     console.error(e)
@@ -292,7 +293,7 @@ export function Update() {
                 name: name,
                 video: video,
                 section: subCategoryId ? subCategoryId : categoryId,
-                
+
             };
             const models = {
                 id: id,
@@ -325,8 +326,8 @@ export function Update() {
                                 <img
                                     className="preview_img"
                                     src={
-                                        typeof images[activeImg] === "string"
-                                            ? images[activeImg] 
+                                        typeof images[activeImg].imageUrl === "string"
+                                            ? images[activeImg].imageUrl
                                             : URL.createObjectURL(images[activeImg])
                                     }
                                     alt="Preview"
@@ -339,25 +340,26 @@ export function Update() {
 
                             <div className="img_carousel" ref={carouselRef}>
                                 {images?.map((img, index) => {
-                                    const src = typeof img === "string" ? img : URL.createObjectURL(img);
-
                                     return (
                                         <div
                                             key={index}
                                             onClick={() => setActiveImg(index)}
                                             className={activeImg === index ? "img_c_active" : "img_c_container"}
                                         >
-                                            <img className="img_c" src={src} alt={`Image ${index}`} />
+                                            <img
+                                                className="img_c"
+                                                src={
+                                                    typeof img.imageUrl === "string"
+                                                        ? img.imageUrl // if it's a string, use the URL directly
+                                                        : URL.createObjectURL(img) // if it's a file, use createObjectURL
+                                                }
+                                                alt={`Image ${index}`}
+                                            />
                                         </div>
                                     );
-
-
                                 })}
-                                <div
-
-                                    className={"img_c_container"}
-                                >
-                                    <img className="img_c" onClick={handleInput} src="/img/додати.svg" />
+                                <div className="img_c_container">
+                                    <img className="img_c" onClick={handleInput} src="/img/додати.svg" alt="Add" />
                                 </div>
                             </div>
                             <img onClick={handlePhotoForward} style={{ cursor: "pointer" }} src="/img/Group 67 (1).svg" alt="" />
@@ -463,7 +465,7 @@ export function Update() {
                         {activeIndex === 0 && (
                             <div className="product_price_con">
                                 <span className="setting_up">Опис</span>
-                                <textarea value={description} onChange={(e) => {setDescr(e.target.value)}} name="description" id="" placeholder="Опис..." />
+                                <textarea value={description} onChange={(e) => { setDescr(e.target.value) }} name="description" id="" placeholder="Опис..." />
                             </div>
                         )}
                         {activeIndex === 1 && (
@@ -516,7 +518,7 @@ export function Update() {
             />
 
             <AddCategory />
-            <AddSub/>
+            <AddSub />
 
         </div>
     );
