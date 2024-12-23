@@ -8,6 +8,7 @@ import { useAddProductMutation, useAddModelsMutation } from "../../store";
 import AddModel from "../AddModel/addModel";
 import AddCategory from "../AddCategory/addCat";
 import { AddSub } from "../AddSubSection/adSub";
+import { combineSlices } from "@reduxjs/toolkit";
 
 const generateRandomArticle = () => {
     return Math.floor(1000 + Math.random() * 9000).toString();
@@ -46,9 +47,45 @@ const AddProductMenu = forwardRef(function AddProductMenu(props, ref) {
 
     const [display, setDisplay] = useState(1)
 
+
+    const [characteristics, setCharacteristics] = useState([]);
+
+
     const handleOptionChange = (event) => {
         setIsSingle(event.target.id === 'option1' ? 1 : 0);
     };
+
+
+    const handleAddCharacteristic = () => {
+        setCharacteristics([...characteristics, { title: "", value: "" }]);
+    };
+
+    const handleInputChange = (index, field, value) => {
+        const updatedCharacteristics = characteristics.map((char, i) =>
+            i === index ? { ...char, [field]: value } : char
+        );
+        setCharacteristics(updatedCharacteristics);
+    };
+
+    const handleRemoveCharacteristic = (index) => {
+        const updatedCharacteristics = characteristics.filter((_, i) => i !== index);
+        setCharacteristics(updatedCharacteristics);
+    };
+
+    const generateHTML = () => `
+    <ul>
+      ${characteristics
+            .filter((item) => item.title && item.value) // Ensure non-empty values
+            .map(
+                (item) => `
+        <li>
+          <strong>${item.title}:</strong> ${item.value}
+        </li>
+      `
+            )
+            .join("")}
+    </ul>
+    `;
 
 
 
@@ -165,38 +202,50 @@ const AddProductMenu = forwardRef(function AddProductMenu(props, ref) {
 
 
     async function onSubmit(e) {
-        try {
-            e.preventDefault();
-            console.log("Submitted");
+        e.preventDefault();
 
-            const fd = new FormData(e.target);
-            if (description) {
-                fd.append("description", description);
+        const validation = categoryq.sections.filter((item) => item._id === categoryId);
+        if (validation.length > 0 && subCategoryId === undefined) {
+            alert("Alert");
+        } else {
+            try {
+                const fd = new FormData(e.target);
+
+                if (!fd.has("description") && description) {
+                    fd.append("description", description);
+                }
+
+                const randomArticle = generateRandomArticle();
+                fd.append("article", randomArticle);
+
+                if (categoryId) {
+                    fd.append("sectionId", categoryId);
+                } else if (subCategoryId) {
+                    fd.append("subSectionId", subCategoryId);
+                }
+
+                if (isSingle) {
+                    fd.append("isSingle", isSingle);
+                }
+
+                if (display) {
+                    fd.append("display", display);
+                }
+                const htmlMarkup = generateHTML();
+
+                if (characteristics) {
+                    fd.append("characteristic", htmlMarkup);
+                }
+
+                await addProduct(fd).unwrap();
+                closeModal();
+
+                console.log("Submitted");
+            } catch (e) {
+                console.error(e);
             }
-            const randomArticle = generateRandomArticle();
-            fd.append("article", randomArticle);
-
-            if (categoryId) {
-                fd.append("sectionId", categoryId);
-            } else if (subCategoryId) {
-                fd.append("subSectionId", subCategoryId);
-            }
-
-            if (display) {
-                fd.append("display", display);
-            }
-
-            fd.append("isSingle", isSingle);
-            console.log([...fd]);
-            await addProduct(fd).unwrap();
-            console.log("Product added successfully", fd);
-            closeModal()
-
-        } catch (e) {
-            console.error(e);
         }
     }
-
 
     async function onSubmitModels(e) {
         try {
@@ -246,6 +295,8 @@ const AddProductMenu = forwardRef(function AddProductMenu(props, ref) {
     }
 
     const handleForm = async (e) => {
+        e.preventDefault();
+
         if (isSingle === 1) {
             await onSubmit(e);
         }
@@ -277,7 +328,7 @@ const AddProductMenu = forwardRef(function AddProductMenu(props, ref) {
 
 
     const handleRadioChange = (e) => {
-        setDisplay(e.target.id === 'option3' ? 1 : 0); 
+        setDisplay(e.target.id === 'option3' ? 1 : 0);
     };
 
 
@@ -501,8 +552,38 @@ const AddProductMenu = forwardRef(function AddProductMenu(props, ref) {
                             )}
                             {activeIndex === 1 && (
                                 <div className="product_price_con">
-                                    <span className="setting_up">Опис</span>
-                                    <input type="number" placeholder="xx шт" className="input" />
+                                    <span className="setting_up">Характеристики</span>
+                                    <div className="char_block">
+                                        {characteristics.map((char, index) => (
+                                            <div className="char" key={index}>
+                                                <input
+                                                    type="text"
+                                                    placeholder="Пункт"
+                                                    className="point_of_char"
+                                                    value={char.title}
+                                                    onChange={(e) =>
+                                                        handleInputChange(index, "title", e.target.value)
+                                                    }
+                                                />
+                                                <input
+                                                    type="text"
+                                                    placeholder="Опис"
+                                                    className="input"
+                                                    value={char.value}
+                                                    onChange={(e) =>
+                                                        handleInputChange(index, "value", e.target.value)
+                                                    }
+                                                />
+                                                <button
+                                                    type="button"
+                                                    onClick={() => handleRemoveCharacteristic(index)}
+                                                >
+                                                    Видалити
+                                                </button>
+                                            </div>
+                                        ))}
+                                    </div>
+                                    <button onClick={handleAddCharacteristic}>Додати характеристику</button>
                                 </div>
                             )}
                             {activeIndex === 2 && (

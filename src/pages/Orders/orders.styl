@@ -26,5 +26,34 @@
     width 55vw
     height: 6.2vh
     display: grid
-    grid-template-columns: 2vw 3vw 5.6vw 6vw 6vw 4vw 4.8vw  4.8vw 4.8vw 4.8vw 9vw 9vw 8vh 4vw;
+    grid-template-columns: 2vw 3vw 5.6vw 10vw 6vw 7vw 12vw  12vw 4.8vw 4.8vw 9vw 9vw 8vh 4vw;
     grid-column-gap: 0.1vw;
+.table
+    margin-top 2vh
+    padding: 2vh 0 
+    box-sizing: border-box
+    width 72vw
+    height 74vh
+    overflow-x: scroll; /* Enable horizontal scrolling */
+    overflow-y: scroll; /* Allow vertical scrolling but hide the scrollbar */
+    -ms-overflow-style: none; /* Hide scrollbar in IE/Edge */
+.order_p
+    margin 2vh 0 0 0
+
+.table::-webkit-scrollbar {
+    width: 0;
+    height: 10px;
+}
+
+.table::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+.table::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+.table::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}

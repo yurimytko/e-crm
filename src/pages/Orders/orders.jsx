@@ -20,20 +20,20 @@ export function OrdersPage() {
 
     useEffect(() => {
         console.log(selectedOrder)
-    },[selectedOrder])
+    }, [selectedOrder])
 
     useEffect(() => {
         console.log("Selected IDs:", selectedIds); // Logs selectedIds to monitor changes
     }, [selectedIds]);
 
 
-    
+
 
     const handleClick = async () => {
         try {
             let result;
             if (isSelected && selectedIds.length > 0) {
-                result = await triggerExportById({id:selectedIds.join(',')}); // Export by selected IDs
+                result = await triggerExportById({ id: selectedIds.join(',') }); // Export by selected IDs
             } else {
                 result = await triggerExport(); // Export without specific IDs
             }
@@ -60,7 +60,7 @@ export function OrdersPage() {
 
     const handleButtonClick = () => {
         setIsSelected(!isSelected);
-        if(isSelected === false){
+        if (isSelected === false) {
             setSelectedIds([])
         }
     };
@@ -77,7 +77,7 @@ export function OrdersPage() {
     const Delete = async () => {
         try {
             if (selectedIds.length > 0) {
-                await deleteOrders({id: selectedIds.join(',')});
+                await deleteOrders({ id: selectedIds.join(',') });
                 console.log(selectedIds.join(','))
                 setSelectedIds([]);
             }
@@ -104,7 +104,7 @@ export function OrdersPage() {
             <NavBar />
             <div className="table_part">
                 <div className="page_title">Список замовлень</div>
-                <div className="control_panel">
+                <div className="control_panel order_p">
                     <div className="add_order">
                         <img src="./img/plus.png" alt="" />
                         <p className="btn_text">Створити замовлення</p>
@@ -122,27 +122,28 @@ export function OrdersPage() {
                         Видалити виділене
                     </button>
                 </div>
-                <div className="table_order_section">
-                    <div ></div>
 
-                    <div className="table_titles">HT</div>
-                    <div className="table_titles">Дата створення</div>
-                    <div className="table_titles">ПІБ</div>
-                    <div className="table_titles">Телефон</div>
-                    <div className="table_titles">Доставка</div>
-                    <div className="table_titles">Місто</div>
-                    <div className="table_titles">Відділення</div>
-                    <div className="table_titles">Оплата</div>
-                    <div className="table_titles">Тип оплати</div>
-                    <div className="table_titles">Коментар до замовлення</div>
-                    <div className="table_titles">Коментар від менеджера</div>
-                    <div className="table_titles">Статус</div>
-                    <div className="export_btn" onClick={handleClick}>
-                        <img src="/img/Export CSV.svg" alt="Export CSV" />
-                    </div>
-                </div>
                 <div className="table">
-                    {isLoading && <Loader/>}
+                    <div className="table_order_section">
+                        <div ></div>
+
+                        <div className="table_titles">HT</div>
+                        <div className="table_titles">Дата створення</div>
+                        <div className="table_titles">ПІБ</div>
+                        <div className="table_titles">Телефон</div>
+                        <div className="table_titles">Доставка</div>
+                        <div className="table_titles">Місто</div>
+                        <div className="table_titles">Відділення</div>
+                        <div className="table_titles">Оплата</div>
+                        <div className="table_titles">Тип оплати</div>
+                        <div className="table_titles">Коментар до замовлення</div>
+                        <div className="table_titles">Коментар від менеджера</div>
+                        <div className="table_titles">Статус</div>
+                        <div className="export_btn" onClick={handleClick}>
+                            <img src="/img/Export CSV.svg" alt="Export CSV" />
+                        </div>
+                    </div>
+                    {isLoading && <Loader />}
                     {orders.orders ? (
                         orders.orders.map((order) => (
                             <OrderCard
@@ -150,7 +151,7 @@ export function OrdersPage() {
                                 isSelected={isSelected}
                                 key={order.id}
                                 order={order}
-                                handleEditClick= {handleEditClick}
+                                handleEditClick={handleEditClick}
                             />
                         ))
                     ) : (
@@ -158,7 +159,7 @@ export function OrdersPage() {
                     )}
                 </div>
             </div>
-            <UpdateOrder order= {selectedOrder}/>
+            <UpdateOrder order={selectedOrder} />
         </div>
     );
 }
