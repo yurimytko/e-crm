@@ -11,7 +11,6 @@ export function UserPage() {
 
     const userData = user?.user?.[0];
 
-    // Safely check if userData is available before accessing createdAt
     const formatedDate = userData ? new Date(userData.createdAt).toLocaleDateString() : '';
 
     return (

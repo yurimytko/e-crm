@@ -27,6 +27,11 @@ export const ordersApi = createApi({
             providesTags: ['Orders'],
 
         }),
+        getOrder: build.query({
+            query: (body)=> `orders?id=${body.id}`,
+            providesTags: ['Orders'],
+
+        }),
         deleteOrder: build.mutation({
             query: (body) => ({
                 url: `https://superogshmal.pp.ua/admin/orders?id=${body.id}`,
@@ -48,4 +53,4 @@ export const ordersApi = createApi({
 
 })
 
-export const {useGetOrdersQuery, useDeleteOrderMutation, usePutOrderMutation} = ordersApi
+export const {useGetOrdersQuery, useDeleteOrderMutation, usePutOrderMutation, useGetOrderQuery} = ordersApi

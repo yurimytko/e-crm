@@ -4,9 +4,12 @@
   grid-template-columns: 2vw 3vw 5.6vw 10vw 6vw 7vw 12vw 12vw 4.8vw 4.8vw 9vw 9vw 8vh 5vw;
   grid-column-gap: 0.1vw;
 }
+.con_con_con {
+  width: 100%;
+}
 .card_control_order {
   overflow: hidden;
-  width: 0;
+  width: 0%;
   user-select: none;
   display: flex;
   justify-content: space-around;

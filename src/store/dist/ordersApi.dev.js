@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.usePutOrderMutation = exports.useDeleteOrderMutation = exports.useGetOrdersQuery = exports.ordersApi = void 0;
+exports.useGetOrderQuery = exports.usePutOrderMutation = exports.useDeleteOrderMutation = exports.useGetOrdersQuery = exports.ordersApi = void 0;
 
 var _react = require("@reduxjs/toolkit/query/react");
 
@@ -28,6 +28,12 @@ var ordersApi = (0, _react.createApi)({
       getOrders: build.query({
         query: function query() {
           return 'orders';
+        },
+        providesTags: ['Orders']
+      }),
+      getOrder: build.query({
+        query: function query(body) {
+          return "orders?id=".concat(body.id);
         },
         providesTags: ['Orders']
       }),
@@ -56,7 +62,9 @@ var ordersApi = (0, _react.createApi)({
 exports.ordersApi = ordersApi;
 var useGetOrdersQuery = ordersApi.useGetOrdersQuery,
     useDeleteOrderMutation = ordersApi.useDeleteOrderMutation,
-    usePutOrderMutation = ordersApi.usePutOrderMutation;
+    usePutOrderMutation = ordersApi.usePutOrderMutation,
+    useGetOrderQuery = ordersApi.useGetOrderQuery;
+exports.useGetOrderQuery = useGetOrderQuery;
 exports.usePutOrderMutation = usePutOrderMutation;
 exports.useDeleteOrderMutation = useDeleteOrderMutation;
 exports.useGetOrdersQuery = useGetOrdersQuery;

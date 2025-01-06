@@ -1,8 +1,10 @@
 import "./dist/orderCard.css";
 import { useState } from "react";
 import { useDeleteOrderMutation, usePutOrderMutation } from "../../store/ordersApi";
-
+import { useNavigate } from "react-router-dom";
 export function OrderCard({ order, isSelected, handleCheckboxChange, handleEditClick }) {
+
+    const navigator = useNavigate()
 
     const [isEditingName, setIsEditingName] = useState(false);
     const [isEditingPhone, setIsEditingPhone] = useState(false);
@@ -24,13 +26,13 @@ export function OrderCard({ order, isSelected, handleCheckboxChange, handleEditC
     };
 
 
-    const updateDelivery = async(deliveryType) => {
+    const updateDelivery = async (deliveryType) => {
 
         const requestPayload = deliveryType === 'Нова пошта' ? 'NP' : 'UKRP';
 
-        try{
-            await putOrder({id: order._id,deliveryType: requestPayload});
-        }catch(e){
+        try {
+            await putOrder({ id: order._id, deliveryType: requestPayload });
+        } catch (e) {
 
         }
     }
@@ -186,7 +188,7 @@ export function OrderCard({ order, isSelected, handleCheckboxChange, handleEditC
                 {order.deliveryType === 'NP' ? 'Нова пошта' : 'Укр пошта'}
                 {menuVisible && (
                     <div className="dropdown_menu">
-                        <span  onClick={() => handleMenuItemClick('Нова пошта')}>Нова пошта</span>
+                        <span onClick={() => handleMenuItemClick('Нова пошта')}>Нова пошта</span>
                         <span onClick={() => handleMenuItemClick('Укр пошта')}>Укр пошта</span>
                     </div>
                 )}
@@ -245,10 +247,15 @@ export function OrderCard({ order, isSelected, handleCheckboxChange, handleEditC
                 {order.managerComment ? order.managerComment : '—'}
             </div> */}
             <div className="table_info_o">{order.status}</div>
-            <div className="card_control_order">
-                <img onClick={() => { handleEditClick(order) }} src="./img/Edit.svg" alt="" />
-                <div className="sep_line"></div>
-                <img src="./img/Delete.svg" onClick={handleDeleteOrder} alt="" />
+            <div className="con_con_con">
+                <div className="card_control_order">
+                    <img onClick={() => { handleEditClick(order) }} src="./img/Edit.svg" alt="" />
+                    <div className="sep_line"></div>
+                    <img src="/img/More Info.svg" alt="" onClick={() => navigator(`/order?id=${order._id}`)} />
+
+                    <div className="sep_line"></div>
+                    <img src="./img/Delete.svg" onClick={handleDeleteOrder} alt="" />
+                </div>
             </div>
         </div>
     );

@@ -218,7 +218,7 @@ export function AddBlog() {
                     const file = e.target.files[0];
                     if (file && (file.type === 'image/png' || file.type === 'image/jpeg')) {
                       setPhoto(file);
-                      setImageFile(file); // Synchronizes imageFile state
+                      setImageFile(file);
                       console.log(file);
                     }
                   }}
