@@ -106,5 +106,6 @@ export const {
     useDeleteProductsMutation,
     useAddModelsMutation,
     usePostImgMutation,
-    usePutProductModelsMutation
+    usePutProductModelsMutation,
+    useLazyGetProductsQuery
 } = productApi;

@@ -9,6 +9,7 @@ import AddModel from "../AddModel/addModel";
 import AddCategory from "../AddCategory/addCat";
 import { AddSub } from "../AddSubSection/adSub";
 import { combineSlices } from "@reduxjs/toolkit";
+import { usePostImgMutation } from "../../store";
 
 const generateRandomArticle = () => {
     return Math.floor(1000 + Math.random() * 9000).toString();
@@ -45,10 +46,16 @@ const AddProductMenu = forwardRef(function AddProductMenu(props, ref) {
     const [models, setModels] = useState([]);
     const [selectedOption, setSelectedOption] = useState('');
 
+    const [imagesId, setImgId] = useState([])
+
     const [display, setDisplay] = useState(1)
 
 
     const [characteristics, setCharacteristics] = useState([]);
+
+
+    const [addImg, { data: img, isLoading: loading, Error: Errorimage }] = usePostImgMutation()
+
 
 
     const handleOptionChange = (event) => {
@@ -184,13 +191,33 @@ const AddProductMenu = forwardRef(function AddProductMenu(props, ref) {
     };
 
 
-    const handleFileChange = (e) => {
+    const handleFileChange = async (e) => {
         const files = Array.from(e.target.files);
-        setSelectedFiles(files);
-        const ar = JSON.stringify(files)
-        console.log(ar)
+        const validFiles = files.filter(file => file.type === 'image/png' || file.type === 'image/jpeg');
 
+        if (validFiles.length > 0) {
+            setSelectedFiles(prevFiles => [...prevFiles, ...validFiles]);
+        } else {
+            alert('Only PNG and JPG images are allowed');
+        }
 
+        console.log(files);
+
+        // try {
+        //     const formData = new FormData();
+        //     files.forEach((file, index) => {
+        //         formData.append('image', file);
+        //     });
+
+        //     const response = await addImg(formData).unwrap();
+        //     console.log(response);
+
+        //     if (response) {
+        //         setImgId(response.images);
+        //     }
+        // } catch (error) {
+        //     console.error('Error uploading images:', error);
+        // }
     };
 
     const openModelsMenu = (e) => {
@@ -200,6 +227,13 @@ const AddProductMenu = forwardRef(function AddProductMenu(props, ref) {
     };
 
 
+    useEffect(() => {
+        console.log("WRQWR WQ R  WRQ", imagesId)
+    }, [imagesId])
+
+
+
+
 
     async function onSubmit(e) {
         e.preventDefault();
@@ -207,43 +241,60 @@ const AddProductMenu = forwardRef(function AddProductMenu(props, ref) {
         const validation = categoryq.sections.filter((item) => item._id === categoryId);
         if (validation.length > 0 && subCategoryId === undefined) {
             alert("Alert");
-        } else {
-            try {
-                const fd = new FormData(e.target);
+            return; // Stop execution if validation fails
+        }
 
-                if (!fd.has("description") && description) {
-                    fd.append("description", description);
-                }
+        try {
+            const fd = new FormData(e.target);
 
-                const randomArticle = generateRandomArticle();
-                fd.append("article", randomArticle);
-
-                if (categoryId) {
-                    fd.append("sectionId", categoryId);
-                } else if (subCategoryId) {
-                    fd.append("subSectionId", subCategoryId);
-                }
-
-                if (isSingle) {
-                    fd.append("isSingle", isSingle);
-                }
-
-                if (display) {
-                    fd.append("display", display);
-                }
-                const htmlMarkup = generateHTML();
-
-                if (characteristics) {
-                    fd.append("characteristic", htmlMarkup);
-                }
-
-                await addProduct(fd).unwrap();
-                closeModal();
-
-                console.log("Submitted");
-            } catch (e) {
-                console.error(e);
+            // Append missing fields if necessary
+            if (!fd.has("description") && description) {
+                fd.append("description", description);
             }
+
+            // Handle multiple selected files
+            if (selectedFiles && selectedFiles.length > 0) {
+                Array.from(selectedFiles).forEach((file) => {
+                    fd.append("image", file); // Appends multiple files with the same key
+                });
+            }
+
+            // Append other fields
+            const randomArticle = generateRandomArticle();
+            fd.append("article", randomArticle);
+
+            if (categoryId) {
+                fd.append("sectionId", categoryId);
+            } else if (subCategoryId) {
+                fd.append("subSectionId", subCategoryId);
+            }
+
+            if (isSingle !== undefined) {
+                fd.append("isSingle", isSingle);
+            }
+
+            if (display !== undefined) {
+                fd.append("display", display);
+            }
+
+            // Generate and append HTML markup
+            if (characteristics) {
+                const htmlMarkup = generateHTML();
+                fd.append("characteristic", htmlMarkup);
+            }
+
+            // Debug FormData (optional, logs keys and values)
+            for (let pair of fd.entries()) {
+                console.log(pair[0], pair[1]);
+            }
+
+            // Send data using the addProduct function
+            await addProduct(fd).unwrap();
+            closeModal();
+
+            console.log("Submitted");
+        } catch (e) {
+            console.error("Submission error:", e);
         }
     }
 
@@ -431,16 +482,7 @@ const AddProductMenu = forwardRef(function AddProductMenu(props, ref) {
                                         type="file"
                                         accept=".png, .jpeg, .jpg"
                                         multiple
-                                        onChange={(e) => {
-                                            const files = Array.from(e.target.files);
-                                            const validFiles = files.filter(file => file.type === 'image/png' || file.type === 'image/jpeg');
-
-                                            if (validFiles.length > 0) {
-                                                setSelectedFiles(prevFiles => [...prevFiles, ...validFiles]);
-                                            } else {
-                                                alert('Only PNG and JPG images are allowed');
-                                            }
-                                        }}
+                                        onChange={handleFileChange}
                                     />
                                 </div>
                             ) : (

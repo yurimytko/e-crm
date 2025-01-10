@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.usePutProductModelsMutation = exports.usePostImgMutation = exports.useAddModelsMutation = exports.useDeleteProductsMutation = exports.usePutProductMutation = exports.useGetProductQuery = exports.useDeleteProductMutation = exports.useAddProductMutation = exports.useGetProductsQuery = exports.productApi = void 0;
+exports.useLazyGetProductsQuery = exports.usePutProductModelsMutation = exports.usePostImgMutation = exports.useAddModelsMutation = exports.useDeleteProductsMutation = exports.usePutProductMutation = exports.useGetProductQuery = exports.useDeleteProductMutation = exports.useAddProductMutation = exports.useGetProductsQuery = exports.productApi = void 0;
 
 var _react = require("@reduxjs/toolkit/query/react");
 
@@ -116,7 +116,9 @@ var useGetProductsQuery = productApi.useGetProductsQuery,
     useDeleteProductsMutation = productApi.useDeleteProductsMutation,
     useAddModelsMutation = productApi.useAddModelsMutation,
     usePostImgMutation = productApi.usePostImgMutation,
-    usePutProductModelsMutation = productApi.usePutProductModelsMutation;
+    usePutProductModelsMutation = productApi.usePutProductModelsMutation,
+    useLazyGetProductsQuery = productApi.useLazyGetProductsQuery;
+exports.useLazyGetProductsQuery = useLazyGetProductsQuery;
 exports.usePutProductModelsMutation = usePutProductModelsMutation;
 exports.usePostImgMutation = usePostImgMutation;
 exports.useAddModelsMutation = useAddModelsMutation;

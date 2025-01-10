@@ -31,7 +31,7 @@ export const sectionApi = createApi({
                         query: (formData) => ({
                             url: 'admin/sections',
                             method: 'POST',
-                            body: formData, // Send the FormData object directly
+                            body: formData,
                         }),
                         invalidatesTags: ['Section'], // Invalidate the 'Section' tag to refetch sections
                     }),
@@ -63,7 +63,7 @@ export const sectionApi = createApi({
                             method: 'DELETE',
                             body
                         }),
-                        invalidatesTags: ['Section'], // Invalidate the 'Section' tag to refetch sections
+                        invalidatesTags: ['Section'],
                     }),
                 }),
             });
@@ -75,5 +75,5 @@ export const sectionApi = createApi({
             useDeleteSectionMutation,
             useGetSubSectionQuery,
             useDeleteSubSectionMutation,
-            useGetSectionQuery
+            useGetSectionQuery,
         } = sectionApi;

@@ -18,12 +18,12 @@ export function BlogPage() {
     const [title, setTitle] = useState('');
     const [url, setUrl] = useState('');
     const [text, setText] = useState('');
-    const [isDeleted, setIsDeleted] = useState(false); // State to track deletion status
+    const [isDeleted, setIsDeleted] = useState(false);
 
     useEffect(() => {
         if (data?.post) {
             setTitle(data.post.title || '');
-            setUrl(data.post.video || ''); // Assuming you have a url field, adjust if needed
+            setUrl(data.post.video || '');
             setText(data.post.text || '');
         }
     }, [data]);
@@ -68,8 +68,10 @@ export function BlogPage() {
                     padding: "7vh 0 0 2vw",
                     boxSizing: "border-box"
                 }}>
-                    <div>
-                        <div className="page_title"><span style={{ cursor: "pointer" }} onClick={() => { navigate(-1) }}> <img src="/img/Group 53.svg" alt="" /> Назад</span> | Блог</div>
+                    <div className="back_link">
+                        <span style={{ cursor: "pointer" }} onClick={() => navigate(-1)}><img src="/img/Group 53.svg" alt="" /> Блоги</span>
+                        <div className="sep_line_link"></div>
+                        <span>Детальніше</span>
                     </div>
                     <div className="blog_page_con">
 

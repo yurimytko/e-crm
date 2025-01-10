@@ -331,3 +331,8 @@ textarea
   border-radius: 1vh
   display: block
   border 0.1vh solid rgba(0, 0, 0, 0.25)
+.blur-effect {
+  filter: blur(5px);
+  pointer-events: none; /* Prevent clicks when loading */
+  transition: filter 0.3s ease;
+}

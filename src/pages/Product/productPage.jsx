@@ -1,18 +1,23 @@
 import "./dist/productPage.css";
 import { NavBar } from "../../components/NavBar/nav";
 import { ProductCard } from "../../components/ProductCard/card";
-import  AddProductMenu  from "../../components/AddProduct/addProduct";
-import { useGetProductsQuery } from "../../store";
+import AddProductMenu from "../../components/AddProduct/addProduct";
+import { useLazyGetProductsQuery } from "../../store";
 import { Loader } from "../../components/Loader/loader";
 import { useState, useEffect, useRef } from "react";
 import { useDeleteProductsMutation } from "../../store";
 import { useLazyExportProductQuery, useLazyExportProductByIdQuery } from "../../store/exportApi";
-
+import { useNavigate, useSearchParams } from "react-router-dom";
 export function ProductPage() {
     const [page, setPage] = useState(1);
     const [selectedIds, setSelectedIds] = useState([]);
     const [isSelected, setIsSelected] = useState(false);
     const [deleteProduct] = useDeleteProductsMutation();
+
+    const [searchParams] = useSearchParams()
+
+    const searchInput = searchParams.get("search")
+    const [search, setSearch] = useState()
 
 
     const productAdd = useRef()
@@ -25,7 +30,7 @@ export function ProductPage() {
         price: false,
         quantity: false,
     });
-    
+
     const [activeFilters, setActiveFilters] = useState({
         article: null,
         date: null,
@@ -40,9 +45,20 @@ export function ProductPage() {
     const [triggerExport] = useLazyExportProductQuery();
     const [triggerExportById] = useLazyExportProductByIdQuery()
 
-    const { data: products = [], isLoading, isFetching } = useGetProductsQuery(`?${url}`);
+    const [getProd,{ data: products = [], isLoading }] = useLazyGetProductsQuery();
 
 
+    const navigator = useNavigate()
+
+
+    useEffect(() => {
+        setUrl(`name=${searchInput}`)
+        setSearch(searchInput)
+        getProd(`?${url}`)
+        if(!searchInput){
+            getProd("")
+        }
+    },[searchInput])
 
 
 
@@ -155,10 +171,17 @@ export function ProductPage() {
 
 
 
+    const handleSerch = () => {
+        navigator(`/products?search=${search}`)
+        setUrl(`name=${search}`)
+        console.log(isLoading)
+    }
+
+
 
     return (
         <div className="product_page">
-            <AddProductMenu ref = {productAdd}/>
+            <AddProductMenu ref={productAdd} />
 
             <NavBar />
             <div className="table_part">
@@ -169,7 +192,18 @@ export function ProductPage() {
                         <p className="btn_text">Додати товар</p>
                     </button>
                     <div className="search_con">
-                        <input className="search_i" type="text" placeholder="Введіть тег і натисніть Enter" />
+                        <input
+                            className="search_i"
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                    handleSerch(); // Call the function on Enter key press
+                                }
+                            }}
+                            type="text"
+                            placeholder="Пошук"
+                        />
                     </div>
                     <button className="select_btn" onClick={handleButtonClick}><img src="./img/Group 20574425.svg" alt="" /> Виділити товар</button>
                     <button style={{ opacity: isSelected ? 1 : 0 }} onClick={Delete} className="delete"><img src="./img/Delete (1).svg" alt="" />Видалити виділене</button>

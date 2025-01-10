@@ -29,6 +29,9 @@ const AddModel = forwardRef(function AddModel({ setModels }, ref) {
 
     const dialog = useRef();
 
+
+    console.log("loading IMAGE", loading)
+
     useImperativeHandle(ref, () => {
         return {
             open() {
@@ -155,7 +158,7 @@ const AddModel = forwardRef(function AddModel({ setModels }, ref) {
         setDragActive(false);
     };
 
-    const handleDrop = async(e) => {
+    const handleDrop = async (e) => {
         e.preventDefault();
         setDragActive(false);
 
@@ -235,11 +238,14 @@ const AddModel = forwardRef(function AddModel({ setModels }, ref) {
                                 className={`uploaded_photo_p ${dragActive ? 'drag_active' : ''}`}
                             >
                                 {selectedFiles.map((file, index) => (
-                                    <div className="img_wrapper" key={index}>
+                                    <div
+                                        className={`img_wrapper ${loading ? 'blur-effect' : ''}`}
+                                        key={index}
+                                    >
                                         <img
                                             src={URL.createObjectURL(file)}
                                             alt={`Uploaded ${index}`}
-                                            className="preview_image_p"
+                                            className={`preview_image_p ${loading ? 'blur-effect' : ''}`}
                                             onClick={() => handleImageClick(index)}
                                         />
                                     </div>

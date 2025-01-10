@@ -44,8 +44,7 @@ var sectionApi = (0, _react.createApi)({
           return {
             url: 'admin/sections',
             method: 'POST',
-            body: formData // Send the FormData object directly
-
+            body: formData
           };
         },
         invalidatesTags: ['Section'] // Invalidate the 'Section' tag to refetch sections
@@ -86,8 +85,7 @@ var sectionApi = (0, _react.createApi)({
             body: body
           };
         },
-        invalidatesTags: ['Section'] // Invalidate the 'Section' tag to refetch sections
-
+        invalidatesTags: ['Section']
       })
     };
   }
