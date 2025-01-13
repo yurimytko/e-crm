@@ -12,10 +12,14 @@ import AddCategory from '../../components/AddCategory/addCat';
 import { Loader } from '../../components/Loader/loader';
 import { AddSub } from '../../components/AddSubSection/adSub';
 import { usePostImgMutation } from '../../store';
+import PutModel from '../../components/PutModelModal/putModel';
+import { useDeleteModelMutation } from '../../store';
 
 export function Update() {
 
     const input = useRef()
+
+    const dialog2 = useRef()
 
     const carouselRef = useRef(null);
 
@@ -64,7 +68,7 @@ export function Update() {
     const [putProduct, { data, isLoading: p, Error }] = usePutProductMutation()
     const [putProductModels, { data: d, isLoading: putLOading, Error: e }] = usePutProductModelsMutation()
 
-
+    const [deleteModel] = useDeleteModelMutation()
 
     const [addImg, { data: img, isLoading: loading, Error: irror }] = usePostImgMutation()
 
@@ -80,8 +84,13 @@ export function Update() {
         setVideo(product?.video)
         setImages(product?.models?.[activeModel]?.image)
         setModelId(product?.models[activeModel]._id)
+        if (product?.models?.[activeModel]?.image) {
+            const imageIds = product.models[activeModel].image.map(image => image.imageId);
+            setImgId(imageIds); // Set the image IDs to state
+        }
 
-        console.log(product)
+        console.log(imgId)
+
 
 
         if (
@@ -251,33 +260,45 @@ export function Update() {
     const handleFileChange = async (e) => {
         const files = Array.from(e.target.files);
         const validFiles = files.filter(file => file.type === 'image/png' || file.type === 'image/jpeg');
-
+    
         if (validFiles.length > 0) {
+            // Update images state
             setImages(prevFiles => [...prevFiles, ...validFiles]);
         }
-        console.log(files);
-
+    
+        console.log("Selected Files:", files);
+        console.log("Images in State:", images);
+    
         try {
             const formData = new FormData();
-            files.forEach((file, index) => {
+            validFiles.forEach((file) => {
                 formData.append('image', file);
             });
-
+    
+            // Upload the images and unwrap the response
             const response = await addImg(formData).unwrap();
-            console.log(response);
-
+            console.log("Response from addImg:", response);
+    
+            // Append the response images to imgId state
+            if (response?.images?.length > 0) {
+                setImgId(prevImgId => [...prevImgId, ...response.images]);
+            }
+    
+            console.log("Updated imgId State:", imgId);
+    
+            // Update product models if response is successful
             if (response) {
-                setImgId(response.images);
                 try {
                     const product = {
-                        id: id,
-                        model: modelId,
-                        images: response.images
+                        id: id,             // ID of the product
+                        model: modelId,     // Model ID
+                        images: [...imgId, ...response.images] // Use updated state for images
                     };
-
-                    await putProductModels(product)
+    
+                    await putProductModels(product);
+                    console.log("Product model updated successfully.");
                 } catch (e) {
-                    console.error(e)
+                    console.error("Error updating product model:", e);
                 }
             }
         } catch (error) {
@@ -309,6 +330,29 @@ export function Update() {
         } catch (e) {
             console.error(e)
         }
+    }
+
+
+    const openModelsMenu = (e) => {
+        e.preventDefault()
+        e.stopPropagation()
+        dialog2.current.open()
+    };
+
+
+    const handleDeleteMOdel = async(modelId) => {
+
+        const body = {
+            id:id,
+            modelId: modelId
+        }
+
+        try{
+            await deleteModel(body)
+        }catch(e) {
+
+        }
+
     }
 
 
@@ -350,8 +394,8 @@ export function Update() {
                                                 className="img_c"
                                                 src={
                                                     typeof img.imageUrl === "string"
-                                                        ? img.imageUrl // if it's a string, use the URL directly
-                                                        : URL.createObjectURL(img) // if it's a file, use createObjectURL
+                                                        ? img.imageUrl
+                                                        : URL.createObjectURL(img)
                                                 }
                                                 alt={`Image ${index}`}
                                             />
@@ -415,7 +459,7 @@ export function Update() {
 
                     <div className="weight pt">
                         <span className="setting_up">Фасування</span>
-                        <button className="add_model">Додати</button>
+                        <button className="add_model" onClick={openModelsMenu}>Додати</button>
                         <div className="models_con">
                             {product?.models.map((model, index) => (
                                 <span
@@ -423,7 +467,7 @@ export function Update() {
                                     className={activeModel === index ? "active_model" : "model_name"}
                                     key={model._id}
                                 >
-                                    {product.name} {model.modelName}
+                                    {model.modelName} г | <span onClick={() => handleDeleteMOdel(model._id)}>X</span>
                                 </span>
                             ))}
                         </div>
@@ -519,6 +563,8 @@ export function Update() {
 
             <AddCategory />
             <AddSub />
+            <PutModel ref={dialog2} id = {id}/>
+
 
         </div>
     );

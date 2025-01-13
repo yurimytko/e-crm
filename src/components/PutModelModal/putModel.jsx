@@ -2,16 +2,18 @@ import { useRef, useImperativeHandle, forwardRef, useState, useEffect } from "re
 
 import { usePostImgMutation } from "../../store";
 
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { useAddModelsMutation } from "../../store";
 
-const AddModel = forwardRef(function AddModel({ setModels }, ref) {
+
+
+const PutModel = forwardRef(function AddModel({ id }, ref) {
     const input = useRef()
     const [dragActive, setDragActive] = useState(false);
 
 
     const [addImg, { data: img, isLoading: loading, Error: error }] = usePostImgMutation()
 
+    const [putModel] = useAddModelsMutation()
 
     const [activeIndex, setActiveIndex] = useState(0);
 
@@ -26,6 +28,7 @@ const AddModel = forwardRef(function AddModel({ setModels }, ref) {
     const [modelName, setModelName] = useState('')
     const [price, setPrice] = useState('')
     const [quantity, setQuantity] = useState('')
+    const [models, setModels] = useState([]);
 
 
     const dialog = useRef();
@@ -93,46 +96,10 @@ const AddModel = forwardRef(function AddModel({ setModels }, ref) {
     }, [imgId])
 
 
-    const handleSave = (e) => {
+    const handleSave = async (e) => {
         e.preventDefault();
         e.stopPropagation();
-    
-        const emptyFields = [];
-        if (!modelName) emptyFields.push("назву");
-        if (!price) emptyFields.push("ціну");
-        if (!quantity) emptyFields.push("кількість");
-        if (!description) emptyFields.push("опис");
-    
-        if (emptyFields.length > 1) {
-            toast.error("Заповніть всі поля", {
-                autoClose: 3000,
-                style: {
-                    position: 'fixed',
-                    zIndex: 1000,
 
-                    top: '50px', 
-                    rigth: '50px',
-                    width: '300px',
-                },
-            });
-            return;
-        }
-    
-        if (emptyFields.length === 1) {
-            toast.error(`Додайте ${emptyFields[0]}`, {
-                autoClose: 3000,
-                style: {
-                    position: 'fixed',
-                    zIndex: 1000,
-                    top: '50px', 
-                    rigth: '50px',
-                    width: '300px',
-                },
-            });
-            return;
-        }
-    
-        // Proceed if all fields are valid
         const newModel = {
             modelName,
             price: Number(price),
@@ -141,16 +108,31 @@ const AddModel = forwardRef(function AddModel({ setModels }, ref) {
             image: imgId,
             promotion: promotion,
         };
-    
-        setModels((prevModels) => [...prevModels, newModel]);
-    
-        // Reset fields
-        setModelName("");
-        setPrice("");
-        setQuantity("");
-        setDescr("");
-        setSelectedFiles([]);
-        closeModal();
+
+        try {
+            const updatedModels = [...(models || []), newModel];
+
+            const response = await putModel({
+                id: id,
+                models: updatedModels,
+            }).unwrap();
+
+            console.log('Model added successfully:', response);
+
+            setModels(updatedModels);
+
+            setModelName('');
+            setPrice('');
+            setQuantity('');
+            setDescr('');
+            setSelectedFiles([]);
+            closeModal();
+            setModels([])
+
+            window.location.reload()
+        } catch (error) {
+            console.error('Failed to add model:', error);
+        }
     };
     const handelPromotion = (e) => {
         const value = e.target.value;
@@ -353,4 +335,4 @@ const AddModel = forwardRef(function AddModel({ setModels }, ref) {
     )
 });
 
-export default AddModel;
+export default PutModel;

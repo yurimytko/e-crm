@@ -93,6 +93,14 @@ export const productApi = createApi({
                 method: "POST",
                 body
             })
+        }),
+
+        deleteModel: build.mutation({
+            query: (body) => ({
+                url: `admin/products?id=${body.id}&modelId=${body.modelId}`,
+                method: "DELETE",
+
+            })
         })
     }),
 });
@@ -107,5 +115,6 @@ export const {
     useAddModelsMutation,
     usePostImgMutation,
     usePutProductModelsMutation,
-    useLazyGetProductsQuery
+    useLazyGetProductsQuery,
+    useDeleteModelMutation
 } = productApi;

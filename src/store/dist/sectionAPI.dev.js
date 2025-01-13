@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.useGetSectionQuery = exports.useDeleteSubSectionMutation = exports.useGetSubSectionQuery = exports.useDeleteSectionMutation = exports.usePostSubSectionMutation = exports.usePostSectionMutation = exports.useGetSectionsQuery = exports.sectionApi = void 0;
+exports.useAddPromotionMutation = exports.useGetSectionQuery = exports.useDeleteSubSectionMutation = exports.useGetSubSectionQuery = exports.useDeleteSectionMutation = exports.usePostSubSectionMutation = exports.usePostSectionMutation = exports.useGetSectionsQuery = exports.sectionApi = void 0;
 
 var _react = require("@reduxjs/toolkit/query/react");
 
@@ -86,6 +86,15 @@ var sectionApi = (0, _react.createApi)({
           };
         },
         invalidatesTags: ['Section']
+      }),
+      addPromotion: build.mutation({
+        query: function query(body) {
+          return {
+            url: "admin/promotion?id=".concat(body.id),
+            method: 'PUT',
+            body: body
+          };
+        }
       })
     };
   }
@@ -97,7 +106,9 @@ var useGetSectionsQuery = sectionApi.useGetSectionsQuery,
     useDeleteSectionMutation = sectionApi.useDeleteSectionMutation,
     useGetSubSectionQuery = sectionApi.useGetSubSectionQuery,
     useDeleteSubSectionMutation = sectionApi.useDeleteSubSectionMutation,
-    useGetSectionQuery = sectionApi.useGetSectionQuery;
+    useGetSectionQuery = sectionApi.useGetSectionQuery,
+    useAddPromotionMutation = sectionApi.useAddPromotionMutation;
+exports.useAddPromotionMutation = useAddPromotionMutation;
 exports.useGetSectionQuery = useGetSectionQuery;
 exports.useDeleteSubSectionMutation = useDeleteSubSectionMutation;
 exports.useGetSubSectionQuery = useGetSubSectionQuery;

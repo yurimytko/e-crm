@@ -65,6 +65,14 @@ export const sectionApi = createApi({
                         }),
                         invalidatesTags: ['Section'],
                     }),
+                    addPromotion: build.mutation({
+                        query: (body) => ({
+                            url: `admin/promotion?id=${body.id}`,
+                            method: 'PUT',
+                            body
+
+                        })
+                    })
                 }),
             });
 
@@ -76,4 +84,5 @@ export const sectionApi = createApi({
             useGetSubSectionQuery,
             useDeleteSubSectionMutation,
             useGetSectionQuery,
+            useAddPromotionMutation
         } = sectionApi;

@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.useLazyGetProductsQuery = exports.usePutProductModelsMutation = exports.usePostImgMutation = exports.useAddModelsMutation = exports.useDeleteProductsMutation = exports.usePutProductMutation = exports.useGetProductQuery = exports.useDeleteProductMutation = exports.useAddProductMutation = exports.useGetProductsQuery = exports.productApi = void 0;
+exports.useDeleteModelMutation = exports.useLazyGetProductsQuery = exports.usePutProductModelsMutation = exports.usePostImgMutation = exports.useAddModelsMutation = exports.useDeleteProductsMutation = exports.usePutProductMutation = exports.useGetProductQuery = exports.useDeleteProductMutation = exports.useAddProductMutation = exports.useGetProductsQuery = exports.productApi = void 0;
 
 var _react = require("@reduxjs/toolkit/query/react");
 
@@ -103,6 +103,14 @@ var productApi = (0, _react.createApi)({
             body: body
           };
         }
+      }),
+      deleteModel: build.mutation({
+        query: function query(body) {
+          return {
+            url: "admin/products?id=".concat(body.id, "&modelId=").concat(body.modelId),
+            method: "DELETE"
+          };
+        }
       })
     };
   }
@@ -117,7 +125,9 @@ var useGetProductsQuery = productApi.useGetProductsQuery,
     useAddModelsMutation = productApi.useAddModelsMutation,
     usePostImgMutation = productApi.usePostImgMutation,
     usePutProductModelsMutation = productApi.usePutProductModelsMutation,
-    useLazyGetProductsQuery = productApi.useLazyGetProductsQuery;
+    useLazyGetProductsQuery = productApi.useLazyGetProductsQuery,
+    useDeleteModelMutation = productApi.useDeleteModelMutation;
+exports.useDeleteModelMutation = useDeleteModelMutation;
 exports.useLazyGetProductsQuery = useLazyGetProductsQuery;
 exports.usePutProductModelsMutation = usePutProductModelsMutation;
 exports.usePostImgMutation = usePostImgMutation;

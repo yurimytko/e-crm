@@ -11,6 +11,12 @@ import { AddSub } from "../AddSubSection/adSub";
 import { combineSlices } from "@reduxjs/toolkit";
 import { usePostImgMutation } from "../../store";
 
+
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+
+
 const generateRandomArticle = () => {
     return Math.floor(1000 + Math.random() * 9000).toString();
 };
@@ -52,11 +58,6 @@ const AddProductMenu = forwardRef(function AddProductMenu(props, ref) {
 
 
     const [characteristics, setCharacteristics] = useState([]);
-
-
-    const [addImg, { data: img, isLoading: loading, Error: Errorimage }] = usePostImgMutation()
-
-
 
     const handleOptionChange = (event) => {
         setIsSingle(event.target.id === 'option1' ? 1 : 0);
@@ -203,21 +204,7 @@ const AddProductMenu = forwardRef(function AddProductMenu(props, ref) {
 
         console.log(files);
 
-        // try {
-        //     const formData = new FormData();
-        //     files.forEach((file, index) => {
-        //         formData.append('image', file);
-        //     });
-
-        //     const response = await addImg(formData).unwrap();
-        //     console.log(response);
-
-        //     if (response) {
-        //         setImgId(response.images);
-        //     }
-        // } catch (error) {
-        //     console.error('Error uploading images:', error);
-        // }
+        
     };
 
     const openModelsMenu = (e) => {
@@ -238,28 +225,24 @@ const AddProductMenu = forwardRef(function AddProductMenu(props, ref) {
     async function onSubmit(e) {
         e.preventDefault();
 
-        const validation = categoryq.sections.filter((item) => item._id === categoryId);
-        if (validation.length > 0 && subCategoryId === undefined) {
-            alert("Alert");
-            return; // Stop execution if validation fails
-        }
+
+
+
+        
 
         try {
             const fd = new FormData(e.target);
 
-            // Append missing fields if necessary
             if (!fd.has("description") && description) {
                 fd.append("description", description);
             }
 
-            // Handle multiple selected files
             if (selectedFiles && selectedFiles.length > 0) {
                 Array.from(selectedFiles).forEach((file) => {
-                    fd.append("image", file); // Appends multiple files with the same key
+                    fd.append("image", file); 
                 });
             }
 
-            // Append other fields
             const randomArticle = generateRandomArticle();
             fd.append("article", randomArticle);
 
@@ -277,24 +260,29 @@ const AddProductMenu = forwardRef(function AddProductMenu(props, ref) {
                 fd.append("display", display);
             }
 
-            // Generate and append HTML markup
             if (characteristics) {
                 const htmlMarkup = generateHTML();
                 fd.append("characteristic", htmlMarkup);
             }
 
-            // Debug FormData (optional, logs keys and values)
             for (let pair of fd.entries()) {
                 console.log(pair[0], pair[1]);
             }
 
-            // Send data using the addProduct function
             await addProduct(fd).unwrap();
             closeModal();
 
             console.log("Submitted");
         } catch (e) {
-            console.error("Submission error:", e);
+            toast.error(e.data.error, {
+                autoClose: 3000, 
+                style: {
+                    position: 'fixed',
+                    top: '50px', 
+                    rigth: '50px',
+                    width: '300px',
+                },
+            });
         }
     }
 
@@ -341,12 +329,34 @@ const AddProductMenu = forwardRef(function AddProductMenu(props, ref) {
 
             }
         } catch (e) {
-            console.error(e);
+            toast.error(e.data.error, {
+                autoClose: 3000, 
+                style: {
+                    position: 'fixed',
+                    top: '50px', 
+                    rigth: '50px',
+                    width: '300px',
+                },
+            });
         }
     }
 
     const handleForm = async (e) => {
         e.preventDefault();
+
+        const validation = categoryq?.sections?.filter((item) => item._id === categoryId);
+        if (validation[0]?.subSections.length > 0 && subCategoryId === undefined) {
+            toast.error("Ви с Омерікі?", {
+                autoClose: 3000, 
+                style: {
+                    position: 'fixed',
+                    top: '50px', 
+                    rigth: '50px',
+                    width: '300px',
+                },
+            });
+            return;
+        }
 
         if (isSingle === 1) {
             await onSubmit(e);

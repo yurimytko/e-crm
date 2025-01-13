@@ -15,6 +15,8 @@ import { ChatPage } from './pages/Chat/caht';
 import { ReviewsPage } from './pages/Reviews/reviews';
 import { UserChat } from './pages/UserChat/UserChat';
 import { OrderInfoPage } from './pages/OrderInfo/info';
+import { ToastContainer } from 'react-toastify';
+
 
 function getCookie(name) {
   const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
@@ -23,9 +25,11 @@ function getCookie(name) {
 
 
 
+
 function App() {
   return (
     <div className="App">
+       <ToastContainer />
       <Router>
         <Routes>
           <Route path='/' element={<OrdersPage/>}/>
