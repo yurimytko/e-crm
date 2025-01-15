@@ -89,7 +89,7 @@ export function Update() {
             setImgId(imageIds); // Set the image IDs to state
         }
 
-        console.log(imgId)
+        console.log("Hello IMAGES", images)
 
 
 
@@ -260,41 +260,38 @@ export function Update() {
     const handleFileChange = async (e) => {
         const files = Array.from(e.target.files);
         const validFiles = files.filter(file => file.type === 'image/png' || file.type === 'image/jpeg');
-    
+
         if (validFiles.length > 0) {
             // Update images state
             setImages(prevFiles => [...prevFiles, ...validFiles]);
         }
-    
+
         console.log("Selected Files:", files);
         console.log("Images in State:", images);
-    
+
         try {
             const formData = new FormData();
             validFiles.forEach((file) => {
                 formData.append('image', file);
             });
-    
-            // Upload the images and unwrap the response
+
             const response = await addImg(formData).unwrap();
             console.log("Response from addImg:", response);
-    
-            // Append the response images to imgId state
+
             if (response?.images?.length > 0) {
                 setImgId(prevImgId => [...prevImgId, ...response.images]);
             }
-    
+
             console.log("Updated imgId State:", imgId);
-    
-            // Update product models if response is successful
+
             if (response) {
                 try {
                     const product = {
                         id: id,             // ID of the product
                         model: modelId,     // Model ID
-                        images: [...imgId, ...response.images] // Use updated state for images
+                        image: [...imgId, ...response.images] // Use updated state for images
                     };
-    
+
                     await putProductModels(product);
                     console.log("Product model updated successfully.");
                 } catch (e) {
@@ -340,21 +337,41 @@ export function Update() {
     };
 
 
-    const handleDeleteMOdel = async(modelId) => {
+    const handleDeleteMOdel = async (modelId) => {
 
         const body = {
-            id:id,
+            id: id,
             modelId: modelId
         }
 
-        try{
+        try {
             await deleteModel(body)
-        }catch(e) {
+        } catch (e) {
 
         }
 
     }
 
+    const handleRemovePhoto = async(imageId) => {
+
+
+        const updatedImgId = imgId.filter((img) => img !== imageId.imageId);
+
+
+        try {
+            const product = {
+                id: id,             
+                model: modelId,     
+                image: updatedImgId
+            };
+
+            await putProductModels(product);
+            console.log("Product model updated successfully.");
+        } catch (e) {
+            console.error("Error updating product model:", e);
+        }
+
+    };
 
     return (
         <div className="update_page">
@@ -387,9 +404,14 @@ export function Update() {
                                     return (
                                         <div
                                             key={index}
-                                            onClick={() => setActiveImg(index)}
+                                            onClick={() => {
+                                                setActiveImg(index);
+                                            }}
                                             className={activeImg === index ? "img_c_active" : "img_c_container"}
                                         >
+                                            <div className="delete_image" onClick={() => handleRemovePhoto(img)}>X</div>
+
+
                                             <img
                                                 className="img_c"
                                                 src={
@@ -399,6 +421,7 @@ export function Update() {
                                                 }
                                                 alt={`Image ${index}`}
                                             />
+
                                         </div>
                                     );
                                 })}
@@ -563,7 +586,7 @@ export function Update() {
 
             <AddCategory />
             <AddSub />
-            <PutModel ref={dialog2} id = {id}/>
+            <PutModel ref={dialog2} id={id} />
 
 
         </div>

@@ -151,7 +151,9 @@
 .img_c_container,
 .img_c_active {
   transition: 0.2s;
+  position: relative;
   display: flex;
+  min-width: 8vh;
   max-width: 8vh;
   height: 8vh;
   border-radius: 1vh;
@@ -162,6 +164,7 @@
   transition: 0.2s;
 }
 .img_c_active {
+  position: relative;
   transform: scale(1.1);
   display: flex;
   transition: 0.2s;
@@ -178,4 +181,17 @@
   border-radius: 1vh;
   width: 30vw;
   background: #fff;
+}
+.delete_image {
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  width: 2vh;
+  height: 2vh;
+  top: -0.2vw;
+  right: -0.3vw;
+  background: #219653;
+  border-radius: 50%;
 }
